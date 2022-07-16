@@ -1,0 +1,19 @@
+.fixed-wrapper {
+  width: 100vw;
+
+  @media screen and (min-width: 768px) and (min-height: 640px) {
+    background: #fafbfb;
+
+    .fixed-container {
+      width: 360px;
+      height: 640px;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      margin: auto
+    }
+  }
+
+}

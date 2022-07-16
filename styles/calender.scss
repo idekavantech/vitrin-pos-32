@@ -1,0 +1,28 @@
+.Calendar__day.-today {
+  color: $ocean-I !important;
+  border: 1px solid $ocean-I !important;
+  &::after {
+    content: none !important;
+  }
+}
+.Calendar {
+  transition: none !important;
+  font-size: 14px !important;
+  box-shadow: none !important;
+  & * {
+    transition: none !important;
+    font-size: 16px !important;
+  }
+}
+.Calendar__day.-rtl {
+  font-size: 20px !important;
+}
+.Calendar__monthArrow {
+  width: 1.2em !important;
+  height: 1.2em !important;
+}
+.Calendar__monthYear {
+  & * {
+    font-size: 20px !important;
+  }
+}

@@ -1,0 +1,154 @@
+@font-face {
+  font-family: "IranSans";
+  src: url("./fonts/IRANSansWeb.ttf") format("truetype"),
+    url("./fonts/IRANSansWeb.woff") format("woff");
+  font-weight: normal;
+  font-display: swap;
+}
+html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  font-family: "IranSans", serif !important;
+  direction: rtl;
+  text-align: right !important;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 8px;
+}
+
+.overflow-hidden {
+  overflow: hidden;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.u-border-radius-8 {
+  width: calc(100% - 16px);
+  height: calc(100% - 16px);
+  border-radius: 8px;
+}
+
+.u-background-primary-blue {
+  background-color: #0050FF;
+}
+.px-3 {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.u-fontVerySmall {
+  font-size: 13px;
+}
+
+.py-1 {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.px-2 {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-center {
+  justify-content: center;
+}
+.text-center {
+  text-align: center;
+}
+.u-lineHeight-22 {
+  line-height: 22px;
+}
+.align-items-center {
+  align-items: center;
+}
+.u-fontLarge {
+  font-size: 18px;
+}
+.u-fontMedium {
+  font-size: 16px;
+}
+.u-border-bottom-dark {
+  border-bottom: 1px solid black;
+}
+
+.u-fontWeightBold {
+  font-weight: bold;
+}
+
+.mt-1 {
+  margin-top: 5px;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.pb-1 {
+  padding-bottom: 5px;
+}
+
+.u-background-black {
+  background-color: black;
+}
+
+.u-text-white {
+  color: white;
+}
+
+.mr-2 {
+  margin-right: 10px;
+}
+
+.p-1 {
+  padding: 5px;
+}
+
+.position-absolute {
+  position: absolute;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.left-0 {
+  left: 0;
+}
+.right-0 {
+  right: 0;
+}
+.bottom-0 {
+  bottom: 0;
+}
+.top-0 {
+  top: 0;
+}
+.h-20 {
+  vertical-align: middle;
+  line-height: 20px;
+  height: 20px;
+}
+.ml-1 {
+  margin-left: 3px;
+}
+.u-cursor-pointer {
+  cursor: pointer;
+}

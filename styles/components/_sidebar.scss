@@ -1,0 +1,9 @@
+.c-side-bar{
+    display: none;
+    margin-top: -70px;
+    z-index: 0;
+    min-width: 359px;
+    @media(min-width: 992px){
+        display: block
+    }
+}

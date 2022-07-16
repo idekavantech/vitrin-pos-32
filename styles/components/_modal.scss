@@ -1,0 +1,111 @@
+@import '../varibles/varibles';
+
+.c-modal {
+  width: 100%;
+  height: 100%;
+  z-index: 900;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2000;
+  background-color: rgba(#333333, 0.6);
+
+  &-popup {
+    position: absolute;
+  }
+
+  &-sandbox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: transparent;
+    display: flex;
+
+    @include onDesktop() {
+      padding: 50px 0;
+    }
+  }
+
+  &-background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    top: 0;
+    left: 0;
+
+  }
+
+
+  &-box {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    background: $white;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 900;
+    min-height: 100vh;
+
+    @include onTablet() {
+      width: 485px;
+      border-radius: 8px;
+      min-height: unset;
+
+    }
+  }
+
+  &-header {
+    height: 48px;
+    width: 100%;
+    padding: 10px;
+
+    @include onTablet() {
+      border-radius: 4px 4px 0 0;
+      width: 485px;
+    }
+
+    &-close {
+      cursor: pointer;
+    }
+  }
+}
+
+.c-modal-body-height {
+  overflow: auto;
+  @media(max-width: 600px) {
+    min-height: calc(100vh - 120px);
+    max-height: calc(100vh - 48px);
+  }
+
+  @include onTablet {
+    min-height: 400px;
+    max-height: 80vh;
+  }
+}
+
+.c-modal-body-height-secondary {
+  @media(max-width: 600px) {
+    min-height: calc(100vh - 150px);
+  }
+
+  @include onTablet {
+    min-height: 400px;
+  }
+}
+
+.c-modal-header-close-custom {
+  right: 0;
+}
+
+.c-dialogBox {
+  background-color: $white;
+  border-radius: 4px;
+  width: 280px;
+  height: 113px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  justify-content: space-evenly;
+}

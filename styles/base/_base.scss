@@ -1,0 +1,27 @@
+// general styles
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: "IranSans" !important;
+  direction: rtl;
+  text-align: right !important;
+  overflow: hidden;
+}
+
+button, input, textarea {
+  font-family: "IranSans";
+  font-size: 16px;
+}
+input::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  font-size: 16px;
+  color: $smoke;
+}
+#otp::-webkit-input-placeholder {
+  font-size: 40px;
+  color: $smoke;
+}
+

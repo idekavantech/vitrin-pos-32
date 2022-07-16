@@ -1,0 +1,47 @@
+.progress {
+  position: absolute;
+  width: 200%;
+  height: 5px;
+  overflow-x: hidden;
+  background: white;
+}
+
+.line {
+  position: absolute;
+  background: $cement;
+  width: 150%;
+  height: 5px;
+}
+
+.subline {
+  position: absolute;
+  background: $ocean-I;
+  height: 5px;
+}
+.inc {
+  animation: increase 3s infinite;
+}
+.dec {
+  animation: decrease 3s 0.75s infinite;
+}
+
+@keyframes increase {
+  from {
+    right: -5%;
+    width: 5%;
+  }
+  to {
+    right: 130%;
+    width: 100%;
+  }
+}
+@keyframes decrease {
+  from {
+    right: -80%;
+    width: 80%;
+  }
+  to {
+    right: 110%;
+    width: 10%;
+  }
+}

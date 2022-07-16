@@ -1,0 +1,139 @@
+.c-btn {
+  cursor: pointer;
+  border-radius: 8px;
+  text-align: center;
+  vertical-align: middle;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+  border: none;
+
+  &.c-btn-open-map {
+    font-size: 12px !important;
+    height: 36px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+    border-radius: 36px;
+  }
+}
+
+.c-btn-blue {
+  background: #0050FF;
+  color: #fff;
+}
+
+.disabled {
+  background-color: $cement;
+}
+
+.c-btn-callRequest {
+  font-size: 13px;
+  height: 36px;
+  padding: 0 10px;
+  width: 180px;
+}
+
+.c-btn-transparent-bg {
+  background: transparent;
+}
+
+.c-btn-openMenu-business {
+  @include onDesktop() {
+    width: calc(100% - 160px);
+  }
+
+  flex: 1;
+  margin-right: 10px;
+  height: 36px;
+  font-size: 13px;
+  border: 1px solid transparent;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+}
+
+.c-btn-routing {
+  height: 32px;
+  padding: 2px;
+  width: 66px;
+  border: 1px solid #bdbdbd;
+}
+
+.c-btn-tap30 {
+  height: 32px;
+  width: 75px;
+  border: 1px solid $coal;
+  font-size: 10px;
+}
+
+.c-btn-discount {
+  height: 18px;
+  color: white;
+  border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.c-btn-discount-sec {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+}
+
+.c-btn-router {
+  height: 36px;
+  font-size: 13px;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+  padding: 8px;
+  z-index: 402;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.25);
+
+  @include onDesktop() {
+    right: 14px;
+    top: 0;
+  }
+}
+
+.c-btn-primary {
+  width: 100%;
+  height: 36px;
+
+  @include onTablet() {
+    height: 40px;
+  }
+}
+
+.c-btn-comeBack-Map {
+  border: 1px solid #0050FF;
+  color: $ocean-I;
+}
+
+.c-btn-editMode {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: white;
+  background-color: #0050FF;
+  height: 32px;
+  width: 88px !important;
+  font-size: 14px;
+}
+
+.c-product-btn-editMode {
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: white;
+  background-color: #0050FF;
+  height: 24px;
+  width: 24px !important;
+  font-size: 14px;
+  border: none !important;
+}
+
+.c-btn-visibility {
+  position: absolute;
+  left: 90px;
+  top: 0;
+  color: white;
+  background-color: #0050FF;
+  height: 32px;
+  width: 32px !important;
+  font-size: 14px;
+}

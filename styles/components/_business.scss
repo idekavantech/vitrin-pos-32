@@ -1,0 +1,167 @@
+.c-business-bg {
+  width: 100%;
+  overflow: hidden;
+  @extend .u-relative;
+
+  @include largeDesktop() {
+    height: 45vh;
+  }
+
+  &-gradiant {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 130px;
+
+    @include largeDesktop() {
+      height: 222px;
+    }
+  }
+}
+
+.c-business-item {
+  background-color: $white;
+  margin-top: -14px;
+  color: $smoke;
+  // @extend .u-fontNormal;
+
+  @include largeDesktop() {
+    font-size: 15px !important;
+  }
+}
+
+.c-business-card {
+  border-radius: 5px;
+  width: 147px;
+
+  @media screen and (min-width: 768px) {
+    width: 207px;
+    height: 300px;
+  }
+
+  .price-container {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+.add-snackbar {
+  height: 32px;
+  font-size: 12px;
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  transition: all .35s ease-in-out;
+  z-index: 2;
+}
+
+.c-business-card-custom {
+  border-radius: 4px;
+  width: 144px;
+  min-width: 144px;
+  height: 281px;
+
+  @media screen and (min-width: 768px) {
+    width: 207px;
+    min-width: 207px;
+    height: 342px;
+
+    .add-snackbar {
+      height: 46px;
+      font-size: 14px;
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+  }
+
+  &--secondary {
+    height: 215px;
+
+    @media screen and (min-width: 768px) {
+      height: 275px;
+    }
+  }
+}
+
+.liner-gradiant-card {
+  position: absolute;
+  z-index: 1;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg,
+      #001e2d -0.5%,
+      rgba(0, 0, 0, 0.528613) 27.39%,
+      rgba(255, 255, 255, 0) 67.86%);
+  opacity: 0.7;
+  transform: matrix(1, 0, 0, -1, 0, 0);
+}
+
+.c-business-card-item-bg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  // background: #ffffff;
+  opacity: 0.4;
+  border-radius: 4px 4px 0 0;
+}
+
+.c-business-card-item-img {
+  border-radius: 4px 4px 0 0;
+  height: 145px;
+  width: 143px;
+
+  @media screen and (min-width: 768px) {
+    height: 207px;
+    width: 205px;
+  }
+}
+
+.c-business-card-background {
+  height: 245px;
+  width: 243px;
+
+  @media screen and (min-width: 768px) {
+    height: 307px;
+    width: 305px;
+  }
+}
+
+
+.c-business-gallary-img {
+  cursor: pointer;
+
+  @include largeDesktop() {}
+}
+
+.c-business-sub-category {
+  width: 70%;
+  color: #fff;
+  font-size: 14px;
+  margin: 0;
+}
+
+.c-business-category {
+  background-color: $tiramisoo;
+  color: $smoke;
+  height: 32px;
+  width: 123px;
+  border-radius: 25px;
+  font-size: 14px;
+  justify-content: space-evenly;
+}
+
+.c-business-card-description {
+  border-radius: 4px 4px 0 0;
+  height: 35px;
+
+  @media screen and (min-width: 768px) {
+    height: 55px;
+  }
+
+  ul,
+  ol,
+  p {
+    margin-bottom: 5px;
+  }
+}

@@ -1,0 +1,66 @@
+.c-input {
+  width: 100%;
+  height: 56px;
+  // background-color: $tiramisoo;
+  // color: $pollution;
+  border-radius: 4px;
+  padding: 10px;
+  // @extend .u-fontNormal-r;
+}
+
+.c-input-text-area {
+  resize: none;
+  height: 168px;
+  font-size: 12px;
+  color: $pollution;
+}
+
+.c-input-img {
+  position: absolute;
+  right: 10px;
+  top: 20px;
+}
+
+.c-input-file-label {
+  display: table;
+}
+
+.c-input-price-unit {
+  position: absolute;
+  left: 10px;
+  top: 16px;
+}
+
+::placeholder {
+  color: $cement;
+  font-size: 13px;
+}
+
+.MuiInputBase-input {
+  font-family: "IranSans", serif !important;
+}
+.MuiOutlinedInput-notchedOutline > legend {
+  text-align: right !important;
+  margin-right: -4px !important;
+  margin-left: unset !important;
+}
+
+.MuiListItem-root.Mui-selected {
+  background-color: unset !important;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+  }
+}
+
+.MuiAutocomplete-inputRoot {
+  padding: unset !important;
+}
+
+.MuiAutocomplete-option {
+  font-family: IranSans, serif !important;
+}
+.MuiSelect-select.MuiSelect-select {
+  padding-right: 10px !important;
+  padding-left: 20px !important;
+  font-size: 12px;
+}

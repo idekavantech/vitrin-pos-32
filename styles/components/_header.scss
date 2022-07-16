@@ -1,0 +1,60 @@
+.c-header-business-title {
+  @extend .u-fontLarge;
+  @extend .u-fontWeightBold;
+
+  @include largeDesktop() {
+    font-size: 20px !important;
+  }
+}
+
+.c-header-business-subTitle {
+  @extend .u-font-semi-small;
+
+  @include largeDesktop() {
+    font-size: 14px !important;
+  }
+}
+
+.c-header-business-sec-desktop {
+  @extend .u-absolute;
+  bottom: 0;
+
+  @include largeDesktop() {
+    position: absolute;
+    margin-right: 360px;
+    padding-right: 20px;
+    width: 730px;
+  }
+}
+
+.c-header-menu-item {
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.c-header-menu-item-active {
+  border-bottom: 4px solid $white;
+  font-weight: bold;
+}
+
+.c-header-admin {
+  background-color: $pollution;
+  position: fixed;
+  z-index: 2;
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+
+  &-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 90%;
+    height: 100vh;
+    background: $white;
+    z-index: 99999;
+    box-shadow: 0px 16px 24px rgba(0, 0, 0, 0.2);
+
+    @include onTablet() {
+      width: 20%;
+    }
+  }
+}

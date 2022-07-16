@@ -1,0 +1,13 @@
+@mixin margin-classes {
+    @for $i from 1 through $sizes {
+       $margin: #{$i}px;
+      /* margin #{$margin} */
+      .m_#{$i}  {margin: $margin !important;}
+      .ml_#{$i} {margin-left: $margin !important;}
+      .mr_#{$i} {margin-right: $margin !important;}
+      .mt_#{$i} {margin-top: $margin !important;}
+      .mb_#{$i} {margin-bottom: $margin !important;}
+      .mx_#{$i} {margin-left: $margin !important; margin-right: $margin !important;}
+      .my_#{$i} {margin-top: $margin !important; margin-bottom: $margin !important;}
+    }
+  }

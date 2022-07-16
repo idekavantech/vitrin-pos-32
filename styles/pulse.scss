@@ -1,0 +1,49 @@
+.pulse-inner-circle {
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: scaleIn 2s ease-in-out infinite;
+  -webkit-animation: scaleIn 2s ease-in-out infinite;
+  background: white;
+}
+.pulse-outer-circle {
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  opacity: 0;
+  background: white;
+  animation: scaleOut 2s ease-in-out infinite;
+  -webkit-animation: scaleOut 2s ease-in-out infinite;
+}
+.pulse-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  //background-color: white;
+  width: 24px;
+  height: 24px;
+  position: relative;
+}
+@keyframes scaleIn {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(0.75, 0.75);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+@keyframes scaleOut {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.5;
+  }
+}

@@ -1,0 +1,54 @@
+$mq-tablet: 600px;
+$mq-smallDesktop: 768px;
+$mq-desktop: 992px;
+$mq-largeDesktop: 1200px;
+
+@mixin onTablet(){
+  @media(min-width: $mq-tablet){
+    @content;
+  }
+}
+
+@mixin onSmallDesktop(){
+  @media(min-width: $mq-smallDesktop){
+    @content;
+  }
+}
+
+@mixin onDesktop(){
+  @media(min-width: $mq-desktop){
+    @content;
+  }
+}
+
+@mixin largeDesktop(){
+   @media(min-width: $mq-largeDesktop){
+     @content;
+   }
+}
+
+@mixin onPrint(){
+  @media print{
+    @content;
+  }
+}
+
+
+// @mixin breakpoint($point) {
+//     @if $point == desktop {
+//       @media (min-width: 70em) { @content ; }
+//    }
+//     @else if $point == laptop {
+//       @media (min-width: 64em) { @content ; }
+//    }
+//      @else if $point == tablet {
+//       @media (min-width: 50em) { @content ; }
+//    }
+//     @else if $point == phablet {
+//       @media (min-width: 37.5em)  { @content ; }
+//    }
+//    @else if $point == mobileonly {
+//       @media (max-width: 37.5em)  { @content ; }
+ 
+//    }
+//  }

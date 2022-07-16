@@ -1,0 +1,13 @@
+@mixin padding-classes {
+    @for $i from 0 through $sizes {
+       $padding: #{$i}px;
+      /* padding #{$padding} */
+      .p_#{$i}  {padding: $padding !important;}
+      .pl_#{$i} {padding-left: $padding !important;}
+      .pr_#{$i} {padding-right: $padding !important;}
+      .pt_#{$i} {padding-top: $padding !important;}
+      .pb_#{$i} {padding-bottom: $padding !important;}
+      .px_#{$i} {padding-left: $padding !important; padding-right: $padding !important;}
+      .py_#{$i} {padding-top: $padding !important; padding-bottom: $padding !important;}
+    }
+  }

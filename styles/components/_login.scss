@@ -1,0 +1,14 @@
+.c-container-login{
+    width: 100%;
+    max-width: 425px;
+    margin: auto;
+}
+
+.c-login-height{
+    @media(max-width: 600px){
+        min-height: calc(100vh - 160px);
+    }
+        @include onTablet{
+            min-height: 380px;
+    }
+}

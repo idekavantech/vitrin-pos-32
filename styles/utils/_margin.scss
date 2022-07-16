@@ -1,0 +1,23 @@
+.u-m-2{
+    margin: 2px;
+}
+
+.u-mt-70{
+    margin-top: 70px !important;
+}
+
+.u-mt-80{
+    margin-top: 80px;
+}
+
+.u-mt-lg-130{
+    @include onTablet(){
+        margin-top: 130px!important;
+    }
+}
+
+.u-mt-negative-r-35{
+    @media screen and (min-width: 768px) {
+        margin-top: -35px;        
+    }
+}
