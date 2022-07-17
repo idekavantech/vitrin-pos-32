@@ -17,7 +17,7 @@ function getInstallerConfig() {
   return Promise.resolve({
     // appDirectory: path.join(outPath, 'vitrin-pos-win32-x64/'),
     appDirectory: path.join(outPath, 'vitrin-pos-win32-ia32/'),
-    authors: 'mrafei',
+    authors: 'komeilmehranfar',
     noMsi: true,
     outputDirectory: path.join(outPath, 'installable'),
     exe: 'vitrin-pos.exe',
