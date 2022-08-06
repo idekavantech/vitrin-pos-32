@@ -33,10 +33,10 @@ export const CATEGORIES_ITEMS_CHANGE_ORDER_API = (id) =>
 export const GROUP_DISCOUNT_ON_DEALS = (id) =>
   `${BASE_URL}deal_categories/${id}/group_discount_on_deals/`;
 export const USER_ORDERS_ITEMS_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/`;
 export const BUSINESS_ORDERS_API = (plugin) =>
-  `${BASE_URL}${plugin}_orders/by_business_site_domain/`;
-export const CUSTOMER_ORDERS_API = `${BASE_URL}shopping_orders/by_business_by_user_id/`;
+  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/`;
+export const CUSTOMER_ORDERS_API = `${BASE_URL_V2}shopping-orders/by-business-by-user-id/`;
 export const BUSINESS_LIGHT_BY_SITE_DOMAIN_API = (subDomain) =>
   `${BASE_URL}businesses/${subDomain}/light_by_site_domain/`;
 export const DEALS_ITEMS_API = (categories) =>
@@ -49,27 +49,27 @@ export const BUSINESS_ORDERS_SORTED_BY_DELIVERER_API = (
   page,
   pageSize
 ) =>
-  `${BASE_URL}${plugin}_orders/by_business_site_domain/?page=${page}&page_size=${pageSize}&status=1&status=3&status=6`;
+  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&status=1&status=3&status=6`;
 
 export const ORDER_STATUS_PROGRESS_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/change_order_status_to_in_progress/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;
 export const ORDER_STATUS_CANCELLED_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/change_order_status_to_cancelled/`;
-export const ORDER_DELIVERIES_BY_DELIVERER = `${BASE_URL}shopping_orders/by_business_site_domain/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;
+export const ORDER_DELIVERIES_BY_DELIVERER = `${BASE_URL_V2}shopping-orders/by-business-site-domain/`;
 
 export const ORDER_ONLINE_PAYMENT_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/payment_transaction/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/payment-transaction/`;
 export const ORDER_DELIVERY_TIME_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/set_delivery_time/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/set-delivery-time/`;
 export const ORDER_DELIVERER_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/courier/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/courier/`;
 
 export const ORDERS_LIST_DELIVERER_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/bulk_update_couriers/`;
+  `${BASE_URL_V2}${plugin}-orders/bulk-update-couriers/`;
 export const REQUEST_ALOPEYK_API = (id, plugin) =>
-  `${BASE_URL}${plugin}_orders/${id}/apply_for_alopeyk/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/apply-for-alopeyk/`;
 export const REQUEST_MIARE_API = (id) =>
-  `${BASE_URL}shopping_orders/${id}/apply_for_miare/`;
+  `${BASE_URL}shopping_orders/${id}/apply-for-miare/`;
 
 // Plugins API
 export const SET_PLUGIN_DATA_API = (slug) =>
@@ -95,7 +95,7 @@ export const DEALS_IMAGES_ITEM_CHANGE_ORDER_API = (id) =>
 
 export const UPSERT_CRM_MEMBERSHIP_API = `${BASE_URL}crm_membership/bulk_upsert_by_pos_id/`;
 export const UPSERT_USER_ADDRESS_API = `${BASE_URL}user_address/bulk_upsert_by_pos_id/`;
-export const UPSERT_POS_ORDERS_API = `${BASE_URL}shopping_orders/hami/`;
+export const UPSERT_POS_ORDERS_API = `${BASE_URL_V2}shopping-orders/hami/`;
 export const GET_BUSINESS_DEVICES_API = `${BASE_URL}pos_devices/by_business/`;
 export const UPDATE_DEVICE_API = (licence_code) =>
   `${BASE_URL}pos_devices/${licence_code.toLowerCase()}/update_by_licence_key/`;

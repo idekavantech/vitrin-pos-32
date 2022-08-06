@@ -171,6 +171,7 @@ const App = function ({
       isBusinessHamiIntegrated &&
       !localStorage.getItem("hamiPreventSendOrders")
     ) {
+      console.log({notif:order})
       _acceptOrder({
         order,
         plugin: "shopping",
@@ -210,77 +211,96 @@ const App = function ({
   useEffect(() => {
     if (siteDomain) _getBusiness();
   }, [siteDomain]);
+  const syncOrders = async () => {
+  try{
+    console.log({orderInterval: true});
+    const hamiBranches = await getHamiBranches();
+    if(hamiBranches.length){
+      hamiBranches.map(async(branch) => {
+        const business = businesses.find(
+          (business) =>
+            parseInt(business?.extra_data?.pos_id) ===
+              parseInt(branch.BranchId) &&
+            (
+              JSON.parse(
+                localStorage.getItem("hamiIntegratedBusinesses")
+              ) || []
+            ).includes(business.site_domain)
+        );
+        const _businessId = business?.id
+        const device = business?.devices?.[0];
+  
+        if (_businessId)
+        var result = true;
+        const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
+        const b = moment();
+        for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
+          result =
+            result &&
+            (await createOrUpdateHamiOrders(
+              _businessId,
+              branch.BranchId,
+              user.id,
+              m.format("jYYYY/jMM/jDD"),
+              m.format("jYYYY/jMM/jDD"),
+              undefined,
+              undefined,
+              true
+            ));
+        }
+      });
+    }else{
+        const business = businesses.find(
+          (business) =>
+           
+            (
+              JSON.parse(
+                localStorage.getItem("hamiIntegratedBusinesses")
+              ) || []
+            ).includes(business.site_domain)
+        );
+        const _businessId = business?.id
+        const device = business?.devices?.[0];
+              console.log(_businessId);
+        if (_businessId){
+          var result = true;
+          const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
+          const b = moment();
+          for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
+            result =
+              result &&
+              (await createOrUpdateHamiOrders(
+                _businessId,
+                0,
+                user.id,
+                m.format("jYYYY/jMM/jDD"),
+                m.format("jYYYY/jMM/jDD"),
+                undefined,
+                undefined,
+                true
+              ));
+          }
+        }
+        
+    }
+  }catch(e){
+    console.log({e})
+  }
+   
+        
+  }
   useEffect(() => {
     clearInterval(orderInterval.current);
-    clearInterval(customersInterval.current);
-    clearInterval(productsInterval.current);
-
     if (
       localStorage.getItem("integrated") === "hami" &&
       !localStorage.getItem("hamiPreventSendOrders")
     ) {
       orderInterval.current = setInterval(() => {
-        _getAdminOrders({ status: 0 });
-      }, 120 * 1000);
-      productsInterval.current = setInterval(() => {
-        businesses.map((business) => {
-          if (
-            !(
-              JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
-            ).includes(business.site_domain)
-          )
-            return;
-          updateHamiDealsInventory(business.id);
-        });
-      }, 120 * 1000);
-      customersInterval.current = setInterval(async () => {
-        businesses.map(async (business) => {
-          if (
-            !(
-              JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
-            ).includes(business.site_domain)
-          )
-            return;
-          const device = business.devices?.[0];
-          if (device?.extra_data?.last_orders_update) {
-            const hamiBranches = await getHamiBranches();
-            hamiBranches.map((branch) => {
-              const _businessId = businesses.find(
-                (business) =>
-                  parseInt(business?.extra_data?.pos_id) ===
-                    parseInt(branch.BranchId) &&
-                  (
-                    JSON.parse(
-                      localStorage.getItem("hamiIntegratedBusinesses")
-                    ) || []
-                  ).includes(business.site_domain)
-              )?.id;
-              if (_businessId)
-                createOrUpdateHamiOrders(
-                  _businessId,
-                  branch.BranchId,
-                  user.id,
-                  moment
-                    .unix(device.extra_data.last_orders_update)
-                    .format("jYYYY/jMM/jDD"),
-                  moment().format("jYYYY/jMM/jDD"),
-                  moment
-                    .unix(device.extra_data.last_orders_update)
-                    .format("HH:mm:ss"),
-                  moment().format("HH:mm:ss"),
-                  false,
-                  device.id
-                );
-            });
-            _updateDeviceById(business.slug);
-          }
-        });
-      }, (parseInt(localStorage.getItem("hamiInterval")) || 1) * 60 * 1000);
+        syncOrders()
+      }, 600 * 1000);
     }
     return () => {
-      clearInterval(customersInterval.current);
       clearInterval(orderInterval.current);
-      clearInterval(productsInterval.current);
     };
   }, [businesses, user?.id]);
   if ((!siteDomain || !businessTitle) && location.pathname !== "/login")
@@ -294,7 +314,9 @@ const App = function ({
     );
   return (
     <>
-      <div className="u-height-100vh w-100 u-background-melo-grey d-flex h-100">
+      <div className="u-height-100vh w-100 d-flex h-100" style={{
+        background: 'red'
+      }}>
         <Layout
           reload={reload}
           location={location}

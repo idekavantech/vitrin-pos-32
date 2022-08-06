@@ -175,8 +175,9 @@ export function* acceptOrder(action) {
       deliverer,
       deliveryTime,
       plugin,
-      order: { id: orderId } = {},
+      order = {},
     } = action.data;
+    const { id: orderId } = order
     if (!orderId) return;
     if (!preventSms) {
       const { response } = yield call(
@@ -198,39 +199,41 @@ export function* acceptOrder(action) {
           },
           "PATCH"
         );
-
-      const {
-        response: { data },
-      } = yield call(
-        request,
-        ORDER_STATUS_PROGRESS_API(orderId, "shopping"),
-        preventSms ? { pos_device: 0 } : {},
-        "PATCH"
-      );
-      if (data) {
+        if(order.order_status !== 50){
+          const response= yield call(
+            request,
+            ORDER_STATUS_PROGRESS_API(orderId, "shopping"),
+            preventSms ? { pos_device: 0,status: 50 } : {status: 50},
+            "PATCH"
+          );
+          console.log(response);
+        }
+       
+      if (order) {
         const businesses = yield select(makeSelectBusinesses());
         const business = businesses.find(
-          (business) => business.site_domain === data.business_site_domain
+          (business) => business.site_domain === order.business_site_domain
         );
         const integration = localStorage.getItem("integrated");
         if (
           integration === "hami" &&
           (
             JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
-          ).includes(data.business_site_domain)
+          ).includes(order.business_site_domain)
         ) {
+          console.log({hamiStarted: order});
           submitHamiOrder({
-            ...data,
+            ...order,
             business_pos_id: business.extra_data?.pos_id,
           });
           return;
         }
         if (integration === "aria") {
-          submitAriaOrder(data);
+          submitAriaOrder(order);
           return;
         }
         yield put(setSnackBarMessage("سفارش مورد نظر تایید شد.", "success"));
-        yield put(setAdminOrder(data));
+        yield put(setAdminOrder(order));
       } else if (!action.data.preventSms)
         yield put(
           setSnackBarMessage("در تایید سفارش خطایی رخ داده است!", "fail")

@@ -23,25 +23,26 @@ export default async function request(
   }
   let response = null;
   let status = null;
-  // await ipcRenderer
-  //   .invoke("request", params, Axios.defaults.headers)
-  //   .then((res) => {
-  //     response = res.data;
-  //     status = res.data?.meta?.status_code;
-  //     return true;
-  //   })
-  //   .catch((e) => {
-  //     status = e;
-  //     return e;
-  //   });
-  await Axios(params)
+  await ipcRenderer
+    .invoke("request", params, Axios.defaults.headers)
     .then((res) => {
+
       response = res.data;
-      status = res.data.meta.status_code;
+      status = res.data?.meta?.status_code;
+      return true;
     })
     .catch((e) => {
       status = e;
       return e;
     });
+  // await Axios(params)
+  //   .then((res) => {
+  //     response = res.data;
+  //     status = res.data.meta.status_code;
+  //   })
+  //   .catch((e) => {
+  //     status = e;
+  //     return e;
+  //   });
   return { response, status };
 }
