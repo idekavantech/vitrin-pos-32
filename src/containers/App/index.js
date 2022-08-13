@@ -314,9 +314,7 @@ const App = function ({
     );
   return (
     <>
-      <div className="u-height-100vh w-100 d-flex h-100" style={{
-        background: 'red'
-      }}>
+      <div className="u-height-100vh w-100 d-flex h-100" >
         <Layout
           reload={reload}
           location={location}
