@@ -219,7 +219,7 @@ export function* acceptOrder(action) {
           integration === "hami" &&
           (
             JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
-          ).includes(order.business_site_domain)
+          ).includes(order.business_site_domain) && order?.sales_channel_data?.type !== "hami"
         ) {
           console.log({hamiStarted: order});
           submitHamiOrder({
