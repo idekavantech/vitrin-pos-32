@@ -473,7 +473,78 @@ export const createOrUpdateHamiOrders = async (
       console.log({order});
       const matcher =new RegExp(/\[Wallet([0-9]+)],\[Gift([0-9]+)]/)
       const [undefined, wallet = 0, gift = 0] = order.Description?.match(matcher) || []
-    
+      console.log({
+        SaleInvoiceId: {
+        ...(wallet && {payments: [{
+          amount: wallet,
+          shaparak_track_id: null,
+          payment_type: 5
+        }]}),
+      ...(gift && {gift_credit_used: gift}),
+        business_id: businessId,
+        sales_channel_order_id: order.SaleInvoiceId,
+        order_items: order.MApiInvoiceItems.map((orderItem) => ({
+          amount: orderItem.GoodsCount,
+          pos_id: orderItem.GoodsId,
+          product_id: null,
+          initial_price: parseInt(
+            orderItem.GoodsPrice *
+              (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+          ),
+          discounted_price: parseInt(
+            (orderItem.GoodsPrice -
+              (orderItem.SumDiscount- gift - wallet) / orderItem.GoodsCount) *
+              (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+          ),
+          packaging_price: 0,
+        })),
+        archived: archived ?? localStorage.getItem("hamiKeepTracking") !== "true",
+        order_number: order.SaleInvoiceNumber,
+        user_address: {
+          name: order.PartyName.trim() || "-",
+          address: order.PartyAddress.trim() || "-",
+          phone: (order.PartyPhone.trim() || "-").substr(
+            order.PartyPhone.indexOf("0"),
+            11
+          ),
+        },
+        user_name: order.PartyName.trim()  || "-",
+        user_phone: (order.PartyPhone.trim() || "-").substr(
+          order.PartyPhone.indexOf("0"),
+          11
+        ),
+        user_phone_number: (order.PartyPhone.trim() || "-").substr(
+          order.PartyPhone.indexOf("0"),
+          11
+        ),
+        submitter_device_id: posDeviceId || null,
+        delivery_site_type:
+          order.SaleInvoiceTypeTitle === "مشترکین"
+            ? "delivery_on_business_site"
+            : "delivery_on_user_site",
+        created_at: moment(
+          `${order.InvoiceDate} ${order.InvoiceTime}`,
+          "jYYYY/jMM/jDD HH:mm:ss"
+        ).unix() * 1000,
+        submitted_at: moment(
+          `${order.InvoiceDate} ${order.InvoiceTime}`,
+          "jYYYY/jMM/jDD HH:mm:ss"
+        ).unix()*1000,
+        pos_user_id: userId,
+        delivery_price: parseInt(
+          order.DeliveryPrice *
+            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+        taxing_price: parseInt(
+          order.SumTax * (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+        description: order.description,
+       
+        order_packaging_price: parseInt(
+          order.PackingPrice *
+            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+     } })
       return ({
       ...(wallet && {payments: [{
         amount: wallet,

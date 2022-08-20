@@ -232,7 +232,9 @@ const App = function ({
   
         if (_businessId)
         var result = true;
-        const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
+        const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
+        const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");
+        console.log({a})
         const b = moment();
         for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
           result =
@@ -248,6 +250,8 @@ const App = function ({
               true
             ));
         }
+        localStorage.setItem("hamiOrdersLastUpdateByInterval",new Date(new Date().setDate(new Date().getDate() - 1)).getTime())
+
       });
     }else{
         const business = businesses.find(
@@ -264,9 +268,12 @@ const App = function ({
               console.log(_businessId);
         if (_businessId){
           var result = true;
-          const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
-          const b = moment();
+          const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
+        const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");;
+        console.log({a})
+        const b = moment();
           for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
+            console.log(m.format("jYYYY/jMM/jDD"));
             result =
               result &&
               (await createOrUpdateHamiOrders(
@@ -280,6 +287,7 @@ const App = function ({
                 true
               ));
           }
+        localStorage.setItem("hamiOrdersLastUpdateByInterval",new Date(new Date().setDate(new Date().getDate() - 1)).getTime())
         }
         
     }
@@ -297,7 +305,7 @@ const App = function ({
     ) {
       orderInterval.current = setInterval(() => {
         syncOrders()
-      }, 600 * 1000);
+      }, 2*60* 60 * 1000);
     }
     return () => {
       clearInterval(orderInterval.current);
