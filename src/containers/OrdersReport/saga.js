@@ -43,7 +43,6 @@ export function* getOrdersReportFunc(action) {
     const {
       response: { data },
     } = yield call(request, REPORTS_API, { ...action.data, domain }, 'GET');
-    console.log(data);
     yield put(setOrdersReport(data));
     yield put(stopProgressLoading());
   } catch (err) {

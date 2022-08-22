@@ -211,20 +211,13 @@ export function* createProduct(action) {
   try {
     yield put(startLoading());
     yield put(startProgressLoading());
-    const { product, images, history } = action.data;
+    const { product, history } = action.data;
     const business = yield select(makeSelectBusinessId());
     const {
       response: { meta, data: deal },
     } = yield call(request, DEALS_API, { ...product, business }, "POST");
 
     if (meta.status_code >= 200 && meta.status_code <= 300) {
-      for (let image = 0; image < images.length; image += 1) {
-        const dto = {
-          image: `${images[image].folder_name}/${images[image].file_name}`,
-          deal: deal.id,
-        };
-        yield call(request, DEALS_IMAGES_API, dto, "POST");
-      }
       yield put(setSnackBarMessage("محصول با موفقیت اضافه شد.", "success"));
       yield call(history.goBack);
     } else yield put(setSnackBarMessage("ثبت محصول ناموفق بود!", "fail"));
@@ -241,32 +234,13 @@ export function* createProduct(action) {
 export function* updateProduct(action) {
   try {
     yield put(startLoading());
-    const { id, product, images } = action.data;
+    const { id, product } = action.data;
     delete product.modifier_sets;
     const {
       response: { meta, data },
-    } = yield call(request, DEALS_ITEM_API(id), product, "PATCH");
+    } = yield call(request, DEALS_ITEM_API(id), product, "POST");
     yield put(setDeal(data));
     if (meta.status_code >= 200 && meta.status_code <= 300) {
-      if (images) {
-        for (let imageIndex = 0; imageIndex < images.length; imageIndex += 1) {
-          if (images[imageIndex].id) {
-            yield call(
-              request,
-              DEALS_IMAGES_ITEM_CHANGE_ORDER_API(images[imageIndex].id),
-              { order: imageIndex },
-              "PATCH"
-            );
-          } else {
-            const dto = {
-              image: `${images[imageIndex].folder_name}/${images[imageIndex].file_name}`,
-              deal: id,
-              order: imageIndex,
-            };
-            yield call(request, DEALS_IMAGES_API, dto, "POST");
-          }
-        }
-      }
       yield put(
         setSnackBarMessage("ویرایش محصول با موفقیت انجام شد", "success")
       );

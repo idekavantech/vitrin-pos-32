@@ -166,7 +166,6 @@ export function* updateDeviceByIdSaga(action) {
     } = yield call(request, GET_BUSINESS_DEVICES_API, {
       business_slug: action.data,
     });
-    console.log(businesses);
     yield put(
       setBusinesses(
         businesses.map((business) => {

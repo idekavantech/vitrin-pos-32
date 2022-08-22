@@ -11,6 +11,7 @@ import {
   defaultSections,
   FONT_1,
 } from "./themeConfig/constants";
+import axios from "axios";
 
 function getWeekDay(dayId) {
   if (!dayId) return null;
@@ -610,6 +611,9 @@ const reversePriceFormatter = (price) => {
     );
   return 0;
 };
+const getToken = () => {
+  return axios.defaults.headers.common.Authorization.replace("Token ", "")
+}
 export {
   getCountDown,
   noOp,
@@ -654,4 +658,5 @@ export {
   uniqueid,
   convertVariantToTable,
   reversePriceFormatter,
+  getToken
 };

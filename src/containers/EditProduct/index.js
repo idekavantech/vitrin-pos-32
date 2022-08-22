@@ -133,14 +133,12 @@ function AdminProduct({
         }
         _updateProduct(
           productId,
-          { ...product, variations: _variations },
-          imagesArray,
+          { ...product, variations: _variations, ...(imagesArray.length && { images: imagesArray }) },
           () => window.scrollTo(0, 0)
         );
       } else {
         _createProduct(
-          { ...product, variations: _variations, sku: null },
-          imagesArray,
+          { ...product, variations: _variations, sku: null,  ...(imagesArray.length && { images: imagesArray }) },
           history
         );
       }
@@ -263,16 +261,16 @@ function mapDispatchToProps(dispatch) {
   return {
     _getAdminDeal: (id) => dispatch(getDeal(id)),
     cleanUploads: () => dispatch(clearUploadedFiles()),
-    _createProduct: (product, images, history) =>
-      dispatch(createProduct(product, images, history)),
+    _createProduct: (product, history) =>
+      dispatch(createProduct(product, history)),
     _uploadFile: (files, folderName, callback) =>
       dispatch(uploadFile({ files, folderName }, callback)),
     _removeFile: (index) => dispatch(removeFile(index)),
     _deleteProductImage: (imageId) => dispatch(deleteImageFromProduct(imageId)),
     _deleteProduct: (productId, history) =>
       dispatch(deleteProduct(productId, history)),
-    _updateProduct: (productId, product, uploadedFiles, callback) =>
-      dispatch(updateProduct(productId, product, uploadedFiles, callback)),
+    _updateProduct: (productId, product, callback) =>
+      dispatch(updateProduct(productId, product, callback)),
     _uploadImageAndUpdateProduct: (productId, product) =>
       dispatch(uploadImageAndUpdateProduct(productId, product)),
     _setSnackBarMessage: (message, type) =>

@@ -71,10 +71,10 @@ export function deleteCategory(data, history) {
   };
 }
 
-export function createProduct(product, images, history) {
+export function createProduct(product, history) {
   return {
     type: CREATE_PRODUCT,
-    data: { product, images, history },
+    data: { product, history },
   };
 }
 

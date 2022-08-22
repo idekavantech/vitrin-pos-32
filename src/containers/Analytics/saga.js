@@ -18,7 +18,6 @@ export function* getShoppingAnalyticsData(action) {
       { id: action.data },
       'PATCH',
     );
-    console.log(data,status);
     if (data) yield put(setAnalyticsData(data));
     yield put(stopLoading());
   } catch (err) {

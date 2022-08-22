@@ -34,7 +34,7 @@ import { renderToString } from "react-dom/server";
 import ComponentToPrint from "../../components/ComponentToPrint";
 export function OnlineOrder({
   adminOrder: order,
-  
+
   match,
 
   business,
@@ -78,7 +78,6 @@ export function OnlineOrder({
     function receiveMessage(event) {
         if(typeof event.data === "string"){
           const data = JSON.parse(event.data)
-          console.log(data);
           if(data.type === "order"){
             printOrder(data.order);
           }
@@ -88,7 +87,7 @@ export function OnlineOrder({
         }
     }
   }
-    
+
   }, [printOptions, business])
     return <iframe id="mainframe"  src={`${business.get_vitrin_absolute_admin_url}/s/orders/${match.params.id}/?token=${axios.defaults.headers.common.Authorization.replace("Token ", "")}&no_layout=true&no_new_tab_on_order_click=true&iframe_from_pos=true&hami_integrated=${localStorage?.getItem("integrated") === "hami"}`} className="w-100 h-100"></iframe>
 

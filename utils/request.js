@@ -26,7 +26,9 @@ export default async function request(
   await ipcRenderer
     .invoke("request", params, Axios.defaults.headers)
     .then((res) => {
-
+      console.log(url,'url');
+      console.log(params);
+      console.log(res, "res");
       response = res.data;
       status = res.data?.meta?.status_code;
       return true;

@@ -194,7 +194,7 @@ function ProductCard({
         <img
           className="c-business-card-item-img"
           src={mainImageThumbnailUrl}
-          alt="بهترینو"
+          alt="ویترین"
         />
         <ProductPrice
           initialPrice={initialPrice}
