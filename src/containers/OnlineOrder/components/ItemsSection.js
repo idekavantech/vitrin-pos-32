@@ -16,7 +16,7 @@ function ItemsSection({ order }) {
           className="d-flex flex-row justify-content-between mt-2 px-3"
           style={{
             alignItems:
-              item.deal.modifiers && item.deal.modifiers.length
+              item.modifiers && item.modifiers.length
                 ? "start"
                 : "center",
           }}
@@ -24,9 +24,9 @@ function ItemsSection({ order }) {
         >
           <div className="wrapper--img-order">
             <img
-              alt={item.deal.title}
+              alt={item.product_title}
               className="w-100 h-100 object-fit"
-              src={item.deal.main_image_thumbnail_url}
+              src={item.product_main_image_thumbnail_url || item.main_image_thumbnail_url} 
             />
           </div>
           <div className="flex-1 d-flex flex-column justify-content-center">
@@ -34,35 +34,35 @@ function ItemsSection({ order }) {
               onDoubleClick={copyToClipboard}
               className="u-fontNormal u-textBlack u-fontWeightBold"
             >
-              {item.deal.title}
+              {item.product_title}
             </div>
             <div
               onDoubleClick={copyToClipboard}
               className="u-fontVerySmall u-text-darkest-grey mt-1 overflow-hidden u-max-height-18"
               dangerouslySetInnerHTML={{
-                __html: item.deal.description,
+                __html: item.description,
               }}
             />
-            {item.deal.modifiers && item.deal.modifiers.length ? (
+            {item.modifiers && item.modifiers.length ? (
               <ul
                 className="d-flex flex-column justify-content-center align-items-center"
                 style={{ fontSize: 12 }}
               >
-                {item.deal.modifiers.map((_item, index) => (
+                {item.modifiers.map((_item, index) => (
                   <li
                     key={`modifier-${index}`}
                     className="d-flex justify-content-between align-items-center w-100"
                   >
                     <div className="u-fontVerySmall u-text-darkest-grey ">
-                      - {_item.title}
+                      - {_item.product_title}
                     </div>
                   </li>
                 ))}
               </ul>
             ) : null}
           </div>
-          {item.deal.variation_name && (
-            <div className="ml-2">{item.deal.variation_name}</div>
+          {item.variation_name && (
+            <div className="ml-2">{item.variation_name}</div>
           )}
           <div className="u-text-darkest-grey order--item u-border-medium-grey align-items-center u-no-wrap">
             <div>{englishNumberToPersianNumber(item.amount)}</div>
@@ -72,14 +72,14 @@ function ItemsSection({ order }) {
             className="u-no-wrap d-flex flex-column justify-content-center"
             style={{ width: 100 }}
           >
-            {item.deal.discounted_price !== item.deal.initial_price && (
+            {item.discounted_price !== item.initial_price && (
               <div className="u-fontSemiSmall u-text-darkest-grey u-text-line-through">
-                {priceFormatter(item.deal.initial_price)}
+                {priceFormatter(item.initial_price)}
               </div>
             )}
             <div className="u-textBlack u-fontMedium">
               <span>
-                {priceFormatter(item.deal.discounted_price)}
+                {priceFormatter(item.discounted_price)}
                 <span className="u-font-semi-small"> تومان</span>
               </span>
             </div>

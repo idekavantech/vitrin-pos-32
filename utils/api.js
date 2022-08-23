@@ -69,9 +69,9 @@ export const ORDER_DELIVERER_API = (id, plugin) =>
 export const ORDERS_LIST_DELIVERER_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/bulk-update-couriers/`;
 export const REQUEST_ALOPEYK_API = (id, plugin) =>
-  `${BASE_URL_V2}${plugin}-orders/${id}/apply-for-alopeyk/`;
-export const REQUEST_MIARE_API = (id) =>
-  `${BASE_URL}shopping_orders/${id}/apply-for-miare/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/alopeyk/trips/apply/`;
+export const REQUEST_MIARE_API = (id, plugin) =>
+  `${BASE_URL_V2}${plugin}-orders/${id}/miare/trips/apply/`;
 
 // Plugins API
 export const SET_PLUGIN_DATA_API = (slug) =>
