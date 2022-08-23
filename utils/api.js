@@ -62,7 +62,7 @@ export const ORDER_DELIVERIES_BY_DELIVERER = `${BASE_URL_V2}shopping-orders/by-b
 export const ORDER_ONLINE_PAYMENT_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/payment-transaction/`;
 export const ORDER_DELIVERY_TIME_API = (id, plugin) =>
-  `${BASE_URL_V2}${plugin}-orders/${id}/set-delivery-time/`;
+  `${BASE_URL_V2}${plugin}-orders/${id}/delivery/time/`;
 export const ORDER_DELIVERER_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/courier/`;
 

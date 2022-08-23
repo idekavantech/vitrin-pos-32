@@ -45,7 +45,7 @@ export function* getAdminOrdersFunc(action) {
       )
         yield all(
           data
-            .filter((order) => order.order_status === 0)
+            .filter((order) => order.order_status === 40)
             .map((order) =>
               put(
                 acceptOrder({

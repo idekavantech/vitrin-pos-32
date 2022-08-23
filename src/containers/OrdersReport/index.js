@@ -178,7 +178,7 @@ const OrdersReport = function ({
             {orders.map((order) => (
               <OrderCard
                 businessTitle={business.revised_title}
-                isBold={order.order_status === 0}
+                isBold={order.order_status === 40}
                 key={`order-${order.id}`}
                 link={`/orders/${order.id}`}
                 order={order}

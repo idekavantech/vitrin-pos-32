@@ -37,7 +37,7 @@ import {
   STOP_PROGRESS_LOADING,
   SET_PRINTER_OPTIONS,
   TOGGLE_HAMI_MODAL,
-  ACCEPT_ORDER, SET_FIREBASE_TOKEN,
+  ACCEPT_ORDER, SET_FIREBASE_TOKEN, GLOBAL_LOADING_TYPE
 } from "./constants";
 
 export function init() {
@@ -53,15 +53,17 @@ export function callManyActions(actions) {
   };
 }
 
-export function startLoading() {
+export function startLoading(name = GLOBAL_LOADING_TYPE) {
   return {
     type: START_LOADING,
+    data: { name },
   };
 }
 
-export function stopLoading() {
+export function stopLoading(name = GLOBAL_LOADING_TYPE) {
   return {
     type: STOP_LOADING,
+    data: { name },
   };
 }
 

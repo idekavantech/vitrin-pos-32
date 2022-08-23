@@ -2,7 +2,7 @@
 import React, { memo } from "react";
 import qs from "qs";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import Icon from "../Icon";
 import { englishNumberToPersianNumber } from "../../../utils/helper";
 import { ICONS } from "../../../assets/images/icons";
@@ -118,4 +118,4 @@ Pagination.propTypes = {
   location: PropTypes.object,
   pagination: PropTypes.object,
 };
-export default memo(Pagination);
+export default memo(withRouter(Pagination));

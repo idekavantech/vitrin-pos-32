@@ -5,13 +5,14 @@
 
 import { createSelector } from "reselect";
 import { initialState } from "./reducer";
+import { GLOBAL_LOADING_TYPE } from "./constants";
 
 const selectGlobal = (state) => state.global || initialState;
 
 const selectRouter = (state) => state.router;
 
-const makeSelectLoading = () =>
-  createSelector(selectGlobal, (globalState) => globalState.loading);
+const makeSelectLoading = (name = GLOBAL_LOADING_TYPE) =>
+  createSelector(selectGlobal, (globalState) => globalState.loading[name]);
 
 const makeSelectProgressLoading = () =>
   createSelector(selectGlobal, (globalState) => globalState.progressLoading);

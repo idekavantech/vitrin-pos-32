@@ -40,12 +40,12 @@ function ProductCard({
     inventory_count: inventoryCount,
   } = updatedProduct;
   const submit = (p) => {
-    if (!loading && updatedProduct.id) {
-      _updateProduct(updatedProduct.id, p || updatedProduct, [], null);
+    if (!loading && product.id) {
+      _updateProduct(product.id, p || updatedProduct, null);
     }
   };
   useEffect(() => {
-    setUpdatedProduct({ ...product });
+    setUpdatedProduct({ ...product.default_variation });
   }, [product.id]);
   if (isList)
     return (

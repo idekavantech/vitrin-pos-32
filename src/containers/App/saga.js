@@ -177,6 +177,7 @@ export function* acceptOrder(action) {
       plugin,
       order = {},
     } = action.data;
+    console.log(order,'order');
     const { id: orderId } = order
     if (!orderId) return;
     if (!preventSms) {
@@ -188,7 +189,7 @@ export function* acceptOrder(action) {
       );
       meta = response.meta || {};
     }
-    if (preventSms || (meta.status_code >= 200 && meta.status_code <= 300)) {
+    if (preventSms || (meta.status_code >= 200 && meta.status_code < 300)) {
       if (deliverer)
         yield call(
           request,
@@ -196,19 +197,19 @@ export function* acceptOrder(action) {
           {
             courier_id: deliverer,
             send_sms: sendSms,
+            pos_device_id: 0,
           },
           "PATCH"
         );
         if(order.order_status !== 50){
-          const response= yield call(
+          yield call(
             request,
             ORDER_STATUS_PROGRESS_API(orderId, "shopping"),
-            preventSms ? { pos_device: 0,status: 50 } : {status: 50},
+            preventSms ? { modifier_device_id: 0, status: 50 } : {status: 50},
             "PATCH"
           );
-          console.log(response);
         }
-       
+
       if (order) {
         const businesses = yield select(makeSelectBusinesses());
         const business = businesses.find(

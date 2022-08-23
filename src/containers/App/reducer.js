@@ -27,7 +27,9 @@ import {
 
 // The initial state of the App
 export const initialState = {
-  loading: false,
+  loading: {
+    global: false,
+  },
   progressLoading: false,
   initLoading: true,
   error: false,
@@ -46,11 +48,11 @@ const appReducer = (state = initialState, action) =>
   produce(state, (draft) => {
     switch (action.type) {
       case START_LOADING:
-        draft.loading = true;
+        draft.loading[action.data.name] = true;
         break;
 
       case STOP_LOADING:
-        draft.loading = false;
+        draft.loading[action.data.name] = false;
         break;
       case START_PROGRESS_LOADING:
         draft.progressLoading = true;

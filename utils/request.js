@@ -23,6 +23,7 @@ export default async function request(
   }
   let response = null;
   let status = null;
+  let pureRes = null;
   await ipcRenderer
     .invoke("request", params, Axios.defaults.headers)
     .then((res) => {
@@ -30,7 +31,8 @@ export default async function request(
       console.log(params);
       console.log(res, "res");
       response = res.data;
-      status = res.data?.meta?.status_code;
+      status = res.data?.meta?.status;
+      pureRes = res;
       return true;
     })
     .catch((e) => {
@@ -46,5 +48,5 @@ export default async function request(
   //     status = e;
   //     return e;
   //   });
-  return { response, status };
+  return { response, status, pureRes };
 }

@@ -25,6 +25,7 @@ import {
   stopProgressLoading,
 } from "../App/actions";
 import { makeSelectSubDomain } from "../App/selectors";
+import { CANCEL_ORDER_LOADING } from "../OnlineOrders/constants";
 
 export function* getAdminOrder(action) {
   try {
@@ -48,13 +49,17 @@ export function* getAdminOrder(action) {
 
 export function* cancelOrder(action) {
   try {
-    yield put(startLoading());
+    yield put(startLoading(CANCEL_ORDER_LOADING));
     const {
       response: { data },
     } = yield call(
       request,
       ORDER_STATUS_CANCELLED_API(action.data.id, "shopping"),
-      {},
+      {
+        status: 20,
+        modifier_device_id: 0,
+        refund: true
+      },
       "PATCH"
     );
     if (data) {
@@ -62,9 +67,9 @@ export function* cancelOrder(action) {
       yield put(setAdminOrder(data));
     } else
       yield put(setSnackBarMessage("در لغو سفارش خطایی رخ داده است!", "fail"));
-    yield put(stopLoading());
+    yield put(stopLoading(CANCEL_ORDER_LOADING));
   } catch (err) {
-    yield put(stopLoading());
+    yield put(stopLoading(CANCEL_ORDER_LOADING));
   }
 }
 

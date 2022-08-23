@@ -39,8 +39,8 @@ function OrderCard({
   );
   const nowDate = new Date();
   const backgroundColor =
-    (orderStatus === 0 && "#0050FF") ||
-    (orderStatus === 2 && "#ff0038") ||
+    (orderStatus === 40 && "#0050FF") ||
+    (orderStatus === 20 && "#ff0038") ||
     "#00c896";
   return (
     <>

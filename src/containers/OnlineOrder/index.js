@@ -49,9 +49,11 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { Menu, MenuItem } from "@material-ui/core";
 import { submitHamiOrder } from "../../../integrations/hami/actions";
 import { makeSelectBusinesses } from "../../../stores/user/selector";
+import { CANCEL_ORDER_LOADING } from "../OnlineOrders/constants";
 export function OnlineOrder({
                               adminOrder: order,
                               loading,
+                              loadingCancelOrder,
                               _getAdminOrder,
                               match,
                               _acceptOrder,
@@ -82,6 +84,7 @@ export function OnlineOrder({
       _getCustomerOrders(order.user_id);
     }
   }, [order]);
+  console.log(loadingCancelOrder,'loadingCancelOrder');
   const printOrder = useCallback(() => {
     printOptions.printers.map((p, index) => {
       if (p.isActive) {
@@ -109,7 +112,7 @@ export function OnlineOrder({
 
   const accept = () => {
     _acceptOrder({
-      order,
+      order: order,
       plugin: "shopping",
       deliveryTime: duration ? parseInt(duration, 10) * 60 : "",
       deliverer: Object.entries(deliverers).find(
@@ -392,7 +395,7 @@ export function OnlineOrder({
                   مدت زمان تخمینی آماده‌سازی و ارسال این سفارش را وارد کنید.
                 </div>
                 <Input
-                  disabled={order.order_status !== 0}
+                  disabled={order.order_status !== 40}
                   className="mt-2"
                   noModal
                   numberOnly
@@ -419,7 +422,7 @@ export function OnlineOrder({
                     />
                     پیک‌ها
                   </div>
-                  {order.order_status === 0 && (
+                  {order.order_status === 40 && (
                     <div className="u-text-black u-fontMedium mt-3">
                       <CheckBox
                         label="defaultCheck1"
@@ -430,13 +433,13 @@ export function OnlineOrder({
                     </div>
                   )}
                   <div className="d-flex flex-wrap mt-4">
-                    {Object.values(deliverers).map((d) => (
+                    {Object.values(deliverers).map((d,index) => (
                       <div
                         className={`d-flex col-6 px-0 mt-2 u-cursor-pointer ${
-                          order.order_status !== 0 && "u-pointer-events-none"
+                          order.order_status !== 40 && "u-pointer-events-none"
                         }`}
                         onClick={() => setDeliverer(d.name)}
-                        key={`deliverer-${d.name}`}
+                        key={`deliverer-${d.name}-${index}`}
                       >
                         <label className="radio-container">
                           <input
@@ -459,7 +462,7 @@ export function OnlineOrder({
           </div>
         </div>
         <div className="px-3 u-background-white m-5 u-height-70 d-flex u-border-radius-8 box-shadow py-3 u-fontWeightBold">
-          {order.order_status === 0 && (
+          {order.order_status === 40 && (
             <>
               <PrintButton
                 print={() => {
@@ -472,7 +475,7 @@ export function OnlineOrder({
               <button
                 className="d-flex justify-content-center u-border-radius-8 align-items-center c-btn-primary u-fontSemiSmall mx-2 u-text-primary-blue u-background-white"
                 style={{ border: "1px solid #0050FF" }}
-                disabled={loading}
+                disabled={loadingCancelOrder}
                 type="button"
                 tabIndex="0"
                 onClick={() => {
@@ -496,7 +499,7 @@ export function OnlineOrder({
             </>
           )}
 
-          {order.order_status === 1 || order.order_status === 3 ? (
+          {order.order_status >= 50 ? (
             <div
               className="text-center u-text-green mx-2 u-border-radius-8 d-flex justify-content-center align-items-center"
               style={{ width: "200%", border: "1px solid #00c896" }}
@@ -504,7 +507,7 @@ export function OnlineOrder({
               سفارش با موفقیت تایید شد.
             </div>
           ) : null}
-          {order.order_status === 2 ? (
+          {order.order_status === 20 ? (
             <div
               className="text-center u-text-red mx-2 u-border-radius-8 d-flex justify-content-center align-items-center"
               style={{ width: "200%", border: "1px solid #ff0038" }}
@@ -512,7 +515,7 @@ export function OnlineOrder({
               سفارش لغو شد.
             </div>
           ) : null}
-          {order.order_status !== 0 ? (
+          {order.order_status !== 40 ? (
             <PrintButton print={printOrder} text="پرینت سفارش" />
           ) : null}
 
@@ -539,6 +542,7 @@ export function OnlineOrder({
 const mapStateToProps = createStructuredSelector({
   adminOrder: makeSelectAdminOrder(),
   loading: makeSelectLoading(),
+  loadingCancelOrder: makeSelectLoading(CANCEL_ORDER_LOADING),
   business: makeSelectBusiness(),
   pluginData: makeSelectPlugin(),
   printOptions: makeSelectPrinterOptions(),

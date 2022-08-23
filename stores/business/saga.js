@@ -236,11 +236,10 @@ export function* updateProduct(action) {
     yield put(startLoading());
     const { id, product } = action.data;
     delete product.modifier_sets;
-    const {
-      response: { meta, data },
-    } = yield call(request, DEALS_ITEM_API(id), product, "POST");
+    const {pureRes: {status, data }} = yield call(request, DEALS_ITEM_API(id), [product], "POST");
+    console.log(status,'status status');
     yield put(setDeal(data));
-    if (meta.status_code >= 200 && meta.status_code <= 300) {
+    if (status >= 200 && status < 300) {
       yield put(
         setSnackBarMessage("ویرایش محصول با موفقیت انجام شد", "success")
       );
@@ -340,13 +339,13 @@ export function* getDeliveries(action) {
   }
 }
 export function* getProductSaga(action) {
+  console.log('getProductSaga');
   try {
     yield put(startLoading());
     const { id } = action.data;
 
-    const {
-      response: { meta, data },
-    } = yield call(request, DEALS_ITEM_API(id), {}, "GET");
+    const { response: {data,meta} }  = yield call(request, DEALS_ITEM_API(id), {}, "GET");
+    console.log(data,' data data data');
 
     if (meta.status_code >= 200 && meta.status_code <= 300) {
       yield put(

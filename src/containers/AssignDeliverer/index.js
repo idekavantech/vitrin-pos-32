@@ -194,7 +194,7 @@ const AssignDeliverer = function ({
               />
             </div>
             <div className="mt-2">
-              {Object.entries(deliverers).map(([id, d]) => (
+              {Object.entries(deliverers).map(([id, d],index) => (
                 <div
                   className={`d-flex py-2 px-3 u-fontWeightBold u-border-radius-8 u-cursor-pointer ${
                     loading && deliverer === d.name
@@ -203,7 +203,7 @@ const AssignDeliverer = function ({
                   }`}
                   style={{ marginTop: 2 }}
                   onClick={assign({ ...d, id })}
-                  key={`deliverer-${d.name}`}
+                  key={`deliverer-${d.name}-${index}`}
                 >
                   <span>{d.name}</span>
                 </div>

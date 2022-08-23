@@ -78,13 +78,12 @@ export function createProduct(product, history) {
   };
 }
 
-export function updateProduct(productId, product, uploadedFiles, callback) {
+export function updateProduct(productId, product, callback) {
   return {
     type: UPDATE_PRODUCT,
     data: {
       id: productId,
       product,
-      images: uploadedFiles,
       callback,
     },
   };

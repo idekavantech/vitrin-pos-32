@@ -27,7 +27,10 @@ function MenuItem({ route = {}, subRoutes = [], history, setOpen, open }) {
           borderRadius: 8,
         }}
         key={route.title}
-        onClick={() => history.push(route.path)}
+        onClick={() => {
+          console.log(route.path, 'route.path');
+          history.push(route.path);
+        }}
       >
         <ListItemIcon style={{ minWidth: 30 }}>
           <Icon
@@ -99,7 +102,10 @@ function MenuItem({ route = {}, subRoutes = [], history, setOpen, open }) {
                 paddingRight: 23,
               }}
               key={subRoute.title}
-              onClick={() => history.push(subRoute.path)}
+              onClick={() => {
+                console.log(subRoute.path, 'subRoute.path');
+                history.push(subRoute.path);
+              }}
             >
               <ListItemIcon style={{ minWidth: 30 }}>
                 <Icon

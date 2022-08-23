@@ -1,5 +1,5 @@
 import "../../../styles/_main.scss";
-import {  withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
 import React, { memo, useCallback, useEffect,  } from "react";
 import { createStructuredSelector } from "reselect";
@@ -32,6 +32,7 @@ import { useInjectSaga } from "../../../utils/injectSaga";
 import { makeSelectProgressLoading } from "../App/selectors";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import { PERSONAL_VITRIN_SALE_CHANNEL } from "./constants";
+import qs from "qs";
 const OnlineOrders = function ({
   business,
   printOptions,
@@ -41,7 +42,8 @@ const OnlineOrders = function ({
   _getAdminOrders,
   progressLoading,
   siteDomain,
-  pagination
+  pagination,
+  location
 }) {
   useInjectReducer({ key: "adminOrders", reducer });
   useInjectSaga({ key: "adminOrders", saga });
@@ -99,7 +101,7 @@ const OnlineOrders = function ({
   const page = getQueryParams("page", location.search) || 1;
   useEffect(() => {
     _getAdminOrders({ page }, siteDomain);
-  }, [location, siteDomain]);
+  }, [page, siteDomain]);
   return (
     <div className="u-border-radius-8 container px-0 container-shadow overflow-hidden flex-1">
       <div className="d-flex px-5 py-3">
@@ -121,7 +123,7 @@ const OnlineOrders = function ({
             orders.map((order) => (
             <OrderCard
               businessTitle={businessTitle}
-              isBold={order.order_status === 0}
+              isBold={order.order_status === 40}
               key={`order-${order.id}`}
               link={`/orders/${order.id}`}
               order={order}
@@ -129,7 +131,7 @@ const OnlineOrders = function ({
           )) }
         </div>
       </div>
-      <Pagination pagination={pagination} location={location} />
+      <Pagination pagination={pagination} location={location}/>
     </div>
   )
   //<iframe id="mainframe"  src={`${business.get_vitrin_absolute_admin_url}/s/orders/?token=${getToken()}&no_layout=true&no_new_tab_on_order_click=true&iframe_from_pos=true&hami_integrated=${localStorage?.getItem("integrated") === "hami"}`} className="w-100 h-100"></iframe>

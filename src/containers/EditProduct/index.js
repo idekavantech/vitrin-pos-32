@@ -97,6 +97,8 @@ function AdminProduct({
       }
     }
   }, [adminDeal]);
+  console.log(productId,'productId');
+  console.log(adminDeal,'adminDeal')
   useEffect(() => {
     setProduct(null);
     setImagesArray([]);

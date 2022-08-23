@@ -28,8 +28,8 @@ function DelivererOrderCard({ order, link }) {
     "YYYY-MM-DD"
   );
   const backgroundColor =
-    (orderStatus === 0 && "#0050FF") ||
-    (orderStatus === 2 && "#ff0038") ||
+    (orderStatus === 40 && "#0050FF") ||
+    (orderStatus === 20 && "#ff0038") ||
     "#00c896";
   return (
     <>
@@ -45,7 +45,7 @@ function DelivererOrderCard({ order, link }) {
         />
         <div
           className={`d-flex w-100 text-center py-1 ${
-            order.order_status !== 0
+            order.order_status !== 40
               ? "u-background-melo-grey u-text-darkest-grey"
               : "u-background-white u-fontWeightBold u-text-black"
           }  pl-2`}
