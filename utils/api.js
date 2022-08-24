@@ -27,7 +27,7 @@ export const DEALS_IMAGES_ITEM_API = (id) => `${BASE_URL}deals/images/${id}/`;
 export const CATEGORIES_API = `${BASE_URL}deal_categories/`;
 export const UPSERT_CATEGORIES_API = `${BASE_URL_V2}resource-labels/bulk-upsert-by-pos-id/`;
 export const UPSERT_MODIFIERS_API = `${BASE_URL}modifier_sets/bulk_upsert_by_pos_id/`;
-export const CATEGORIES_ITEMS_API = (id) => `${BASE_URL}deal_categories/${id}/`;
+export const CATEGORIES_ITEMS_API = (id) => `${BASE_URL_V2}deal_categories/${id}/`;
 export const CATEGORIES_ITEMS_CHANGE_ORDER_API = (id) =>
   `${BASE_URL}deal_categories/${id}/change_order_by_business/`;
 export const GROUP_DISCOUNT_ON_DEALS = (id) =>

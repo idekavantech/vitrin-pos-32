@@ -51,8 +51,7 @@ function ProductCard({
     return (
       <div className="d-flex text-center align-items-center mt-1 flex-1 mx-1 my-2">
         <div
-          onClick={() => onClick(product)}
-          className="col-2 px-0 d-flex align-items-center u-cursor-pointer"
+          className="col-2 px-0 d-flex align-items-center "
         >
           <div className="col-2 px-0">
             <img
@@ -174,17 +173,13 @@ function ProductCard({
               />
             </div>
           </div>
-          <div className="col-2 px-0" onClick={() => onClick(product)}>
-            <img alt="" className="mx-2 cursorPointer" src={pen} />
-          </div>
         </div>
       </div>
     );
   return (
     <div
-      onClick={() => onClick(product)}
       style={{ margin: 12 }}
-      className="u-relative u-cursor-pointer c-business-card-custom u-background-white d-flex flex-column u-dashed-border"
+      className="u-relative c-business-card-custom u-background-white d-flex flex-column u-dashed-border"
     >
       <div
         className="position-relative align-self-center overflow-hidden u-border-top-left-radius-4 u-border-top-right-radius-4"
