@@ -339,8 +339,9 @@ export default function PriceSection({ product, setProduct, hasVariation }) {
             }
           />
           <div className="d-flex mt-2 flex-wrap">
-            {selectedDays.map((c) => (
+            {selectedDays.map((c, index) => (
               <Chip
+                key={`${c.text}-${index}`}
                 style={{ direction: "ltr" }}
                 label={c.text}
                 onDelete={() => {

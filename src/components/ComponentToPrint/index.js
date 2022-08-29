@@ -43,8 +43,7 @@ export default class ComponentToPrint extends React.Component {
       pelateChar,
       ""
     );
-    let finalCost = order.total_price;
-    if (order.wallet_credit_used) finalCost = order.should_pay;
+    const finalCost = order.should_pay;
 
     return (
       <div
@@ -103,7 +102,7 @@ export default class ComponentToPrint extends React.Component {
               <span> مشترک گرامی: </span>
               {order.user_address && (
                 <span className="u-fontWeightBold">
-                  {order.user_address.name}
+                  {order.user_address.name || order.user_name}
                 </span>
               )}
             </div>
@@ -237,7 +236,7 @@ export default class ComponentToPrint extends React.Component {
         {!printOptions.hideItems && (
           <div>
             <div className="pt-1">
-              <div className="d-flex flex-row px-2 mt-1 u-border-bottom-dark py-1">
+              <div className="d-flex flex-row px-2 mt-1 u-border-bottom-dark py-1 u-background-black u-text-white">
                 <div
                   style={{
                     width: !printOptions.hideItemPrices ? 160 : 320,
@@ -265,7 +264,7 @@ export default class ComponentToPrint extends React.Component {
               </div>
             </div>
             {sortedItems.map((item) => (
-              <>
+              <React.Fragment key={item.id}>
                 <div
                   className={`d-flex flex-row px-2 ${
                     item.modifiers && item.modifiers.length
@@ -337,7 +336,7 @@ export default class ComponentToPrint extends React.Component {
                       </div>
                     ))
                   : null}
-              </>
+              </React.Fragment>
             ))}
           </div>
         )}
@@ -365,9 +364,9 @@ export default class ComponentToPrint extends React.Component {
                 </span>
               </div>
             ) : null}
-            {order.gift_credit_used && order.gift_credit_used !== order.total_discount_amount ? (
+            {order.gift_credit_used ? (
               <div className="mt-1">
-                <span>اعتبار هدیه : </span>
+                <span>اعتبار هدیه: </span>
                 <span
                   className="u-fontWeightBold"
                   style={{ whiteSpace: "pre-wrap" }}
@@ -418,50 +417,42 @@ export default class ComponentToPrint extends React.Component {
                 </span>
               </div>
             ) : null}
-            {order.wallet_credit_used ? (
-              <>
-                <div className="mt-1">
-                  <span>مبلغ قابل پرداخت: </span>
-                  <span
-                    className="u-fontWeightBold"
-                    style={{ whiteSpace: "pre-wrap" }}
-                  >
-                    {priceFormatter(order.total_price)} تومان
-                  </span>
-                </div>
-                <div className="mt-1">
-                  <span>مبلغ پرداختی از کیف پول: </span>
-                  <span
-                    className="u-fontWeightBold"
-                    style={{ whiteSpace: "pre-wrap" }}
-                  >
-                    {priceFormatter(order.wallet_credit_used)}
-                    <span className="mx-1">-</span>
-                    <span>تومان</span>
-                  </span>
-                </div>
-              </>
-            ) : null}
             <div className="mt-1">
               <span>
-                {order.wallet_credit_used
-                  ? "باقیمانده جهت پرداخت:"
-                  : "مبلغ قابل پرداخت:"}{" "}
+                 {"کل مبلغ فاکتور:"}
               </span>
               <span
-                className="u-fontWeightBold px-3 py-1 u-fontLarge u-background-black u-text-white"
+                className="u-fontWeightBold px-3 py-1 u-fontLarge"
                 style={{ whiteSpace: "pre-wrap" }}
+              >
+                {priceFormatter(order.total_price)} تومان
+              </span>
+            </div>
+            <div className="mt-1">
+              <span>
+                 {"مقدار مبلغ پرداخت شده:"}
+              </span>
+              <span
+                className="u-fontWeightBold px-3 py-1 u-fontLarge"
+                style={{ whiteSpace: "pre-wrap" }}
+              >
+                {priceFormatter(order.paid_price)} تومان
+              </span>
+            </div>
+
+            <div style={{margin: '10px 0'}}>
+              <span className={"u-fontWeightBold"}>
+                 { order?.should_pay >= 0 ?
+                   "باقیمانده جهت پرداخت:"
+                    : "مقدار مبلغ جهت عودت:"}
+              </span>
+              <span
+                className="u-fontWeightBold px-3 py-1 u-background-black u-text-white"
+                style={{ whiteSpace: "pre-wrap", marginRight: '5px', fontSize: isLarge ? 18 : 16  }}
               >
                 {priceFormatter(finalCost)} تومان
               </span>
             </div>
-            <span className="u-fontWeightBold mt-2">
-              {order.finalCost === 0
-                ? "اعتبار هدیه"
-                : order.payment_status === 2
-                ? "آنلاین"
-                : "نقدی"}
-            </span>
           </div>
         )}
 

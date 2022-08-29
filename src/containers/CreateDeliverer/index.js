@@ -15,6 +15,7 @@ import {
   uniqueid,
 } from "../../../utils/helper";
 import { makeSelectLoading } from "../App/selectors";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function CreateDeliverer({
   _getBusiness,
@@ -27,7 +28,7 @@ export function CreateDeliverer({
   const [phone, setPhone] = useState("");
   const addDeliverer = useCallback(() => {
     const deliverers = pluginData.data.couriers || {};
-    _setPluginData("shopping", {
+    _setPluginData(SHOPPING_PLUGIN, {
       ...pluginData.data,
       couriers: { ...deliverers, [uniqueid()]: { name, phone } },
     });

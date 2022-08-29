@@ -26,6 +26,7 @@ import {
 } from "../App/actions";
 import { makeSelectSubDomain } from "../App/selectors";
 import { CANCEL_ORDER_LOADING } from "../OnlineOrders/constants";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function* getAdminOrder(action) {
   try {
@@ -34,7 +35,7 @@ export function* getAdminOrder(action) {
       response: { data },
     } = yield call(
       request,
-      USER_ORDERS_ITEMS_API(action.data.id, "shopping"),
+      USER_ORDERS_ITEMS_API(action.data.id, SHOPPING_PLUGIN),
       {},
       "GET"
     );
@@ -54,7 +55,7 @@ export function* cancelOrder(action) {
       response: { data },
     } = yield call(
       request,
-      ORDER_STATUS_CANCELLED_API(action.data.id, "shopping"),
+      ORDER_STATUS_CANCELLED_API(action.data.id, SHOPPING_PLUGIN),
       {
         status: 20,
         modifier_device_id: 0,
@@ -80,7 +81,7 @@ export function* requestAlopeykFunc(action) {
       response: { data },
     } = yield call(
       request,
-      REQUEST_ALOPEYK_API(action.data.order_id, "shopping"),
+      REQUEST_ALOPEYK_API(action.data.order_id, SHOPPING_PLUGIN),
       {},
       "POST"
     );
@@ -105,7 +106,7 @@ export function* requestMiareFunc(action) {
       response: { data, meta },
     } = yield call(
       request,
-      REQUEST_MIARE_API(action.data.order_id, "shopping"),
+      REQUEST_MIARE_API(action.data.order_id, SHOPPING_PLUGIN),
       {},
       "POST"
     );

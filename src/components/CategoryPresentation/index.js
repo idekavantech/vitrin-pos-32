@@ -16,8 +16,6 @@ function CategoryPresentation({
   category: { deals: products, name, id },
   themeColor,
   productCardOptions,
-  isEditMode,
-  isList,
   pagination,
   history,
   backgroundColor = "white",
@@ -29,27 +27,15 @@ function CategoryPresentation({
         <div className="w-100">
           <CategoryHeader
             categoryName={name}
-            themeColor={themeColor}
-            isEditMode={isEditMode}
-            isList={isList}
-            categoryId={id}
           />
         </div>
       </div>
       <div
-        className={`justify-content-start py-2 ${
-          !isList && "d-flex flex-wrap py-5"
-        }`}
-        style={{ padding: !isList ? "0 50px" : "0 39px", backgroundColor }}
+        className={`justify-content-start py-2`}
+        style={{ padding: "0 39px", backgroundColor }}
       >
-        {isEditMode && !isList && (
-          <Link to={`/products/new/${id}`}>
-            <AddNewProductCard />
-          </Link>
-        )}
         {products.map((product) => (
           <ProductCard
-            isList={isList}
             key={`c-${id}-p-${product.id}`}
             themeColor={themeColor}
             product={product}

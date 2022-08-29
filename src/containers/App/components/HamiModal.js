@@ -183,8 +183,8 @@ function HamiModal({
               ویترین‌های همسوسازی شده:
             </div>
             <div style={{ height: 400 }} className="mt-2 overflow-auto">
-              {businesses?.map((business) => (
-                <div>
+              {businesses?.map((business,index) => (
+                <div key={`${business.title}-${index}`}>
                   <Checkbox
                     color="primary"
                     checked={hamiIntegratedBusinesses.includes(

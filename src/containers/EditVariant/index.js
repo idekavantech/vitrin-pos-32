@@ -292,7 +292,7 @@ function EditVariant({
             />
             <div className="mr-5">
               {selectedVariation.map((item) => (
-                <div>
+                <div key={item.value}>
                   <Input
                     label={item.key}
                     value={item.value}

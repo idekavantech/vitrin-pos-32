@@ -142,7 +142,7 @@ export const submitHamiOrder =async (order) => {
         ItemsTopping: [],
       },
     },});
-   
+
     const x = await request(
       `${submitHamiOrderApi(localStorage.getItem("hamiIp"))}${
         localStorage.getItem("hamiSecurityKey")
@@ -249,7 +249,7 @@ export const submitHamiOrder =async (order) => {
   catch(e){
     console.log(e)
   }
-  
+
 };
 export const getHamiDeals = async (BranchId) => {
   return await request(getHamiDealItemApi(localStorage.getItem("hamiIp")), {
@@ -449,6 +449,7 @@ export const createOrUpdateHamiOrders = async (
   archived,
   posDeviceId
 ) => {
+  console.log('createOrUpdateHamiOrders')
   const result = await request(
     getHamiOrdersApi(localStorage.getItem("hamiIp")),
     {
@@ -470,7 +471,6 @@ export const createOrUpdateHamiOrders = async (
         parseInt(order.BranchId) === parseInt(BranchId)
     )
     .map((order) => {
-      console.log({order});
       const matcher =new RegExp(/\[Wallet([0-9]+)],\[Gift([0-9]+)]/)
       const [undefined, wallet = 0, gift = 0] = order.Description?.match(matcher) || []
       console.log({
@@ -539,7 +539,7 @@ export const createOrUpdateHamiOrders = async (
           order.SumTax * (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
         ),
         description: order.description,
-       
+
         order_packaging_price: parseInt(
           order.PackingPrice *
             (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
@@ -610,7 +610,7 @@ export const createOrUpdateHamiOrders = async (
         order.SumTax * (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
       ),
       description: order.description,
-     
+
       order_packaging_price: parseInt(
         order.PackingPrice *
           (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)

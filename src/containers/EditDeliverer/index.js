@@ -14,6 +14,7 @@ import {
   persianToEnglishNumber,
 } from "../../../utils/helper";
 import { makeSelectLoading } from "../App/selectors";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function EditDeliverer({
   _getBusiness,
@@ -34,7 +35,7 @@ export function EditDeliverer({
   const addDeliverer = useCallback(() => {
     let deliverers = {...pluginData.data.couriers};
     deliverers[match.params.id] = { name, phone };
-    _setPluginData("shopping", { ...pluginData.data, couriers: deliverers });
+    _setPluginData(SHOPPING_PLUGIN, { ...pluginData.data, couriers: deliverers });
   }, [pluginData, name, phone]);
   return (
     <div

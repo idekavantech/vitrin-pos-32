@@ -51,7 +51,7 @@ export const BUSINESS_ORDERS_SORTED_BY_DELIVERER_API = (
   page,
   pageSize
 ) =>
-  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&status=1&status=3&status=6`;
+  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&status=50&status=60&status=70&status=80&status=90&status=100`;
 
 export const ORDER_STATUS_PROGRESS_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;
@@ -66,8 +66,8 @@ export const ORDER_DELIVERY_TIME_API = (id, plugin) =>
 export const ORDER_DELIVERER_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/courier/`;
 
-export const ORDERS_LIST_DELIVERER_API = (id, plugin) =>
-  `${BASE_URL_V2}${plugin}-orders/bulk-update-couriers/`;
+export const ORDERS_LIST_DELIVERER_API = (plugin) =>
+  `${BASE_URL_V2}${plugin}-orders/couriers/bulk-update/`;
 export const REQUEST_ALOPEYK_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/alopeyk/trips/apply/`;
 export const REQUEST_MIARE_API = (id, plugin) =>

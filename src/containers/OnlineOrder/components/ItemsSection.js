@@ -11,7 +11,7 @@ function ItemsSection({ order }) {
       <div className="flex-1 u-fontWeightBold mb-2 u-text-black">
         آیتم‌های سفارش
       </div>
-      {order.items.map((item, index) => (
+      {order.items && order.items.map((item, index) => (
         <div
           className="d-flex flex-row justify-content-between mt-2 px-3"
           style={{
@@ -26,7 +26,7 @@ function ItemsSection({ order }) {
             <img
               alt={item.product_title}
               className="w-100 h-100 object-fit"
-              src={item.product_main_image_thumbnail_url || item.main_image_thumbnail_url} 
+              src={item.product_main_image_thumbnail_url || item.main_image_thumbnail_url}
             />
           </div>
           <div className="flex-1 d-flex flex-column justify-content-center">

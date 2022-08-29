@@ -189,6 +189,7 @@ export default function GeneralInfo({
             if (_category)
               return (
                 <Chip
+                  key={c}
                   style={{ direction: "ltr" }}
                   label={_category.name}
                   onDelete={() => {

@@ -40,6 +40,7 @@ import { submitHamiOrder } from "../../../integrations/hami/actions";
 import { submitAriaOrder } from "../../../integrations/aria/actions";
 import { setAdminOrder } from "../OnlineOrder/actions";
 import { makeSelectBusinesses } from "../../../stores/user/selector";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 function dataURLtoFile(dataurl, filename) {
   const arr = dataurl.split(",");
@@ -169,6 +170,7 @@ export function* acceptOrder(action) {
   try {
     yield put(startLoading());
     let meta = {};
+    let data;
     const {
       preventSms,
       sendSms,
@@ -177,7 +179,6 @@ export function* acceptOrder(action) {
       plugin,
       order = {},
     } = action.data;
-    console.log(order,'order');
     const { id: orderId } = order
     if (!orderId) return;
     if (!preventSms) {
@@ -188,12 +189,13 @@ export function* acceptOrder(action) {
         "PATCH"
       );
       meta = response.meta || {};
+      data = response.data;
     }
     if (preventSms || (meta.status_code >= 200 && meta.status_code < 300)) {
       if (deliverer)
         yield call(
           request,
-          ORDER_DELIVERER_API(orderId, "shopping"),
+          ORDER_DELIVERER_API(orderId, SHOPPING_PLUGIN),
           {
             courier_id: deliverer,
             send_sms: sendSms,
@@ -204,7 +206,7 @@ export function* acceptOrder(action) {
         if(order.order_status !== 50){
           yield call(
             request,
-            ORDER_STATUS_PROGRESS_API(orderId, "shopping"),
+            ORDER_STATUS_PROGRESS_API(orderId, SHOPPING_PLUGIN),
             preventSms ? { modifier_device_id: 0, status: 50 } : {status: 50},
             "PATCH"
           );
@@ -234,7 +236,7 @@ export function* acceptOrder(action) {
           return;
         }
         yield put(setSnackBarMessage("سفارش مورد نظر تایید شد.", "success"));
-        yield put(setAdminOrder(order));
+        yield put(setAdminOrder({ ...data, order_status: 50 }));
       } else if (!action.data.preventSms)
         yield put(
           setSnackBarMessage("در تایید سفارش خطایی رخ داده است!", "fail")

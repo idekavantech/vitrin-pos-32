@@ -117,6 +117,7 @@ const subRoutes = [
   [{ id: 1, title: "همه محصولات", path: "/categories/all", icon: ICONS.ITEMS },{ id: 1, title: "برچسب ها", path: "/labels/all", icon: ICONS.ITEMS }],
 
   [
+    { id: 1, title: "تخصیص پیک", path: "/delivery/assign", icon: ICONS.ITEMS },
     {
       id: 2,
       title: "لیست پیک‌ها",
@@ -183,6 +184,7 @@ function Layout({
   changeBusiness,
   businesses,
   reload,
+  siteDomain
 }) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -263,6 +265,7 @@ function Layout({
                     className="u-fontWeightBold u-text-primary-blue"
                     id="default"
                     value={business.site_domain}
+                    selected={siteDomain === business.site_domain}
                   >
                     {business.title}
                   </option>

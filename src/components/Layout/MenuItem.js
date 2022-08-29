@@ -28,7 +28,6 @@ function MenuItem({ route = {}, subRoutes = [], history, setOpen, open }) {
         }}
         key={route.title}
         onClick={() => {
-          console.log(route.path, 'route.path');
           history.push(route.path);
         }}
       >
@@ -103,7 +102,6 @@ function MenuItem({ route = {}, subRoutes = [], history, setOpen, open }) {
               }}
               key={subRoute.title}
               onClick={() => {
-                console.log(subRoute.path, 'subRoute.path');
                 history.push(subRoute.path);
               }}
             >

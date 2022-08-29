@@ -50,6 +50,8 @@ import { Menu, MenuItem } from "@material-ui/core";
 import { submitHamiOrder } from "../../../integrations/hami/actions";
 import { makeSelectBusinesses } from "../../../stores/user/selector";
 import { CANCEL_ORDER_LOADING } from "../OnlineOrders/constants";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
+import ButtonLoading from "../../components/Button/Loading";
 export function OnlineOrder({
                               adminOrder: order,
                               loading,
@@ -84,7 +86,7 @@ export function OnlineOrder({
       _getCustomerOrders(order.user_id);
     }
   }, [order]);
-  console.log(loadingCancelOrder,'loadingCancelOrder');
+
   const printOrder = useCallback(() => {
     printOptions.printers.map((p, index) => {
       if (p.isActive) {
@@ -113,7 +115,7 @@ export function OnlineOrder({
   const accept = () => {
     _acceptOrder({
       order: order,
-      plugin: "shopping",
+      plugin: SHOPPING_PLUGIN,
       deliveryTime: duration ? parseInt(duration, 10) * 60 : "",
       deliverer: Object.entries(deliverers).find(
         ([id, d]) => d.name === deliverer
@@ -195,7 +197,7 @@ export function OnlineOrder({
             </div>
 
             <div className="d-flex flex-1 flex-column align-items-center overflow-auto">
-              <ItemsSection order={order} />
+              {order && <ItemsSection order={order} />}
               <DeliverySection order={order} business={business} />
               {customerOrders && customerOrders.length ? (
                 <div className="w-100 flex-1 py-2 u-background-white mt-1 px-3">
@@ -243,12 +245,59 @@ export function OnlineOrder({
             </div>
           </div>
           <div className="overflow-auto py-3 mt-3" style={{ width: 400 }}>
+            <div
+              className="p-3 u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-4"
+              style={{ height: "fit-content" }}
+            >
+              <span className="u-textBlack u-fontWeightBold">
+                جزئیات ارسال:
+              </span>
+              <span
+                className="u-text-darkest-grey pr-1"
+                style={{ whiteSpace: "pre-wrap" }}
+              >
+                {(order && order.description) || "ندارد"}
+              </span>
+            </div>
+
+            <PriceSection order={order} />
+            <div
+              className="u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-4"
+              style={{ height: "fit-content" }}
+            >
+              <div className="d-flex flex-column flex-1 p-3">
+                <div className="u-text-black u-fontWeightBold">
+                  <Icon
+                    icon={ICONS.TIME}
+                    size={24}
+                    color="#001e2d"
+                    className="ml-2"
+                  />
+                  حداکثر زمان آماده‌سازی و ارسال
+                </div>
+
+                <div className="u-text-black u-fontMedium mt-2">
+                  مدت زمان تخمینی آماده‌سازی و ارسال این سفارش را وارد کنید.
+                </div>
+                <Input
+                  disabled={order.order_status !== 40}
+                  className="mt-2"
+                  noModal
+                  numberOnly
+                  label="مدت زمان (دقیقه)"
+                  value={duration ? englishNumberToPersianNumber(duration) : ""}
+                  onChange={(value) =>
+                    setDuration(persianToEnglishNumber(value))
+                  }
+                />
+              </div>
+            </div>
             {pluginData.data &&
             pluginData.data.deliverer_companies &&
             (pluginData.data.deliverer_companies.alopeyk_api_token ||
               pluginData.data.deliverer_companies.miare_api_token) ? (
               <div
-                className="p-3 u-relative u-background-white box-shadow u-border-radius-8 mr-4"
+                className="p-3 u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-3"
                 style={{ height: "fit-content" }}
               >
                 <div className="u-textBlack u-fontWeightBold">انتخاب پیک</div>
@@ -359,54 +408,6 @@ export function OnlineOrder({
                 ) : null}
               </div>
             ) : null}
-
-            <div
-              className="p-3 u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-4"
-              style={{ height: "fit-content" }}
-            >
-              <span className="u-textBlack u-fontWeightBold">
-                جزئیات ارسال:
-              </span>
-              <span
-                className="u-text-darkest-grey pr-1"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {(order && order.description) || "ندارد"}
-              </span>
-            </div>
-
-            <PriceSection order={order} />
-            <div
-              className="u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-4"
-              style={{ height: "fit-content" }}
-            >
-              <div className="d-flex flex-column flex-1 p-3">
-                <div className="u-text-black u-fontWeightBold">
-                  <Icon
-                    icon={ICONS.TIME}
-                    size={24}
-                    color="#001e2d"
-                    className="ml-2"
-                  />
-                  حداکثر زمان آماده‌سازی و ارسال
-                </div>
-
-                <div className="u-text-black u-fontMedium mt-2">
-                  مدت زمان تخمینی آماده‌سازی و ارسال این سفارش را وارد کنید.
-                </div>
-                <Input
-                  disabled={order.order_status !== 40}
-                  className="mt-2"
-                  noModal
-                  numberOnly
-                  label="مدت زمان (دقیقه)"
-                  value={duration ? englishNumberToPersianNumber(duration) : ""}
-                  onChange={(value) =>
-                    setDuration(persianToEnglishNumber(value))
-                  }
-                />
-              </div>
-            </div>
             {Object.keys(deliverers).length ? (
               <div
                 className="u-relative u-background-white box-shadow u-border-radius-8 mr-4 mt-4"
@@ -486,15 +487,17 @@ export function OnlineOrder({
                   className="d-flex ml-2 u-border-radius-50-percent u-background-primary-blue"
                   style={{ width: 20, height: 20 }}
                 >
-                  <Icon
+                  {!loadingCancelOrder &&
+                    <Icon
                     icon={ICONS.CLOSE}
                     size={25}
                     width={20}
                     height={20}
                     color="white"
-                  />
+                  />}
+
                 </div>
-                لغو سفارش
+                {loadingCancelOrder ? 'در حال بارگزاری...' : 'لغو سفارش'}
               </button>
             </>
           )}

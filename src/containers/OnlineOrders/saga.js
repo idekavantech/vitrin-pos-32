@@ -11,6 +11,7 @@ import {
   stopProgressLoading,
 } from "../App/actions";
 import { makeSelectBusinessSiteDomain } from "../../../stores/business/selector";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function* getAdminOrdersFunc(action) {
   try {
@@ -21,7 +22,7 @@ export function* getAdminOrdersFunc(action) {
       response: { data, pagination },
     } = yield call(
       request,
-      BUSINESS_ORDERS_API("shopping",action?.data?.page || 1,
+      BUSINESS_ORDERS_API(SHOPPING_PLUGIN,action?.data?.page || 1,
         action?.data?.page_size || 20, true, domain),
       {
         domain: action.domain || domain,
@@ -34,7 +35,6 @@ export function* getAdminOrdersFunc(action) {
     const pagesCount = Math.ceil(pagination.count / ADMIN_ORDERS_PAGE_SIZE);
 
     if (data) {
-      console.log(data, "data");
       yield put(setAdminOrders(data, { ...pagination, pagesCount }));
       if (
         localStorage.getItem("integrated") === "hami" &&
@@ -50,7 +50,7 @@ export function* getAdminOrdersFunc(action) {
               put(
                 acceptOrder({
                   order,
-                  plugin: "shopping",
+                  plugin: SHOPPING_PLUGIN,
                   preventSms: true,
                 })
               )

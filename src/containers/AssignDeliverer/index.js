@@ -24,7 +24,7 @@ import {
   makeSelectBusinessTitle,
   makeSelectPlugin,
 } from "../../../stores/business/selector";
-import { makeSelectLoading } from "../App/selectors";
+import { makeSelectLoading, makeSelectSubDomain } from "../App/selectors";
 import Select from "../../components/Select";
 const filterOptions = [
   { id: 1, text: "همه سفارش‌ها", value: null },
@@ -45,6 +45,7 @@ const AssignDeliverer = function ({
   loading,
   history,
   businessTitle,
+  siteDomain,
 }) {
   useInjectReducer({ key: "assignDeliverer", reducer });
   useInjectSaga({ key: "assignDeliverer", saga });
@@ -57,16 +58,17 @@ const AssignDeliverer = function ({
   useEffect(() => {
     const hasDeliverer = filterOptions.find((fo) => fo.text === filter).value;
     _getAdminOrders(page, hasDeliverer);
-  }, [location, filter]);
+  }, [location, filter, siteDomain]);
 
   useEffect(() => {
     setSelected(orders.map(() => false));
   }, [orders]);
   const deliverers = pluginData?.data?.couriers || {};
+
   const assign = useCallback(
     (deliverer) => () => {
       if (loading) return;
-      setDeliverer(deliverer?.name || null);
+      setDeliverer(deliverer?.id || null);
       const orderIds = [];
       selected.map((isSelected, index) => {
         if (isSelected) return orderIds.push(orders[index].id);
@@ -89,7 +91,7 @@ const AssignDeliverer = function ({
       className="d-flex flex-1 container px-0"
       style={{ height: "calc(100% - 30px)" }}
     >
-      <div className="u-border-radius-8 u-background-white container px-0 container-shadow overflow-hidden">
+      <div className="u-border-radius-8 u-background-white container px-0 pb-4 container-shadow overflow-hidden">
         <div
           className="header-shadow position-relative d-flex py-2 align-items-center px-4"
           style={{ marginRight: -10 }}
@@ -116,7 +118,7 @@ const AssignDeliverer = function ({
                 {englishNumberToPersianNumber(
                   selected.filter((s) => s === true).length
                 )}{" "}
-                سفارش انتخاب شده ...
+                سفارش انتخاب شده
               </div>
             )}
           </div>
@@ -194,20 +196,22 @@ const AssignDeliverer = function ({
               />
             </div>
             <div className="mt-2">
-              {Object.entries(deliverers).map(([id, d],index) => (
-                <div
-                  className={`d-flex py-2 px-3 u-fontWeightBold u-border-radius-8 u-cursor-pointer ${
-                    loading && deliverer === d.name
-                      ? "u-background-primary-blue u-text-white"
-                      : "u-background-melo-grey u-text-darkest-grey"
-                  }`}
-                  style={{ marginTop: 2 }}
-                  onClick={assign({ ...d, id })}
-                  key={`deliverer-${d.name}-${index}`}
-                >
-                  <span>{d.name}</span>
-                </div>
-              ))}
+              {Object.entries(deliverers).map(([id, d],index) => {
+                return (
+                  <div
+                    className={`d-flex py-2 px-3 u-fontWeightBold u-border-radius-8 u-cursor-pointer ${
+                      loading && deliverer === id
+                        ? "u-background-primary-blue u-text-white"
+                        : "u-background-melo-grey u-text-darkest-grey"
+                    }`}
+                    style={{ marginTop: 2 }}
+                    onClick={assign({ ...d, id })}
+                    key={`deliverer-${d.name}-${index}`}
+                  >
+                    <span>{d.name}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -218,6 +222,7 @@ const AssignDeliverer = function ({
 
 const mapStateToProps = createStructuredSelector({
   orders: makeSelectOrders(),
+  siteDomain: makeSelectSubDomain(),
   pluginData: makeSelectPlugin(),
   pagination: makeSelectOrdersPagination(),
   loading: makeSelectLoading(),

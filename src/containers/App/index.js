@@ -85,6 +85,7 @@ import {
 import pristine from "../../../assets/audio/pristine.mp3";
 import { amplifyMedia } from "../../../utils/helper";
 import ShoppingSettings from "../ShoppingSettings";
+import {SELECTED_SITE_DOMAIN, SHOPPING_PLUGIN} from "../../../utils/constants";
 
 const App = function ({
   history,
@@ -160,7 +161,7 @@ const App = function ({
   const receiveOrder = async (payload) => {
     let split = payload.click_action.split("/");
     const orderId = split[split.length - 1];
-    const response = await request(USER_ORDERS_ITEMS_API(orderId, "shopping"));
+    const response = await request(USER_ORDERS_ITEMS_API(orderId, SHOPPING_PLUGIN));
     const order = response?.response?.data || {};
     const isBusinessHamiIntegrated =
       localStorage.getItem("integrated") === "hami" &&
@@ -174,7 +175,7 @@ const App = function ({
       console.log({notif:order})
       _acceptOrder({
         order,
-        plugin: "shopping",
+        plugin: SHOPPING_PLUGIN,
         preventSms: true,
       });
     }
@@ -210,10 +211,19 @@ const App = function ({
   }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
   useEffect(() => {
     if (siteDomain) _getBusiness();
-  }, [siteDomain]);
+    history.push('/orders')
+    }, [siteDomain]);
+
+  useEffect(() => {
+    if(siteDomain) {
+      const siteDomainFromLocalStorage = localStorage.getItem(SELECTED_SITE_DOMAIN)
+      if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage)
+        _setSiteDomain(siteDomainFromLocalStorage)
+    }
+  }, [siteDomain])
+
   const syncOrders = async () => {
   try{
-    console.log({orderInterval: true});
     const hamiBranches = await getHamiBranches();
     if(hamiBranches.length){
       hamiBranches.map(async(branch) => {
@@ -229,12 +239,11 @@ const App = function ({
         );
         const _businessId = business?.id
         const device = business?.devices?.[0];
-  
+
         if (_businessId)
         var result = true;
         const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
         const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");
-        console.log({a})
         const b = moment();
         for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
           result =
@@ -256,7 +265,7 @@ const App = function ({
     }else{
         const business = businesses.find(
           (business) =>
-           
+
             (
               JSON.parse(
                 localStorage.getItem("hamiIntegratedBusinesses")
@@ -264,16 +273,12 @@ const App = function ({
             ).includes(business.site_domain)
         );
         const _businessId = business?.id
-        const device = business?.devices?.[0];
-              console.log(_businessId);
         if (_businessId){
           var result = true;
           const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
         const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");;
-        console.log({a})
         const b = moment();
           for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
-            console.log(m.format("jYYYY/jMM/jDD"));
             result =
               result &&
               (await createOrUpdateHamiOrders(
@@ -289,13 +294,13 @@ const App = function ({
           }
         localStorage.setItem("hamiOrdersLastUpdateByInterval",new Date(new Date().setDate(new Date().getDate() - 1)).getTime())
         }
-        
+
     }
   }catch(e){
     console.log({e})
   }
-   
-        
+
+
   }
   useEffect(() => {
     clearInterval(orderInterval.current);
@@ -320,6 +325,10 @@ const App = function ({
         <LoadingIndicator />
       </div>
     );
+  const onChangeBusiness = (value) => {
+    localStorage.setItem(SELECTED_SITE_DOMAIN, value)
+    _setSiteDomain(value)
+  }
   return (
     <>
       <div className="u-height-100vh w-100 d-flex h-100" >
@@ -328,8 +337,9 @@ const App = function ({
           location={location}
           title={businessTitle}
           loading={progressLoading}
-          changeBusiness={_setSiteDomain}
+          changeBusiness={onChangeBusiness}
           businesses={businesses}
+          siteDomain={siteDomain}
         >
           <Switch>
             <Route exact path="/empty" component={LoadingIndicator} />
@@ -350,6 +360,8 @@ const App = function ({
               path="/delivery/deliverers/:id"
               component={EditDeliverer}
             />
+            <Route exact path="/delivery/assign" component={AssignDeliverer} />
+
             <Route
               exact
               path="/delivery/deliverers"

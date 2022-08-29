@@ -20,6 +20,7 @@ import {
   stopProgressLoading,
 } from "../App/actions";
 import { setSnackBarMessage } from "../../../stores/ui/actions";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function* getOrdersFunc(action) {
   try {
@@ -33,7 +34,7 @@ export function* getOrdersFunc(action) {
     } = yield call(
       request,
       BUSINESS_ORDERS_SORTED_BY_DELIVERER_API(
-        "shopping",
+        SHOPPING_PLUGIN,
         page,
         ORDERS_PAGE_SIZE
       ),
@@ -59,11 +60,12 @@ export function* setDeliverers(action) {
         response: { data },
       } = yield call(
         request,
-        ORDERS_LIST_DELIVERER_API(action.data.id, "shopping"),
+        ORDERS_LIST_DELIVERER_API(SHOPPING_PLUGIN),
         {
           courier_id: action.data.deliverer,
           send_sms: action.data.sendSms,
           orders: action.data.orders,
+          pos_device_id: 0,
         },
         "PATCH"
       );

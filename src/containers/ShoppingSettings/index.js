@@ -10,6 +10,7 @@ import {
 } from "../../../stores/business/selector";
 import Switch from "../../components/Swtich";
 import { setPluginData } from "../../../stores/business/actions";
+import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 function ShoppingSettings({ pluginData, _setPluginData }) {
   const [isOpen, setIsOpen] = useState(pluginData.data?.is_open);
@@ -44,7 +45,7 @@ function ShoppingSettings({ pluginData, _setPluginData }) {
               isSwitchOn={isOpen}
               toggleSwitch={(is_open) => {
                 setIsOpen(is_open);
-                _setPluginData("shopping", { ...pluginData.data, is_open });
+                _setPluginData(SHOPPING_PLUGIN, { ...pluginData.data, is_open });
               }}
             />
           </div>

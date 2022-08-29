@@ -45,7 +45,7 @@ export default function InfoTable({ product, setProduct }) {
       <Collapse in={collapse}>
         <div className="px-3">
           {infoTable.map((row, index) => (
-            <div className="d-flex align-items-start">
+            <div className="d-flex align-items-start" key={row.key}>
               <div style={{ flex: 3 }} className="mx-1 mt-1">
                 <Input
                   size="medium"

@@ -20,17 +20,11 @@ import Switch from "../Swtich";
 import pen from "../../../assets/images/pen.svg";
 import Input from "../Input";
 
-const penIcon = `${CDN_BASE_URL}edit-pen-white-icn.svg`;
-
 function ProductCard({
-  onClick,
-  themeColor,
   product,
   _updateProduct = noOp,
   loading,
-  isList,
 }) {
-  const [snackBar, setSnackBar] = useState(false);
   const [updatedProduct, setUpdatedProduct] = useState({ ...product });
   const {
     title,
@@ -47,7 +41,7 @@ function ProductCard({
   useEffect(() => {
     setUpdatedProduct({ ...product.default_variation });
   }, [product.id]);
-  if (isList)
+
     return (
       <div className="d-flex text-center align-items-center mt-1 flex-1 mx-1 my-2">
         <div
@@ -86,7 +80,13 @@ function ProductCard({
                 })
               }
               onBlur={() => {
-                if (initialPrice !== product.initial_price) submit();
+                if (initialPrice !== product.default_variation.initial_price) submit();
+              }}
+              onKeyPress={(event) => {
+                if (event.key === "Enter" && initialPrice !== product.default_variation.initial_price) {
+                  event.target.blur();
+                  submit();
+                }
               }}
               numberOnly
               value={englishNumberToPersianNumber(initialPrice)}
@@ -97,15 +97,23 @@ function ProductCard({
               editOnDoubleClick
               style={{ textAlign: "center" }}
               variant="standard"
-              onChange={(discountAmount) =>
+              onChange={(discountAmount) => {
+                if(persianToEnglishNumber(discountAmount) <= initialPrice)
                 setUpdatedProduct({
                   ...updatedProduct,
                   discounted_price:
-                    initialPrice - persianToEnglishNumber(discountAmount),
-                })
+                    initialPrice - persianToEnglishNumber(discountAmount)
+                });
+              }
               }
               onBlur={() => {
-                if (discountedPrice !== product.discounted_price) submit();
+                if (discountedPrice !== product.default_variation.discounted_price) submit();
+              }}
+              onKeyPress={(event) => {
+                if (event.key === "Enter" && discountedPrice !== product.default_variation.discounted_price) {
+                  event.target.blur();
+                  submit();
+                }
               }}
               numberOnly
               value={englishNumberToPersianNumber(
@@ -118,15 +126,23 @@ function ProductCard({
               editOnDoubleClick
               style={{ textAlign: "center" }}
               variant="standard"
-              onChange={(value) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  discounted_price:
-                    initialPrice * (1 - persianToEnglishNumber(value) / 100),
-                })
+              onChange={(value) => {
+                if (value <= 100)
+                  setUpdatedProduct({
+                    ...updatedProduct,
+                    discounted_price:
+                      initialPrice * (1 - persianToEnglishNumber(value) / 100)
+                  });
+              }
               }
               onBlur={() => {
-                if (discountedPrice !== product.discounted_price) submit();
+                if (discountedPrice !== product.default_variation.discounted_price) submit();
+              }}
+              onKeyPress={(event) => {
+                if (event.key === "Enter" && discountedPrice !== product.default_variation.discounted_price) {
+                  event.target.blur();
+                  submit();
+                }
               }}
               numberOnly
               value={englishNumberToPersianNumber(
@@ -176,73 +192,7 @@ function ProductCard({
         </div>
       </div>
     );
-  return (
-    <div
-      style={{ margin: 12 }}
-      className="u-relative c-business-card-custom u-background-white d-flex flex-column u-dashed-border"
-    >
-      <div
-        className="position-relative align-self-center overflow-hidden u-border-top-left-radius-4 u-border-top-right-radius-4"
-        style={{ background: "#c4c4c4" }}
-      >
-        <div className="liner-gradiant-card d-flex align-items-center p-1" />
-        <img
-          className="c-business-card-item-img"
-          src={mainImageThumbnailUrl}
-          alt="ویترین"
-        />
-        <ProductPrice
-          initialPrice={initialPrice}
-          discountedPrice={discountedPrice}
-        />
-        <div
-          tabIndex="0"
-          role="button"
-          onKeyDown={() => setSnackBar(false)}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            setSnackBar(false);
-          }}
-          className="add-snackbar d-flex justify-content-center align-items-center u-text-white u-fontWeightBold position-absolute w-100 bottom-0"
-          style={{
-            backgroundColor: themeColor,
-            transform: `translateY(${snackBar ? 0 : "50px"})`,
-          }}
-        >
-          به سبد خرید افزوده شد!
-        </div>
-      </div>
-      <div className="u-fontNormal px-1 u-text-black mt-1 u-fontWeightBold text-right overflow-hidden">
-        {ellipseText(title, 40)}
-      </div>
-      <div className="d-flex justify-content-between px-1 align-items-end pb-2 flex-1">
-        <span
-          style={{ width: 40 }}
-          className={`u-font-semi-small u-fontWeightBold ${
-            updatedProduct.is_active
-              ? "u-text-primary-blue"
-              : "u-text-darkest-grey"
-          }`}
-        >
-          {updatedProduct.is_active ? "فعال" : "غیرفعال"}
-        </span>
-        <Switch
-          isSwitchOn={updatedProduct.is_active}
-          toggleSwitch={(is_active) => {
-            setUpdatedProduct({ ...updatedProduct, is_active });
-            submit({ ...updatedProduct, is_active });
-          }}
-        />
-      </div>
-      <button
-        type="button"
-        className="c-btn c-product-btn-editMode u-border-radius-4 u-addItem z-index-2"
-      >
-        <img alt="" src={penIcon} />
-      </button>
-    </div>
-  );
+
 }
 
 ProductCard.propTypes = {

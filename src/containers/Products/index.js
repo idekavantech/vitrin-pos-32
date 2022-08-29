@@ -61,9 +61,6 @@ export function Products({
 }) {
   useInjectReducer({ key: "products", reducer });
   useInjectSaga({ key: "products", saga });
-  const [listView, setListView] = useState(
-    !localStorage.getItem("productsCardView")
-  );
   const [search, setSearch] = useState("");
   const [categoryModal, setCategoryModal] = useState(false);
   const [filters, setFilters] = useState({});
@@ -104,55 +101,7 @@ export function Products({
       />
       <div className="u-border-radius-8 u-background-white container px-0 container-shadow overflow-hidden mt-5 p-3">
         <div className="d-flex justify-content-between">
-          <div className="d-flex align-items-center">
-            <div
-              className="d-flex u-cursor-pointer"
-              onClick={() => {
-                localStorage.setItem("productsCardView", "");
-                setListView(true);
-              }}
-            >
-              <Icon
-                icon={ICONS.LIST_VIEW}
-                className="ml-1"
-                size={24}
-                color={listView ? "#0050FF" : "#667e8a"}
-              />
-              <span
-                className={`${
-                  listView
-                    ? "u-fontWeightBold u-text-primary-blue"
-                    : "u-text-darkest-grey"
-                }`}
-              >
-                لیست
-              </span>
-            </div>
-            <div
-              className="mr-3 d-flex u-cursor-pointer"
-              onClick={() => {
-                localStorage.setItem("productsCardView", "true");
-                setListView(false);
-              }}
-            >
-              <Icon
-                icon={ICONS.CARD_VIEW}
-                className="ml-1"
-                size={24}
-                color={!listView ? "#0050FF" : "#667e8a"}
-              />
-              <span
-                className={`${
-                  !listView
-                    ? "u-fontWeightBold u-text-primary-blue"
-                    : "u-text-darkest-grey"
-                }`}
-              >
-                کارت
-              </span>
-            </div>
-          </div>
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center mr-1">
             <TextField
               onKeyDown={(e) => {
                 if (e.keyCode === 13) setFilters({ search: search || null });
@@ -172,39 +121,6 @@ export function Products({
               <SearchRoundedIcon style={{ color: "white" }} />
             </Button>
           </div>
-          <div className="d-flex">
-            <div
-              onClick={() => shell.openExternal(address)}
-              className="ml-2 u-cursor-pointer u-background-green u-border-radius-4 d-inline-flex justify-content-center align-items-center pr-2 py-2 pl-3"
-            >
-              <Icon
-                icon={ICONS.WEBSITE}
-                color="white"
-                className="ml-2"
-                size={18}
-              />
-              <span className="u-fontWeightBold u-fontMedium u-text-white">
-                دیدن سایت
-              </span>
-            </div>
-
-            <div
-              onClick={() => setCategoryModal(true)}
-              className="u-cursor-pointer u-background-primary-blue u-border-radius-4 d-inline-flex justify-content-center align-items-center pr-2 py-2 pl-3"
-            >
-              <Icon
-                icon={ICONS.PLUS}
-                color="white"
-                className="ml-2"
-                size={12}
-              />
-              <span className="u-fontWeightBold u-fontMedium u-text-white">
-                افزودن دسته‌بندی جدید
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="d-flex align-items-center my-1">
           <div className="d-flex align-items-center">
             <Switch
               isSwitchOn={filters.is_discounted}
@@ -219,7 +135,9 @@ export function Products({
             />
             <div className="mr-2">فقط محصولات تخفیف‌دار</div>
           </div>
+
         </div>
+
         <CategoriesList
           categories={categories}
           selectedId={id}
@@ -237,7 +155,6 @@ export function Products({
             history={history}
             categories={categories}
             themeColor="#0050ff"
-            isList={listView}
             onCategoryEditButtonClick={(_category) => {}}
             onNewProductCardClick={() =>
               history.push(`/products/new/${category.id}`)
@@ -261,8 +178,6 @@ export function Products({
           history={history}
           categories={categories}
           themeColor="#0050ff"
-          isEditMode={category.id !== "all"}
-          isList={listView}
           onCategoryEditButtonClick={(_category) => {}}
           onNewProductCardClick={() =>
             history.push(`/products/new/${category.id}`)

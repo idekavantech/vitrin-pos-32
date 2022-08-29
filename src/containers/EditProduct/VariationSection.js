@@ -217,7 +217,7 @@ export default function VariationSection({
                   Object.keys(variations.variations_table).map((key) => {
                     const item = variations.variations_table[key];
                     return (
-                      <TableRow>
+                      <TableRow key={key}>
                         <TableCell
                           align="right"
                           component="th"

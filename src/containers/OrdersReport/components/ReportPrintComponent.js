@@ -38,16 +38,7 @@ export default class ReportPrintComponent extends React.Component {
                     whiteSpace: "pre-wrap",
                   }}
                 />
-
-                <div className="text-center" style={{ width: 80 }}>
-                  آنلاین
-                </div>
-
-                <div className="text-center" style={{ width: 80 }}>
-                  نقدی
-                </div>
-
-                <div className="text-center" style={{ width: 80 }}>
+                <div className="text-center" style={{ width: 80, marginRight: 'auto' }}>
                   جمع کل
                 </div>
               </div>
@@ -56,7 +47,7 @@ export default class ReportPrintComponent extends React.Component {
               if (item.show)
                 return (
                   <div
-                    className={`d-flex flex-row px-2 py-1 align-items-center u-height-64 ${
+                    className={`d-flex flex-row justify-content-between px-2 py-1 align-items-center u-height-64 ${
                       item.roundBorder
                         ? "u-border-radius-8 u-border-black"
                         : "u-borderTop"

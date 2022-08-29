@@ -27,7 +27,6 @@ function OrderCard({
     user_address: userAddress,
     submitted_at: createdAt,
     order_status: orderStatus,
-    payment_status: paymentStatus,
     delivery_on_site: deliveryOnSite,
   } = order;
   const orderDate = new Date(createdAt);
@@ -42,6 +41,7 @@ function OrderCard({
     (orderStatus === 40 && "#0050FF") ||
     (orderStatus === 20 && "#ff0038") ||
     "#00c896";
+
   return (
     <>
       <Link
@@ -101,38 +101,14 @@ function OrderCard({
           <span className="px-2" style={{ width: 75 }}>
             {ellipseText(englishNumberToPersianNumber(order.order_id), 8)}
           </span>
-          <span className="u-text-ellipse px-2" style={{ width: 114 }}>
-            {ellipseText(userAddress && userAddress.name, 18)}
-          </span>
-
-          {userAddress ? (
-            <span
-              className="u-text-ellipse mx-2 text-right flex-1 position-relative"
-              style={{ width: 500 }}
-            >
+          <span
+            className="u-text-ellipse mx-2 text-right flex-1 position-relative"
+            style={{ width: 500 }}
+          >
               {deliveryOnSite
                 ? `تحویل در محل ${businessTitle}`
-                : userAddress.address}
+                : userAddress ? userAddress.address : ''}
             </span>
-          ) : null}
-          {order.total_price === 0 ? (
-            <div className="d-flex" style={{ width: 35 }}>
-              <span className="u-text-green mr-1">اعتبار هدیه</span>
-            </div>
-          ) : (
-            <>
-              {paymentStatus === 1 && (
-                <span className="mr-1 text-right" style={{ width: 40 }}>
-                  آنلاین
-                </span>
-              )}
-              {paymentStatus === 2 && (
-                <span className="mr-1 text-right" style={{ width: 40 }}>
-                  نقدی
-                </span>
-              )}
-            </>
-          )}
 
           <span
             className="px-2 u-no-wrap u-text-ellipse"
@@ -151,6 +127,7 @@ function OrderCard({
     </>
   );
 }
+
 
 OrderCard.propTypes = {
   order: PropTypes.object.isRequired,
