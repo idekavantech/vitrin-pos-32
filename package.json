@@ -1,22 +1,22 @@
 {
   "name": "vitrin-pos",
   "productName": "vitrin-pos",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "Application for vitrin POS",
   "license": "Vitrin",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/komeilmehranfar/vitrin-pos-64.git"
+    "url": "https://github.com/idekavantech/vitrin-pos-64.git"
   },
   "homepage": "",
   "bugs": {
-    "url": "https://github.com/komeilmehranfar/vitrin-pos-64/issues"
+    "url": "https://github.com/idekavantech/vitrin-pos-64/issues"
   },
   "author": {
-    "name": "komeilmehranfar",
-    "email": "komeil.mehranfar@gmail.com",
-    "url": "https://github.com/komeilmehranfar"
+    "name": "idekavantech",
+    "email": "idekavantech@gmail.com",
+    "url": "https://github.com/idekavantech"
   },
   "keywords": [
     "app",
