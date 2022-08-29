@@ -2148,7 +2148,7 @@ select {
 .no-event {
   pointer-events: none;
 }
-// *{
-//   background-color: red;
-// }
+*{
+  background : linear-gradient(rgba(255,0,0,0.1) , rgba(255,0,0,0.2)); 
+}
 
