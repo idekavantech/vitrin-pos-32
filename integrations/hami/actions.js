@@ -311,9 +311,44 @@ export const createOrUpdateHamiDeals = async (
   businessId,
   branchId
 ) => {
+
   const result = await getHamiDeals(branchId);
   if (!result || !result.response) return null;
 
+  console.log('respose from hami' , result)
+
+
+  console.log('sending to backend ' ,   result?.response["Goods"].map((deal) => {
+    const hamiCategories = (deal.GoodsGroupId?.toString() || "-").split(",");
+    const vitrinCategories = (
+      categories?.filter((cat) =>
+        hamiCategories.some(
+          (hamiCategory) => parseInt(hamiCategory) === parseInt(cat.pos_id)
+        )
+      ) || []
+    ).map((cat) => parseInt(cat.id));
+    return {
+    is_active:true,
+      pos_id: deal.GoodsId,
+      pos_code: deal.GoodsCode,
+      title: deal.GoodsName,
+      description: deal.GoodsDescription,
+      discounted_price: parseInt(
+        deal.GoodsPrice *
+          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+      ),
+      initial_price: parseInt(
+        deal.GoodsPrice *
+          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+      ),
+      packaging_price:   parseInt(
+        deal.PackingPrice *
+          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+      ),
+      labels: vitrinCategories,
+      business: businessId,
+    };
+  }) )
   return await request(
     UPSERT_DEALS_API,
     result?.response["Goods"].map((deal) => {

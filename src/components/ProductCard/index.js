@@ -19,6 +19,7 @@ import {
 import Switch from "../Swtich";
 import pen from "../../../assets/images/pen.svg";
 import Input from "../Input";
+import {Link} from "react-router-dom";
 
 function ProductCard({
   product,
@@ -26,12 +27,14 @@ function ProductCard({
   loading,
 }) {
   const [updatedProduct, setUpdatedProduct] = useState({ ...product });
+  const  { title } = updatedProduct;
   const {
-    title,
-    initial_price: initialPrice,
-    discounted_price: discountedPrice,
-    main_image_thumbnail_url: mainImageThumbnailUrl,
-    inventory_count: inventoryCount,
+    default_variation: {
+      initial_price: initialPrice,
+      discounted_price: discountedPrice,
+      main_image_thumbnail_url: mainImageThumbnailUrl,
+      inventory_count: inventoryCount,
+    }
   } = updatedProduct;
   const submit = (p) => {
     if (!loading && product.id) {
@@ -39,7 +42,7 @@ function ProductCard({
     }
   };
   useEffect(() => {
-    setUpdatedProduct({ ...product.default_variation });
+    setUpdatedProduct({ ...product });
   }, [product.id]);
 
     return (
@@ -47,7 +50,11 @@ function ProductCard({
         <div
           className="col-2 px-0 d-flex align-items-center "
         >
-          <div className="col-2 px-0">
+          <Link
+            to={`/products/${product.id}`}
+            className="d-flex align-items-center"
+          >
+          <div className="col-2 px-0" style={{minWidth: "36px"}}>
             <img
               className="u-height-36 width-36 u-border-radius-4 u-background-melo-grey"
               style={{ boxShadow: " inset 0px 0px 4px rgba(0, 0, 0, 0.1)" }}
@@ -61,7 +68,9 @@ function ProductCard({
           >
             {title}
           </div>
+          </Link>
         </div>
+
         <div className="col-8 px-0 d-flex align-items-center">
           <div className="col-3 px-0">
             <Input
