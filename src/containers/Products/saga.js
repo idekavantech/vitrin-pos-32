@@ -36,7 +36,7 @@ export function* getFilteredDeals(action) {
   yield put(setDeals(null, {}));
 
   const categories = action.data.categories.reduce(
-    (str, category) => `${str}&category_id=${category}`,
+    (str, category) => `${str}&label_id=${category}`,
     ""
   );
   const slug = yield select(makeSelectBusinessSlug());
@@ -62,7 +62,7 @@ export function* getUnavailableDeals(action) {
   yield put(setUnavailableDeals(null, {}));
 
   const categories = action.data.categories.reduce(
-    (str, category) => `${str}&category_id=${category}`,
+    (str, category) => `${str}&label_id=${category}`,
     ""
   );
   const slug = yield select(makeSelectBusinessSlug());

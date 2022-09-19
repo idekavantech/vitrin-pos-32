@@ -86,6 +86,7 @@ import pristine from "../../../assets/audio/pristine.mp3";
 import { amplifyMedia } from "../../../utils/helper";
 import ShoppingSettings from "../ShoppingSettings";
 import {SELECTED_SITE_DOMAIN, SHOPPING_PLUGIN} from "../../../utils/constants";
+import EditProductiFrame from "../EditProduct/EditProductiFrame";
 
 const App = function ({
   history,
@@ -392,7 +393,7 @@ const App = function ({
               path="/products/:id/variant/:variant"
               component={EditVariant}
             />
-            <Route exact path="/products/:id" component={EditProduct} />
+            <Route exact path="/products/:id" component={EditProductiFrame} />
 
             <Route exact path="/users/upload" component={UploadCustomers} />
 
