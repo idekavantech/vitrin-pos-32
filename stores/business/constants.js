@@ -8,6 +8,7 @@ export const UPDATE_CATEGORY = "store/business/UPDATE_CATEGORY";
 export const CREATE_PRODUCT = "store/business/CREATE_PRODUCT";
 export const DELETE_PRODUCT = "store/business/DELETE_PRODUCT";
 export const UPDATE_PRODUCT = "store/business/UPDATE_PRODUCT";
+export const BULK_UPDATE_VARIATIONS = "app/AdminPanelApp/BULK_UPDATE_VARIATIONS";
 
 export const DELETE_IMAGE_FROM_PRODUCT =
   "store/business/DELETE_IMAGE_FROM_PRODUCT";

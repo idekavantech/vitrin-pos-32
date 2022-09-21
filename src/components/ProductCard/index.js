@@ -24,6 +24,7 @@ import {Link} from "react-router-dom";
 function ProductCard({
   product,
   _updateProduct = noOp,
+  _bulkUpdateVariation = noOp,
   loading,
 }) {
   const [updatedProduct, setUpdatedProduct] = useState({ ...product });
@@ -41,6 +42,22 @@ function ProductCard({
       _updateProduct(product.id, p || updatedProduct, null);
     }
   };
+  const handleSwitchActive = (isActive) => {
+    const varationIds = updatedProduct.variations.map(variation => ({
+      id: variation.id,
+      is_active: isActive
+    }))
+    _bulkUpdateVariation(varationIds, () => {
+      setUpdatedProduct({
+        ...updatedProduct,
+        default_variation: {
+          ...updatedProduct.default_variation,
+          is_active: isActive
+        },
+      });
+    })
+  }
+
   useEffect(() => {
     setUpdatedProduct({ ...product });
   }, [product.id]);
@@ -181,19 +198,12 @@ function ProductCard({
                     : "u-text-darkest-grey"
                 }`}
               >
-                {updatedProduct.is_active ? "فعال" : "غیرفعال"}
+                {updatedProduct.default_variation.is_active ? "فعال" : "غیرفعال"}
               </span>
               <Switch
-                isSwitchOn={updatedProduct.is_active}
-                toggleSwitch={(is_active) => {
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    is_active,
-                  });
-                  submit({
-                    ...updatedProduct,
-                    is_active,
-                  });
+                isSwitchOn={updatedProduct.default_variation.is_active}
+                toggleSwitch={(isActive) => {
+                  handleSwitchActive(isActive);
                 }}
               />
             </div>

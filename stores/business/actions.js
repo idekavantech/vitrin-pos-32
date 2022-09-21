@@ -18,6 +18,7 @@ import {
   UPLOAD_IMAGE_AND_UPDATE_PRODUCT,
   SET_POS_DEVICES,
   GET_POS_DEVICES,
+  BULK_UPDATE_VARIATIONS
 } from "./constants";
 export function uploadImageAndUpdateProduct(productId, product) {
   return {
@@ -100,6 +101,14 @@ export function deleteImageFromProduct(imageId) {
   return {
     type: DELETE_IMAGE_FROM_PRODUCT,
     data: { id: imageId },
+  };
+}
+
+export function bulkUpdateVariation(data, callback) {
+  return {
+    type: BULK_UPDATE_VARIATIONS,
+    data,
+    callback
   };
 }
 
