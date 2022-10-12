@@ -229,8 +229,8 @@ ipcMain.on("print", (event, content, url, printOptions) => {
     event.returnValue = "result";
   });
 });
-ipcMain.on("orderReceived", (event, notification) => {
-  notifWindow.webContents.send("orderReceived", notification);
+ipcMain.on("orderReceived", (event, order) => {
+  notifWindow.webContents.send("orderReceived", order);
   notifWindow.moveTop();
   notifWindow.show();
 });
@@ -238,11 +238,10 @@ ipcMain.on("hideNotification", () => {
   notifWindow.hide();
 });
 
-ipcMain.on("redirectOrder", (event, notification) => {
-  if (notification.click_action) {
-    let split = notification.click_action.split("/");
-    const orderId = split[split.length - 1];
-    mainWindow.webContents.send("redirectOrder", orderId);
+ipcMain.on("redirectOrder", async (event, order) => {
+  if (order) {
+    await mainWindow.webContents.executeJavaScript(`localStorage.setItem("selectedSiteDomain", "${order.siteDomain}")`);
+    mainWindow.webContents.send("redirectOrder", order);
   }
 });
 ipcMain.handle("request", async (_, axios_request, headers) => {

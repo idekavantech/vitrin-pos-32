@@ -107,7 +107,6 @@ const App = function ({
   _acceptOrder,
   user,
   _setUser,
-  _setFirebaseToken,
   firebaseToken,
   _updateDeviceById,
 }) {
@@ -118,16 +117,24 @@ const App = function ({
   const customersInterval = useRef(null);
   const productsInterval = useRef(null);
   const getUserInfo = async () => {
-    const {
-      response: {
-        data,
-        meta: { status_code },
-      },
-    } = await request(USER_INFO_API);
-    if (status_code === 200) {
-      _setUser(data);
+    try{
+      const {
+        response: {
+          data,
+          meta: { status_code },
+        },
+      } = await request(USER_INFO_API);
+      if (status_code === 200) {
+        _setUser(data);
+      }
+    }catch (e) {
+      console.log(e)
     }
   };
+  const businessSlugs = useMemo(
+    () => businesses?.map((business) => business.slug) || [],
+    [businesses]
+  );
   useEffect(() => {
     ipcRenderer.send("disable-close");
     const token = localStorage.getItem("token");
@@ -152,18 +159,22 @@ const App = function ({
     ipcRenderer.on("closePrompt", () => {
       setDialog(true);
     });
+  }, []);
+  useEffect(() => {
+    if(businessSlugs.length)
     initPushNotification(
       _setSnackBarMessage,
       history,
       receiveOrder,
-      _setFirebaseToken
+      businessSlugs
     );
-  }, []);
+  },[businessSlugs])
   const receiveOrder = async (payload) => {
-    let split = payload.click_action.split("/");
+    const split = payload.link.split("/");
     const orderId = split[split.length - 1];
+
     const response = await request(USER_ORDERS_ITEMS_API(orderId, SHOPPING_PLUGIN));
-    const order = response?.response?.data || {};
+    const order = response?.response?.data || {id: orderId};
     const isBusinessHamiIntegrated =
       localStorage.getItem("integrated") === "hami" &&
       (
@@ -173,7 +184,6 @@ const App = function ({
       isBusinessHamiIntegrated &&
       !localStorage.getItem("hamiPreventSendOrders")
     ) {
-      console.log({notif:order})
       _acceptOrder({
         order,
         plugin: SHOPPING_PLUGIN,
@@ -184,32 +194,28 @@ const App = function ({
       !isBusinessHamiIntegrated ||
       localStorage.getItem("hamiAllowVitrinNotification")
     ) {
-      ipcRenderer.send("orderReceived", payload);
+      ipcRenderer.send("orderReceived", {id: orderId, siteDomain: order.business_site_domain});
       const audio = new Audio(pristine);
       const volume = parseFloat(localStorage.getItem("volume")) || 20;
       amplifyMedia(audio, volume);
-      if (localStorage.getItem("volume") !== "0") audio.play();
-      audio.play();
+      if (!localStorage.getItem("volume") || localStorage.getItem("volume") !== "0") audio.play();
     }
     setTimeout(_getAdminOrders, 200);
   };
-  const businessSiteDomains = useMemo(
-    () => businesses?.map((business) => business.site_domain) || [],
-    [businesses]
-  );
-  useEffect(() => {
-    if (firebaseToken)
-      businessSiteDomains.map((siteDomain) => {
-        request(
-          PUSH_NOTIFICATION_API,
-          {
-            label: `Admin Panel ${siteDomain}`,
-            token: firebaseToken,
-          },
-          "POST"
-        );
-      });
-  }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
+
+  // useEffect(() => {
+  //   if (firebaseToken)
+  //     businessSiteDomains.map((siteDomain) => {
+  //       request(
+  //         PUSH_NOTIFICATION_API,
+  //         {
+  //           label: `Admin Panel ${siteDomain}`,
+  //           token: firebaseToken,
+  //         },
+  //         "POST"
+  //       );
+  //     });
+  // }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
   useEffect(() => {
     if (siteDomain) _getBusiness();
     history.push('/orders')
@@ -221,7 +227,7 @@ const App = function ({
       if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage)
         _setSiteDomain(siteDomainFromLocalStorage)
     }
-  }, [siteDomain])
+  }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)])
 
   const syncOrders = async () => {
   try{
@@ -486,7 +492,6 @@ function mapDispatchToProps(dispatch) {
     _toggleHamiModal: (show) => dispatch(toggleHamiModal(show)),
     _acceptOrder: (data) => dispatch(acceptOrder(data)),
     _setUser: (data) => dispatch(setUser(data)),
-    _setFirebaseToken: (data) => dispatch(setFirebaseToken(data)),
     _updateDeviceById: (data) => dispatch(updateDeviceById(data)),
   };
 }
