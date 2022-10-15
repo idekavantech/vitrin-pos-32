@@ -19,27 +19,47 @@ import {
 import Switch from "../Swtich";
 import pen from "../../../assets/images/pen.svg";
 import Input from "../Input";
+import {Link} from "react-router-dom";
 
 function ProductCard({
   product,
   _updateProduct = noOp,
+  _bulkUpdateVariation = noOp,
   loading,
 }) {
   const [updatedProduct, setUpdatedProduct] = useState({ ...product });
+  const  { title } = updatedProduct;
   const {
-    title,
-    initial_price: initialPrice,
-    discounted_price: discountedPrice,
-    main_image_thumbnail_url: mainImageThumbnailUrl,
-    inventory_count: inventoryCount,
+    default_variation: {
+      initial_price: initialPrice,
+      discounted_price: discountedPrice,
+      main_image_thumbnail_url: mainImageThumbnailUrl,
+      inventory_count: inventoryCount,
+    }
   } = updatedProduct;
   const submit = (p) => {
     if (!loading && product.id) {
       _updateProduct(product.id, p || updatedProduct, null);
     }
   };
+  const handleSwitchActive = (isActive) => {
+    const varationIds = updatedProduct.variations.map(variation => ({
+      id: variation.id,
+      is_active: isActive
+    }))
+    _bulkUpdateVariation(varationIds, () => {
+      setUpdatedProduct({
+        ...updatedProduct,
+        default_variation: {
+          ...updatedProduct.default_variation,
+          is_active: isActive
+        },
+      });
+    })
+  }
+
   useEffect(() => {
-    setUpdatedProduct({ ...product.default_variation });
+    setUpdatedProduct({ ...product });
   }, [product.id]);
 
     return (
@@ -47,7 +67,11 @@ function ProductCard({
         <div
           className="col-2 px-0 d-flex align-items-center "
         >
-          <div className="col-2 px-0">
+          <Link
+            to={`/products/${product.id}`}
+            className="d-flex align-items-center"
+          >
+          <div className="col-2 px-0" style={{minWidth: "36px"}}>
             <img
               className="u-height-36 width-36 u-border-radius-4 u-background-melo-grey"
               style={{ boxShadow: " inset 0px 0px 4px rgba(0, 0, 0, 0.1)" }}
@@ -61,7 +85,9 @@ function ProductCard({
           >
             {title}
           </div>
+          </Link>
         </div>
+
         <div className="col-8 px-0 d-flex align-items-center">
           <div className="col-3 px-0">
             <Input
@@ -172,19 +198,12 @@ function ProductCard({
                     : "u-text-darkest-grey"
                 }`}
               >
-                {updatedProduct.is_active ? "فعال" : "غیرفعال"}
+                {updatedProduct.default_variation.is_active ? "فعال" : "غیرفعال"}
               </span>
               <Switch
-                isSwitchOn={updatedProduct.is_active}
-                toggleSwitch={(is_active) => {
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    is_active,
-                  });
-                  submit({
-                    ...updatedProduct,
-                    is_active,
-                  });
+                isSwitchOn={updatedProduct.default_variation.is_active}
+                toggleSwitch={(isActive) => {
+                  handleSwitchActive(isActive);
                 }}
               />
             </div>

@@ -43,7 +43,7 @@ export default async function request(
     .then((res) => {
       pureRes = res;
       response = res.data;
-      status = res.data.meta.status_code;
+      status = res.status;
     })
     .catch((e) => {
       status = e;

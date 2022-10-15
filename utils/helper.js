@@ -457,21 +457,37 @@ function amplifyMedia(mediaElem, multiplier) {
   return result;
 }
 function deliveryTimeFormatter(deliveryTime) {
-  const fromTime = moment.unix(deliveryTime.from_time);
-  const fromDateDay = englishNumberToPersianNumber(fromTime.jDate());
-  const fromDateMonth = getMonthName(fromTime.jMonth() + 1);
-  const fromDateWeekDay = getWeekDay(fromTime.isoWeekday());
-  const toTime = moment.unix(deliveryTime.to_time);
-  const toDateDay = englishNumberToPersianNumber(toTime.jDate());
-  const toDateMonth = getMonthName(toTime.jMonth() + 1);
-  const toDateWeekDay = getWeekDay(toTime.isoWeekday());
-  if (fromTime.jDate() === toTime.jDate()) {
-    return `${fromDateWeekDay} ${fromDateDay} ${fromDateMonth} بازه ${englishNumberToPersianNumber(
-      fromTime.format("HH:mm")
-    )} تا ${englishNumberToPersianNumber(toTime.format("HH:mm"))}`;
-  } else {
-    return `بازه ${fromDateWeekDay} ${fromDateDay} ${fromDateMonth} تا ${toDateWeekDay} ${toDateDay} ${toDateMonth}`;
+  const fromTime = deliveryTime.from_time ? moment.unix(deliveryTime.from_time) : null;
+  let fromDateDay, fromDateMonth, fromDateWeekDay;
+  if(fromTime){
+    fromDateDay = englishNumberToPersianNumber(fromTime.jDate());
+    fromDateMonth = getMonthName(fromTime.jMonth() + 1);
+    fromDateWeekDay = getWeekDay(fromTime.isoWeekday());
   }
+  const toTime = deliveryTime.to_time ? moment.unix(deliveryTime.to_time) :null;
+  let toDateDay, toDateMonth, toDateWeekDay;
+
+  if(toTime){
+    toDateDay = englishNumberToPersianNumber(toTime.jDate());
+    toDateMonth = getMonthName(toTime.jMonth() + 1);
+    toDateWeekDay = getWeekDay(toTime.isoWeekday());
+  }
+
+  if (toTime && fromTime) {
+    if (fromTime.jDate() === toTime.jDate()) {
+      return `${fromDateWeekDay} ${fromDateDay} ${fromDateMonth} بازه ${englishNumberToPersianNumber(
+        fromTime.format("HH:mm")
+      )} تا ${englishNumberToPersianNumber(toTime.format("HH:mm"))}`;
+    } else {
+      return `بازه ${fromDateWeekDay} ${fromDateDay} ${fromDateMonth} تا ${toDateWeekDay} ${toDateDay} ${toDateMonth}`;
+    }
+  } else if (fromTime) {
+    return `${fromDateWeekDay} ${fromDateDay} ${fromDateMonth}`;
+  }
+  else if (toTime) {
+    return ` تا ${toDateWeekDay} ${toDateDay} ${toDateMonth}`;
+  }
+  return ` `
 }
 function persianToArabicCharacters(input) {
   const persianCharacters = [/ی/g, /ک/g];

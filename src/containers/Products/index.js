@@ -37,10 +37,9 @@ import {
   makeSelectUnavailableDeals,
   makeSelectUnavailableDealsPagination,
 } from "./selectors";
-import { updateProduct } from "../../../stores/business/actions";
+import {bulkUpdateVariation, updateProduct} from "../../../stores/business/actions";
 import Switch from "../../components/Swtich";
 import { getQueryParams } from "../../../utils/helper";
-import axios from "axios";
 
 export function Products({
   address,
@@ -57,7 +56,8 @@ export function Products({
   unavailableDealsPagination,
   business,
   siteDomain,
-  token
+  token,
+  _bulkUpdateVariation
 }) {
   useInjectReducer({ key: "products", reducer });
   useInjectSaga({ key: "products", saga });
@@ -163,6 +163,7 @@ export function Products({
               onClick: (product) => history.push(`/products/${product.id}`),
               _updateProduct,
               _updateCallback: reload,
+              _bulkUpdateVariation,
             }}
             keyword="unavailable_page"
             pagination={unavailableDealsPagination}
@@ -186,6 +187,7 @@ export function Products({
             onClick: (product) => history.push(`/products/${product.id}`),
             _updateProduct,
             _updateCallback: reload,
+            _bulkUpdateVariation,
           }}
         />
       ) : (
@@ -216,6 +218,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(
         updateProduct(productId, product, callback)
       ),
+    _bulkUpdateVariation: (data, callback) => dispatch(bulkUpdateVariation(data, callback))
   };
 }
 

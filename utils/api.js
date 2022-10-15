@@ -72,6 +72,8 @@ export const REQUEST_ALOPEYK_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/alopeyk/trips/apply/`;
 export const REQUEST_MIARE_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/miare/trips/apply/`;
+export const VARIATIONS_BULK_UPDATE_API = `${BASE_URL_V2}variations/bulk-update/`;
+
 
 // Plugins API
 export const SET_PLUGIN_DATA_API = (slug) =>

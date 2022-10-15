@@ -21,7 +21,7 @@ import {
   GROUP_PACKAGING_PRICE_ON_DEALS_API,
   GROUP_DISCOUNT_ON_DEALS,
   DEALS_IMAGES_ITEM_CHANGE_ORDER_API,
-  GET_BUSINESS_DEVICES_API,
+  GET_BUSINESS_DEVICES_API, VARIATIONS_BULK_UPDATE_API,
 } from "../../utils/api";
 import {
   CREATE_CATEGORY,
@@ -37,7 +37,7 @@ import {
   DELIVERIES_PAGE_SIZE,
   GET_DEAL,
   UPLOAD_IMAGE_AND_UPDATE_PRODUCT,
-  GET_POS_DEVICES,
+  GET_POS_DEVICES, BULK_UPDATE_VARIATIONS,
 } from "./constants";
 import {
   applyCategory,
@@ -411,6 +411,31 @@ export function* getBusinessDevicesSaga() {
     yield put(stopLoading());
   }
 }
+export function* bulkUpdateVariationSaga(action) {
+  try {
+    yield put(startLoading());
+    const {
+      response: { meta },
+      status
+    } = yield call(
+      request,
+      VARIATIONS_BULK_UPDATE_API,
+      action.data,
+      "PATCH"
+    );
+    if (status >= 200 && status <= 300) {
+      yield put(setSnackBarMessage("با موفقیت ثبت شد.", "success"));
+      if(action.callback) yield call(action.callback)
+    } else {
+      yield put(
+        setSnackBarMessage(meta?.detail && meta.detail.global_error_messages[0] || "خطایی رخ داده است!", "fail")
+      );
+    }
+    yield put(stopLoading());
+  } catch (err) {
+    yield put(stopLoading());
+  }
+}
 export default [
   takeLatest(GET_BUSINESS, getBusinessData),
   takeLatest(CREATE_CATEGORY, createCategory),
@@ -425,4 +450,5 @@ export default [
   takeLatest(GET_DEAL, getProductSaga),
   takeLatest(UPLOAD_IMAGE_AND_UPDATE_PRODUCT, uploadImageAndUpdateProductSaga),
   takeLatest(GET_POS_DEVICES, getBusinessDevicesSaga),
+  takeLatest(BULK_UPDATE_VARIATIONS, bulkUpdateVariationSaga)
 ];
