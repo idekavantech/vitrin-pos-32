@@ -203,23 +203,9 @@ const App = function ({
     setTimeout(_getAdminOrders, 200);
   };
 
-  // useEffect(() => {
-  //   if (firebaseToken)
-  //     businessSiteDomains.map((siteDomain) => {
-  //       request(
-  //         PUSH_NOTIFICATION_API,
-  //         {
-  //           label: `Admin Panel ${siteDomain}`,
-  //           token: firebaseToken,
-  //         },
-  //         "POST"
-  //       );
-  //     });
-  // }, [firebaseToken, JSON.stringify(businessSiteDomains)]);
   useEffect(() => {
     if (siteDomain) _getBusiness();
-    history.push('/orders')
-    }, [siteDomain]);
+  }, [siteDomain]);
 
   useEffect(() => {
     if(siteDomain) {

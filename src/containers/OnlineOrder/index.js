@@ -126,7 +126,7 @@ export function OnlineOrder({
   const deliverers = pluginData?.data?.couriers || {};
   let lastOrderTime = "ندارد";
   if (customerOrders && customerOrders.length > 1) {
-    const lastOrderDate = new Date(customerOrders[1]._submitted_at);
+    const lastOrderDate = new Date(customerOrders[1].submitted_at);
     lastOrderTime = englishNumberToPersianNumber(
       moment(
         `${lastOrderDate.getFullYear()}-${
@@ -230,7 +230,7 @@ export function OnlineOrder({
                           <div className="u-text-night mt-1 u-fontWeightBold u-fontVeryLarge">
                             {priceFormatter(
                               customerOrders.reduce(
-                                (cost, o) => cost + o.final_price,
+                                (cost, o) => cost + o.final_items_price,
                                 0
                               )
                             )}{" "}
