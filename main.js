@@ -16,7 +16,9 @@ app.disableHardwareAcceleration();
 app.commandLine.appendSwitch("disable-http-cache");
 const { setup: setupPushReceiver } = require("electron-push-receiver");
 
-require("update-electron-app")();
+require("update-electron-app")({
+  repo: 'https://github.com/idekavantech/vitrin-pos-64.git',
+});
 
 if (require("electron-squirrel-startup"))
   setTimeout(() => {
