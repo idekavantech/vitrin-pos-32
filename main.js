@@ -14,7 +14,6 @@ const axios = require("axios");
 
 app.disableHardwareAcceleration();
 app.commandLine.appendSwitch("disable-http-cache");
-const { setup: setupPushReceiver } = require("electron-push-receiver");
 
 require("update-electron-app")();
 
@@ -150,7 +149,6 @@ function createWindow() {
       workerWindow.webContents.openDevTools();
     }
   });
-  setupPushReceiver(mainWindow.webContents);
   // Emitted when the window is closed.
   mainWindow.on("close", function (event) {
     // Dereference the window object, usually you would store windows
