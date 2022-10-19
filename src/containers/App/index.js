@@ -210,7 +210,7 @@ const App = function ({
   useEffect(() => {
     if(siteDomain) {
       const siteDomainFromLocalStorage = localStorage.getItem(SELECTED_SITE_DOMAIN)
-      if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage)
+      if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage && siteDomainFromLocalStorage !== "undefined")
         _setSiteDomain(siteDomainFromLocalStorage)
     }
   }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)])
