@@ -37,9 +37,9 @@ function ProductCard({
       inventory_count: inventoryCount,
     }
   } = updatedProduct;
-  const submit = (p) => {
+  const submit = (event) => {
     if (!loading && product.id) {
-      _updateProduct(product.id, p || updatedProduct, null);
+      _updateProduct(product.id, updatedProduct.default_variation, null);
     }
   };
   const handleSwitchActive = (isActive) => {
@@ -109,13 +109,12 @@ function ProductCard({
                 }))
               }
               }
-              onBlur={() => {
+              onBlur={(e) => {
                 if (initialPrice !== product.default_variation.initial_price) submit();
               }}
               onKeyPress={(event) => {
                 if (event.key === "Enter" && initialPrice !== product.default_variation.initial_price) {
                   event.target.blur();
-                  submit();
                 }
               }}
               numberOnly
@@ -145,7 +144,6 @@ function ProductCard({
               onKeyPress={(event) => {
                 if (event.key === "Enter" && discountedPrice !== product.default_variation.discounted_price) {
                   event.target.blur();
-                  submit();
                 }
               }}
               numberOnly
@@ -178,7 +176,6 @@ function ProductCard({
               onKeyPress={(event) => {
                 if (event.key === "Enter" && discountedPrice !== product.default_variation.discounted_price) {
                   event.target.blur();
-                  submit();
                 }
               }}
               numberOnly
