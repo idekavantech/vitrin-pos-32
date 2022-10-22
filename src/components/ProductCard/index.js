@@ -48,13 +48,13 @@ function ProductCard({
       is_active: isActive
     }))
     _bulkUpdateVariation(varationIds, () => {
-      setUpdatedProduct({
-        ...updatedProduct,
+      setUpdatedProduct((prevState)=> ({
+        ...prevState,
         default_variation: {
-          ...updatedProduct.default_variation,
+          ...prevState.default_variation,
           is_active: isActive
         },
-      });
+      }));
     })
   }
 
@@ -94,16 +94,20 @@ function ProductCard({
               editOnDoubleClick
               style={{ textAlign: "center" }}
               variant="standard"
-              onChange={(price) =>
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  initial_price: price
-                    ? parseInt(persianToEnglishNumber(price))
-                    : 0,
-                  discounted_price: price
-                    ? parseInt(persianToEnglishNumber(price))
-                    : 0,
-                })
+              onChange={(price) => {
+                setUpdatedProduct((prevState) => ({
+                  ...prevState,
+                  default_variation: {
+                    ...prevState.default_variation,
+                    initial_price: price
+                      ? parseInt(persianToEnglishNumber(price))
+                      : 0,
+                    discounted_price: price
+                      ? parseInt(persianToEnglishNumber(price))
+                      : 0,
+                  }
+                }))
+              }
               }
               onBlur={() => {
                 if (initialPrice !== product.default_variation.initial_price) submit();
@@ -125,11 +129,14 @@ function ProductCard({
               variant="standard"
               onChange={(discountAmount) => {
                 if(persianToEnglishNumber(discountAmount) <= initialPrice)
-                setUpdatedProduct({
-                  ...updatedProduct,
-                  discounted_price:
-                    initialPrice - persianToEnglishNumber(discountAmount)
-                });
+                setUpdatedProduct((prevState) => ({
+                  ...prevState,
+                  default_variation: {
+                    ...prevState.default_variation,
+                    discounted_price:
+                      initialPrice - persianToEnglishNumber(discountAmount)
+                  }
+                }));
               }
               }
               onBlur={() => {
@@ -153,12 +160,16 @@ function ProductCard({
               style={{ textAlign: "center" }}
               variant="standard"
               onChange={(value) => {
-                if (value <= 100)
-                  setUpdatedProduct({
-                    ...updatedProduct,
-                    discounted_price:
-                      initialPrice * (1 - persianToEnglishNumber(value) / 100)
-                  });
+                const formatedValue = persianToEnglishNumber(value)
+                if (formatedValue <= 100)
+                  setUpdatedProduct((prevState) => ({
+                    ...prevState,
+                    default_variation: {
+                      ...prevState.default_variation,
+                      discounted_price:
+                        initialPrice * (1 - formatedValue / 100)
+                    }
+                  }));
               }
               }
               onBlur={() => {
