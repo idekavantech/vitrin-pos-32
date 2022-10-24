@@ -58,7 +58,6 @@ export function* cancelOrder(action) {
       ORDER_STATUS_CANCELLED_API(action.data.id, SHOPPING_PLUGIN),
       {
         status: 20,
-        modifier_device_id: 0,
         refund: true
       },
       "PATCH"
