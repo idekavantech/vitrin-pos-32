@@ -32,17 +32,13 @@ function ItemsSection({ order }) {
           <div className="flex-1 d-flex flex-column justify-content-center">
             <div
               onDoubleClick={copyToClipboard}
-              className="u-fontNormal u-textBlack u-fontWeightBold"
+              className="u-fontSemiLarge u-textBlack u-fontWeightBold"
             >
               {item.product_title}
             </div>
-            <div
-              onDoubleClick={copyToClipboard}
-              className="u-fontVerySmall u-text-darkest-grey mt-1 overflow-hidden u-max-height-18"
-              dangerouslySetInnerHTML={{
-                __html: item.description,
-              }}
-            />
+            <h4 className="mt-1 u-fontMedium u-fontWeightLight u-textBlack">
+              {item.description.replace( /(<([^>]+)>)/ig, '')}
+            </h4>
             {item.modifiers && item.modifiers.length ? (
               <ul
                 className="d-flex flex-column justify-content-center align-items-center"
@@ -53,8 +49,8 @@ function ItemsSection({ order }) {
                     key={`modifier-${index}`}
                     className="d-flex justify-content-between align-items-center w-100"
                   >
-                    <div className="u-fontVerySmall u-text-darkest-grey ">
-                      - {_item.product_title}
+                    <div className="u-font-semi-small u-text-darkest-grey ">
+                      - {_item.modifier_title}
                     </div>
                   </li>
                 ))}
@@ -65,12 +61,12 @@ function ItemsSection({ order }) {
             <div className="ml-2">{item.variation_name}</div>
           )}
           <div className="u-text-darkest-grey order--item u-border-medium-grey align-items-center u-no-wrap">
-            <div>{englishNumberToPersianNumber(item.amount)}</div>
+            <div style={{marginTop: "-3px"}}>{englishNumberToPersianNumber(item.amount)}</div>
             عدد
           </div>
           <div
             className="u-no-wrap d-flex flex-column justify-content-center"
-            style={{ width: 100 }}
+            style={{ width: 100, height: "45px" }}
           >
             {item.discounted_price !== item.initial_price && (
               <div className="u-fontSemiSmall u-text-darkest-grey u-text-line-through">

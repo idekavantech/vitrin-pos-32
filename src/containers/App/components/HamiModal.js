@@ -42,6 +42,7 @@ function HamiModal({
   const [hamiIntegratedBusinesses, setHamiIntegratedBusinesses] = useState(
     JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
   );
+  const [isHamiIntegrated, setIsHamiIntegrated] = useState(localStorage.getItem("integrated") || "" === "hami")
   return (
     <>
       <Modal isOpen={isOpen} onClose={_onClose}>
@@ -178,6 +179,22 @@ function HamiModal({
               >
                 به‌روز رسانی سفارش‌ها
               </Button>
+            </div>
+            <div>
+              <Checkbox
+                color="primary"
+                checked={isHamiIntegrated}
+                onChange={(e) => {
+                  setIsHamiIntegrated(e.target.checked)
+                  if (e.target.checked)
+                  localStorage.setItem(
+                    "integrated",
+                    "hami"
+                  );
+                  else localStorage.removeItem("integrated");
+                }}
+              />
+              {"همسوسازی با حامی"}
             </div>
             <div className="mt-4 u-text-black u-fontWeightBold">
               ویترین‌های همسوسازی شده:
