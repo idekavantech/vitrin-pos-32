@@ -85,7 +85,10 @@ import {
 import pristine from "../../../assets/audio/pristine.mp3";
 import { amplifyMedia } from "../../../utils/helper";
 import ShoppingSettings from "../ShoppingSettings";
-import {SELECTED_SITE_DOMAIN, SHOPPING_PLUGIN} from "../../../utils/constants";
+import {
+  SELECTED_SITE_DOMAIN,
+  SHOPPING_PLUGIN,
+} from "../../../utils/constants";
 import EditProductiFrame from "../EditProduct/EditProductiFrame";
 
 const App = function ({
@@ -117,7 +120,7 @@ const App = function ({
   const customersInterval = useRef(null);
   const productsInterval = useRef(null);
   const getUserInfo = async () => {
-    try{
+    try {
       const {
         response: {
           data,
@@ -127,8 +130,8 @@ const App = function ({
       if (status_code === 200) {
         _setUser(data);
       }
-    }catch (e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
   };
   const businessSlugs = useMemo(
@@ -161,20 +164,22 @@ const App = function ({
     });
   }, []);
   useEffect(() => {
-    if(businessSlugs.length)
-    initPushNotification(
-      _setSnackBarMessage,
-      history,
-      receiveOrder,
-      businessSlugs
-    );
-  },[businessSlugs])
+    if (businessSlugs.length)
+      initPushNotification(
+        _setSnackBarMessage,
+        history,
+        receiveOrder,
+        businessSlugs
+      );
+  }, [businessSlugs]);
   const receiveOrder = async (payload) => {
     const split = payload.link.split("/");
     const orderId = split[split.length - 1];
 
-    const response = await request(USER_ORDERS_ITEMS_API(orderId, SHOPPING_PLUGIN));
-    const order = response?.response?.data || {id: orderId};
+    const response = await request(
+      USER_ORDERS_ITEMS_API(orderId, SHOPPING_PLUGIN)
+    );
+    const order = response?.response?.data || { id: orderId };
     const isBusinessHamiIntegrated =
       localStorage.getItem("integrated") === "hami" &&
       (
@@ -194,11 +199,18 @@ const App = function ({
       !isBusinessHamiIntegrated ||
       localStorage.getItem("hamiAllowVitrinNotification")
     ) {
-      ipcRenderer.send("orderReceived", {id: orderId, siteDomain: order.business_site_domain});
+      ipcRenderer.send("orderReceived", {
+        id: orderId,
+        siteDomain: order.business_site_domain,
+      });
       const audio = new Audio(pristine);
       const volume = parseFloat(localStorage.getItem("volume")) || 20;
       amplifyMedia(audio, volume);
-      if (!localStorage.getItem("volume") || localStorage.getItem("volume") !== "0") audio.play();
+      if (
+        !localStorage.getItem("volume") ||
+        localStorage.getItem("volume") !== "0"
+      )
+        audio.play();
     }
     setTimeout(_getAdminOrders, 200);
   };
@@ -208,69 +220,93 @@ const App = function ({
   }, [siteDomain]);
 
   useEffect(() => {
-    if(siteDomain) {
-      const siteDomainFromLocalStorage = localStorage.getItem(SELECTED_SITE_DOMAIN)
-      if (siteDomain !== siteDomainFromLocalStorage && siteDomainFromLocalStorage && siteDomainFromLocalStorage !== "undefined")
-        _setSiteDomain(siteDomainFromLocalStorage)
+    if (siteDomain) {
+      const siteDomainFromLocalStorage = localStorage.getItem(
+        SELECTED_SITE_DOMAIN
+      );
+      if (
+        siteDomain !== siteDomainFromLocalStorage &&
+        siteDomainFromLocalStorage &&
+        siteDomainFromLocalStorage !== "undefined"
+      )
+        _setSiteDomain(siteDomainFromLocalStorage);
     }
-  }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)])
+  }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)]);
+
+  (function () {
+    const haveResetHamiOrdersLastUpdateDate = localStorage.getItem(
+      "haveResetHamiOrdersLastUpdateDate"
+    );
+    // temp code to reset haveResetHamiOrdersLastUpdateDate to (10 Oct 2022)
+    if (haveResetHamiOrdersLastUpdateDate) return;
+    console.log("%creset hami orders last update", { backgroundColor: "red" });
+    const resetDate = new Date("10-10-2022").getTime();
+    localStorage.setItem("hamiOrdersLastUpdateByInterval", resetDate);
+    localStorage.setItem("haveResetHamiOrdersLastUpdateDate", true);
+  })();
 
   const syncOrders = async () => {
-  try{
-    const hamiBranches = await getHamiBranches();
-    if(hamiBranches.length){
-      hamiBranches.map(async(branch) => {
-        const business = businesses.find(
-          (business) =>
-            parseInt(business?.extra_data?.pos_id) ===
-              parseInt(branch.BranchId) &&
-            (
-              JSON.parse(
-                localStorage.getItem("hamiIntegratedBusinesses")
-              ) || []
-            ).includes(business.site_domain)
+    try {
+      const hamiBranches = await getHamiBranches();
+      if (hamiBranches.length) {
+        hamiBranches.map(async (branch) => {
+          const business = businesses.find(
+            (business) =>
+              parseInt(business?.extra_data?.pos_id) ===
+                parseInt(branch.BranchId) &&
+              (
+                JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) ||
+                []
+              ).includes(business.site_domain)
+          );
+          const _businessId = business?.id;
+          const device = business?.devices?.[0];
+
+          if (_businessId) {
+            let result = true;
+            const hamiOrdersLastUpdateByInterval = localStorage.getItem(
+              "hamiOrdersLastUpdateByInterval"
+            );
+            const a = hamiOrdersLastUpdateByInterval
+              ? moment(+hamiOrdersLastUpdateByInterval)
+              : moment(`1400/01/01`, "jYYYY/jMM/jDD");
+            const b = moment();
+            for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
+              result =
+                result &&
+                (await createOrUpdateHamiOrders(
+                  _businessId,
+                  branch.BranchId,
+                  user.id,
+                  m.format("jYYYY/jMM/jDD"),
+                  m.format("jYYYY/jMM/jDD"),
+                  undefined,
+                  undefined,
+                  true
+                ));
+            }
+            localStorage.setItem(
+              "hamiOrdersLastUpdateByInterval",
+              new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
+            );
+          }
+        });
+      } else {
+        const business = businesses.find((business) =>
+          (
+            JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
+          ).includes(business.site_domain)
         );
-        const _businessId = business?.id
-        const device = business?.devices?.[0];
-
-        if (_businessId)
-        var result = true;
-        const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
-        const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");
-        const b = moment();
-        for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
-          result =
-            result &&
-            (await createOrUpdateHamiOrders(
-              _businessId,
-              branch.BranchId,
-              user.id,
-              m.format("jYYYY/jMM/jDD"),
-              m.format("jYYYY/jMM/jDD"),
-              undefined,
-              undefined,
-              true
-            ));
-        }
-        localStorage.setItem("hamiOrdersLastUpdateByInterval",new Date(new Date().setDate(new Date().getDate() - 1)).getTime())
-
-      });
-    }else{
-        const business = businesses.find(
-          (business) =>
-
-            (
-              JSON.parse(
-                localStorage.getItem("hamiIntegratedBusinesses")
-              ) || []
-            ).includes(business.site_domain)
-        );
-        const _businessId = business?.id
-        if (_businessId){
-          var result = true;
-          const hamiOrdersLastUpdateByInterval =  localStorage.getItem("hamiOrdersLastUpdateByInterval")
-        const a = hamiOrdersLastUpdateByInterval ? moment(+hamiOrdersLastUpdateByInterval) :  moment(`1400/01/01`, "jYYYY/jMM/jDD");;
-        const b = moment();
+        const _businessId = business?.id;
+        if (_businessId) {
+          let result = true;
+          const hamiOrdersLastUpdateByInterval = localStorage.getItem(
+            "hamiOrdersLastUpdateByInterval"
+          );
+          const a = hamiOrdersLastUpdateByInterval
+            ? moment(+hamiOrdersLastUpdateByInterval)
+            : moment(`1400/01/01`, "jYYYY/jMM/jDD");
+          const b = moment();
           for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
             result =
               result &&
@@ -285,16 +321,16 @@ const App = function ({
                 true
               ));
           }
-        localStorage.setItem("hamiOrdersLastUpdateByInterval",new Date(new Date().setDate(new Date().getDate() - 1)).getTime())
+          localStorage.setItem(
+            "hamiOrdersLastUpdateByInterval",
+            new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
+          );
         }
-
+      }
+    } catch (e) {
+      console.log({ e });
     }
-  }catch(e){
-    console.log({e})
-  }
-
-
-  }
+  };
   useEffect(() => {
     clearInterval(orderInterval.current);
     if (
@@ -302,8 +338,8 @@ const App = function ({
       !localStorage.getItem("hamiPreventSendOrders")
     ) {
       orderInterval.current = setInterval(() => {
-        syncOrders()
-      }, 2*60* 60 * 1000);
+        syncOrders();
+      }, 2 * 60 * 60 * 1000);
     }
     return () => {
       clearInterval(orderInterval.current);
@@ -319,12 +355,12 @@ const App = function ({
       </div>
     );
   const onChangeBusiness = (value) => {
-    localStorage.setItem(SELECTED_SITE_DOMAIN, value)
-    _setSiteDomain(value)
-  }
+    localStorage.setItem(SELECTED_SITE_DOMAIN, value);
+    _setSiteDomain(value);
+  };
   return (
     <>
-      <div className="u-height-100vh w-100 d-flex h-100" >
+      <div className="u-height-100vh w-100 d-flex h-100">
         <Layout
           reload={reload}
           location={location}
