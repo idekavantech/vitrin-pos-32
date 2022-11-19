@@ -204,7 +204,7 @@ const App = function ({
         siteDomain: order.business_site_domain,
       });
       const audio = new Audio(pristine);
-      const volume = parseFloat(localStorage.getItem("volume")) || 20;
+      const volume = parseFloat(localStorage.getItem("volume")) || 10;
       amplifyMedia(audio, volume);
       if (
         !localStorage.getItem("volume") ||

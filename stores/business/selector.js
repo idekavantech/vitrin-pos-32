@@ -25,7 +25,7 @@ const makeSelectPosts = () =>
 const makeSelectCategories = () =>
   createSelector(
     selectBusiness,
-    (state) => state.business.deal_categories || []
+    (state) => state.business.resource_labels || []
   );
 const makeSelectProducts = () =>
   createSelector(selectBusiness, (state) => {

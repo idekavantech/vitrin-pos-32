@@ -49,108 +49,110 @@ export const submitHamiOrder =async (order) => {
       return newModifiers;
     }, {});
 
-    const x = await request(
+    const HamiFormatedOrderData = {
+      Invoice: {
+        OrderId: parseInt(order.order_id),
+        BranchId: order.business_pos_id ?? 1,
+        OrderDate: orderDate,
+        OrderTime: orderTime,
+        CustomerCode: `${order.user_id}`,
+        FirstName: order.user_address?.name || "-",
+        LastName: "-",
+        Phone: order.user_address?.phone || "-",
+        CellPhone: order.user_address?.phone || "-",
+        LocationId: 0,
+        DeliveryAddress: order.user_address?.address || "-",
+        Comments: order.description || "-",
+        OrderType: 1,
+        Price:
+          order.total_items_initial_price *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        DeliveryPrice:
+          order.delivery_price *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        PackingPrice:
+          order.total_packaging_price *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        Discount:
+          (order.total_discount_amount) *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        Tax:
+          order.taxing_price *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        Duty: 0,
+        Addition:
+          Object.values(allItemModifiers).reduce(
+            (sum, modifier) => sum + modifier.amount * modifier.price,
+            0
+          ) * (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        Rounded: 0,
+        Payable:
+          order.total_price *
+          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+        Remaining: 0,
+        CommissionPrice: 0,
+        PaymentTypeId: parseInt(order.payment_status) === 2 ? 1 : 3,
+        DiscountCode: "-",
+        Latitude: `${order.user_address?.latitude || "-"}`,
+        Longitude: `${order.user_address?.longitude || "-"}`,
+        Items: order.items.map((item, index) => {
+          const modifiersPrice = item.modifiers.reduce(
+            (sum, modifier) => sum + modifier.amount * modifier.discounted_price,
+            0
+          );
+          return {
+            OrderItemId: parseInt(`${order.order_id}000}`) + index,
+            OrderId: parseInt(order.order_id),
+            ProductId: parseInt(item.pos_id),
+            ProductCode: parseInt(item.pos_code),
+            ProductTitle: item.product_title,
+            ProductPrice:
+              item.initial_price *
+              (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+            Quantity: item.amount,
+            DescriptionPrice: 0,
+            SumPrice:
+              (item.initial_price + modifiersPrice) *
+              item.amount *
+              (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+            ProductDiscount:
+              (item.initial_price +
+                modifiersPrice -
+                item.discounted_price) *
+              (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+            Addition:
+              modifiersPrice *
+              (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+            ProductTax: 0,
+            ProductDuty: 0,
+            TotalPrice:
+              (item.discounted_price + modifiersPrice) *
+              item.amount *
+              (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
+            Description: item.modifiers.reduce(
+              (text, modifier) =>
+                text +
+                `-\n تاپینگ: ${englishNumberToPersianNumber(
+                  modifier.amount
+                )} عدد ${modifier.modifier_title}`,
+              "-"
+            ),
+          };
+        }),
+        ItemsTopping: [],
+      },
+    }
+
+    const submitHamiOrderApiRes = await request(
       `${submitHamiOrderApi(localStorage.getItem("hamiIp"))}${
         localStorage.getItem("hamiSecurityKey")
           ? `?securityKey=${localStorage.getItem("hamiSecurityKey")}`
           : ""
       }`,
-      {
-        Invoice: {
-          OrderId: parseInt(order.order_id),
-          BranchId: order.business_pos_id ?? 1,
-          OrderDate: orderDate,
-          OrderTime: orderTime,
-          CustomerCode: `${order.user_id}`,
-          FirstName: order.user_address?.name || "-",
-          LastName: "-",
-          Phone: order.user_address?.phone || "-",
-          CellPhone: order.user_address?.phone || "-",
-          LocationId: 0,
-          DeliveryAddress: order.user_address?.address || "-",
-          Comments: order.description || "-",
-          OrderType: 1,
-          Price:
-          order.total_items_initial_price *
-          (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          DeliveryPrice:
-            order.delivery_price *
-            (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          PackingPrice:
-            order.total_packaging_price *
-            (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          Discount:
-            (order.total_discount_amount) *
-            (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          Tax:
-            order.taxing_price *
-            (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          Duty: 0,
-          Addition:
-            Object.values(allItemModifiers).reduce(
-              (sum, modifier) => sum + modifier.amount * modifier.price,
-              0
-            ) * (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          Rounded: 0,
-          Payable:
-            order.total_price *
-            (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-          Remaining: 0,
-          CommissionPrice: 0,
-          PaymentTypeId: parseInt(order.payment_status) === 2 ? 1 : 3,
-          DiscountCode: "-",
-          Latitude: `${order.user_address?.latitude || "-"}`,
-          Longitude: `${order.user_address?.longitude || "-"}`,
-          Items: order.items.map((item, index) => {
-            const modifiersPrice = item.modifiers.reduce(
-              (sum, modifier) => sum + modifier.amount * modifier.discounted_price,
-              0
-            );
-            return {
-              OrderItemId: parseInt(`${order.order_id}000}`) + index,
-              OrderId: parseInt(order.order_id),
-              ProductId: parseInt(item.pos_id),
-              ProductCode: parseInt(item.pos_code),
-              ProductTitle: item.product_title,
-              ProductPrice:
-                item.initial_price *
-                (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-              Quantity: item.amount,
-              DescriptionPrice: 0,
-              SumPrice:
-                (item.initial_price + modifiersPrice) *
-                item.amount *
-                (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-              ProductDiscount:
-                (item.initial_price +
-                  modifiersPrice -
-                  item.discounted_price) *
-                (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-              Addition:
-                modifiersPrice *
-                (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-              ProductTax: 0,
-              ProductDuty: 0,
-              TotalPrice:
-                (item.discounted_price + modifiersPrice) *
-                item.amount *
-                (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
-              Description: item.modifiers.reduce(
-                (text, modifier) =>
-                  text +
-                  `-\n تاپینگ: ${englishNumberToPersianNumber(
-                    modifier.amount
-                  )} عدد ${modifier.modifier_title}`,
-                "-"
-              ),
-            };
-          }),
-          ItemsTopping: [],
-        },
-      },
+      HamiFormatedOrderData,
       "POST"
     );
-    console.log({x});
+    console.log({submitHamiOrderApiRes});
   }
   catch(e){
     console.log(e)
@@ -295,7 +297,7 @@ export const createOrUpdateDealsAndCategories = async (
   businessId,
   branchId
 ) => {
- 
+
   const categoriesResult = await createOrUpdateHamiDealCategories(
     businessId,
     branchId

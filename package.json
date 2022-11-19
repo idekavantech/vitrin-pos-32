@@ -1,7 +1,7 @@
 {
   "name": "vitrin-pos",
   "productName": "vitrin-pos",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Application for vitrin POS",
   "license": "Vitrin",
   "private": false,

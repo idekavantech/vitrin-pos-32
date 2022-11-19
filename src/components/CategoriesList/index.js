@@ -52,7 +52,7 @@ function CategoriesList(props) {
             categories.map((category) => (
               <Chip
                 key={category.id}
-                label={category.name}
+                label={category.title}
                 onClick={() => {
                   if (!dragging.current) onItemClick(category);
                 }}
