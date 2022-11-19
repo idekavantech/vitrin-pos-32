@@ -126,7 +126,7 @@ module.exports = {
   target: "electron-renderer",
   plugins: [
     new HtmlWebpackPlugin({
-      title: "مدیریت ویترین",
+      title: `${process.env.npm_package_version} مدیریت ویترین - نسخه`,
     }),
     new PreloadWebpackPlugin({
       rel: 'prefetch',

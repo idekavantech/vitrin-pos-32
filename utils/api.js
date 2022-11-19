@@ -40,7 +40,7 @@ export const BUSINESS_ORDERS_API = (plugin = '',   page = 1,
   `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&has_paginate=${hasPaginate}`;
 export const CUSTOMER_ORDERS_API = `${BASE_URL_V2}shopping-orders/by-business-by-user-id/`;
 export const BUSINESS_LIGHT_BY_SITE_DOMAIN_API = (subDomain) =>
-  `${BASE_URL}businesses/${subDomain}/light_by_site_domain/`;
+  `${BASE_URL_V2}businesses/${subDomain}/light-by-site-domain/`;
 export const DEALS_ITEMS_API = (categories) =>
   `${BASE_URL}deals/?${categories}`;
 export const ALL_DEALS_API = (businessSlug) =>

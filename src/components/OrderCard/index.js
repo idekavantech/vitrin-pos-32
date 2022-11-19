@@ -101,6 +101,9 @@ function OrderCard({
           <span className="px-2" style={{ width: 75 }}>
             {ellipseText(englishNumberToPersianNumber(order.order_id), 8)}
           </span>
+          <span className="u-text-ellipse px-2" style={{ width: 114 }}>
+            {ellipseText(userAddress && userAddress.name, 18)}
+          </span>
           <span
             className="u-text-ellipse mx-2 text-right flex-1 position-relative"
             style={{ width: 500 }}
