@@ -110,8 +110,6 @@ const App = function ({
   _acceptOrder,
   user,
   _setUser,
-  firebaseToken,
-  _updateDeviceById,
 }) {
   useInjectReducer({ key: "app", reducer });
   useInjectSaga({ key: "app", saga });
@@ -233,17 +231,6 @@ const App = function ({
     }
   }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)]);
 
-  (function () {
-    const haveResetHamiOrdersLastUpdateDate = localStorage.getItem(
-      "haveResetHamiOrdersLastUpdateDate"
-    );
-    // temp code to reset haveResetHamiOrdersLastUpdateDate to (10 Oct 2022)
-    if (haveResetHamiOrdersLastUpdateDate) return;
-    console.log("%creset hami orders last update", { backgroundColor: "red" });
-    const resetDate = new Date("10-10-2022").getTime();
-    localStorage.setItem("hamiOrdersLastUpdateByInterval", resetDate);
-    localStorage.setItem("haveResetHamiOrdersLastUpdateDate", true);
-  })();
 
   const syncOrders = async () => {
     try {
@@ -264,9 +251,9 @@ const App = function ({
 
           if (_businessId) {
             let result = true;
-            const hamiOrdersLastUpdateByInterval = localStorage.getItem(
-              "hamiOrdersLastUpdateByInterval"
-            );
+            const deviceLastOrdersUpdate = device?.extra_data?.last_orders_update 
+            const hamiOrdersLastUpdateByInterval = deviceLastOrdersUpdate ? Number(deviceLastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
+            console.log(hamiOrdersLastUpdateByInterval)
             const a = hamiOrdersLastUpdateByInterval
               ? moment(+hamiOrdersLastUpdateByInterval)
               : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -285,10 +272,6 @@ const App = function ({
                   true
                 ));
             }
-            localStorage.setItem(
-              "hamiOrdersLastUpdateByInterval",
-              new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
-            );
           }
         });
       } else {
@@ -297,12 +280,13 @@ const App = function ({
             JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
           ).includes(business.site_domain)
         );
+        const device = business?.devices?.[0];
         const _businessId = business?.id;
         if (_businessId) {
           let result = true;
-          const hamiOrdersLastUpdateByInterval = localStorage.getItem(
-            "hamiOrdersLastUpdateByInterval"
-          );
+          const deviceLastOrdersUpdate = device?.extra_data?.last_orders_update 
+          const hamiOrdersLastUpdateByInterval = deviceLastOrdersUpdate ? Number(deviceLastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
+          console.log(hamiOrdersLastUpdateByInterval)
           const a = hamiOrdersLastUpdateByInterval
             ? moment(+hamiOrdersLastUpdateByInterval)
             : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -321,10 +305,6 @@ const App = function ({
                 true
               ));
           }
-          localStorage.setItem(
-            "hamiOrdersLastUpdateByInterval",
-            new Date(new Date().setDate(new Date().getDate() - 1)).getTime()
-          );
         }
       }
     } catch (e) {
