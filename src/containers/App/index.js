@@ -247,13 +247,16 @@ const App = function ({
               ).includes(business.site_domain)
           );
           const _businessId = business?.id;
-          const device = business?.devices?.[0];
 
           if (_businessId) {
             let result = true;
-            const deviceLastOrdersUpdate = device?.extra_data?.last_orders_update 
-            const hamiOrdersLastUpdateByInterval = deviceLastOrdersUpdate ? Number(deviceLastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
-            console.log(hamiOrdersLastUpdateByInterval)
+            const devices = business?.devices;
+            const device = devices.filter((dvc) => dvc?.extra_data?.last_orders_update !== undefined)
+            const orderUpdates = device.map((dvc) => dvc?.extra_data?.last_orders_update)
+            const lastOrdersUpdateByPosDevice =  orderUpdates.reduce((acc , dvc) => Math.max(acc , dvc ?? 0))
+            const lastOrdersUpdateByLocalstorage = Number(localStorage.getItem("hamiOrdersLastUpdate"))
+            const lastOrdersUpdate = lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage
+            const hamiOrdersLastUpdateByInterval = lastOrdersUpdate ? Number(lastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
             const a = hamiOrdersLastUpdateByInterval
               ? moment(+hamiOrdersLastUpdateByInterval)
               : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -272,6 +275,10 @@ const App = function ({
                   true
                 ));
             }
+            localStorage.setItem(
+              "hamiOrdersLastUpdate",
+              moment().unix()
+            );
           }
         });
       } else {
@@ -280,13 +287,16 @@ const App = function ({
             JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
           ).includes(business.site_domain)
         );
-        const device = business?.devices?.[0];
+        const devices = business?.devices;
+        const device = devices.filter((dvc) => dvc?.extra_data?.last_orders_update !== undefined)
+        const orderUpdates = device.map((dvc) => dvc?.extra_data?.last_orders_update)
+        const lastOrdersUpdateByPosDevice =  orderUpdates.reduce((acc , dvc) => Math.max(acc , dvc ?? 0))
+        const lastOrdersUpdateByLocalstorage = Number(localStorage.getItem("hamiOrdersLastUpdate"))
+        const lastOrdersUpdate = lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage
         const _businessId = business?.id;
         if (_businessId) {
           let result = true;
-          const deviceLastOrdersUpdate = device?.extra_data?.last_orders_update 
-          const hamiOrdersLastUpdateByInterval = deviceLastOrdersUpdate ? Number(deviceLastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
-          console.log(hamiOrdersLastUpdateByInterval)
+          const hamiOrdersLastUpdateByInterval = lastOrdersUpdate ? Number(lastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
           const a = hamiOrdersLastUpdateByInterval
             ? moment(+hamiOrdersLastUpdateByInterval)
             : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -305,6 +315,10 @@ const App = function ({
                 true
               ));
           }
+          localStorage.setItem(
+            "hamiOrdersLastUpdate",
+            moment().unix()
+          );
         }
       }
     } catch (e) {
