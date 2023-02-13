@@ -23,11 +23,13 @@ import {
   englishNumberToPersianNumber,
   persianToEnglishNumber,
 } from "../../utils/helper";
+import React from "react";
+import { deliveryTypes } from "../../src/constants/order";
 
 export const init = () => {};
 
-export const submitHamiOrder =async (order) => {
-  try{
+export const submitHamiOrder = async (order) => {
+  try {
     const orderDateObject = new Date(order.submitted_at);
     const orderDate = moment(order.submitted_at).format("jYYYY/jMM/jDD");
     const orderTime = `${`0${orderDateObject.getHours()}`.slice(
@@ -62,8 +64,10 @@ export const submitHamiOrder =async (order) => {
         CellPhone: order.user_address?.phone || "-",
         LocationId: 0,
         DeliveryAddress: order.user_address?.address || "-",
-        Comments: order.description || "-",
-        OrderType: 1,
+        Comments: `${
+          deliveryTypes[order.delivery_site_type?.toUpperCase()]
+        } - ${order.description || ""} `,
+        OrderType: order.delivery_on_site ? 2 : 1,
         Price:
           order.total_items_initial_price *
           (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
@@ -74,7 +78,7 @@ export const submitHamiOrder =async (order) => {
           order.total_packaging_price *
           (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
         Discount:
-          (order.total_discount_amount) *
+          order.total_discount_amount *
           (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
         Tax:
           order.taxing_price *
@@ -97,7 +101,8 @@ export const submitHamiOrder =async (order) => {
         Longitude: `${order.user_address?.longitude || "-"}`,
         Items: order.items.map((item, index) => {
           const modifiersPrice = item.modifiers.reduce(
-            (sum, modifier) => sum + modifier.amount * modifier.discounted_price,
+            (sum, modifier) =>
+              sum + modifier.amount * modifier.discounted_price,
             0
           );
           return {
@@ -116,9 +121,7 @@ export const submitHamiOrder =async (order) => {
               item.amount *
               (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
             ProductDiscount:
-              (item.initial_price +
-                modifiersPrice -
-                item.discounted_price) *
+              (item.initial_price + modifiersPrice - item.discounted_price) *
               (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
             Addition:
               modifiersPrice *
@@ -141,7 +144,7 @@ export const submitHamiOrder =async (order) => {
         }),
         ItemsTopping: [],
       },
-    }
+    };
 
     const submitHamiOrderApiRes = await request(
       `${submitHamiOrderApi(localStorage.getItem("hamiIp"))}${
@@ -152,12 +155,10 @@ export const submitHamiOrder =async (order) => {
       HamiFormatedOrderData,
       "POST"
     );
-    console.log({submitHamiOrderApiRes});
+    console.log({ submitHamiOrderApiRes });
+  } catch (e) {
+    console.log(e);
   }
-  catch(e){
-    console.log(e)
-  }
-
 };
 export const getHamiDeals = async (BranchId) => {
   return await request(getHamiDealItemApi(localStorage.getItem("hamiIp")), {
@@ -219,46 +220,13 @@ export const createOrUpdateHamiDeals = async (
   businessId,
   branchId
 ) => {
-
   const result = await getHamiDeals(branchId);
   if (!result || !result.response) return null;
 
-  console.log('respose from hami' , result)
+  console.log("respose from hami", result);
 
-
-  console.log('sending to backend ' ,   result?.response["Goods"].map((deal) => {
-    const hamiCategories = (deal.GoodsGroupId?.toString() || "-").split(",");
-    const vitrinCategories = (
-      categories?.filter((cat) =>
-        hamiCategories.some(
-          (hamiCategory) => parseInt(hamiCategory) === parseInt(cat.pos_id)
-        )
-      ) || []
-    ).map((cat) => parseInt(cat.id));
-    return {
-    is_active:true,
-      pos_id: deal.GoodsId,
-      pos_code: deal.GoodsCode,
-      title: deal.GoodsName,
-      description: deal.GoodsDescription,
-      discounted_price: parseInt(
-        deal.GoodsPrice *
-          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-      initial_price: parseInt(
-        deal.GoodsPrice *
-          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-      packaging_price:   parseInt(
-        deal.PackingPrice *
-          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-      labels: vitrinCategories,
-      business: businessId,
-    };
-  }) )
-  return await request(
-    UPSERT_DEALS_API,
+  console.log(
+    "sending to backend ",
     result?.response["Goods"].map((deal) => {
       const hamiCategories = (deal.GoodsGroupId?.toString() || "-").split(",");
       const vitrinCategories = (
@@ -269,7 +237,7 @@ export const createOrUpdateHamiDeals = async (
         ) || []
       ).map((cat) => parseInt(cat.id));
       return {
-      is_active:true,
+        is_active: true,
         pos_id: deal.GoodsId,
         pos_code: deal.GoodsCode,
         title: deal.GoodsName,
@@ -282,7 +250,41 @@ export const createOrUpdateHamiDeals = async (
           deal.GoodsPrice *
             (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
         ),
-        packaging_price:   parseInt(
+        packaging_price: parseInt(
+          deal.PackingPrice *
+            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+        labels: vitrinCategories,
+        business: businessId,
+      };
+    })
+  );
+  return await request(
+    UPSERT_DEALS_API,
+    result?.response["Goods"].map((deal) => {
+      const hamiCategories = (deal.GoodsGroupId?.toString() || "-").split(",");
+      const vitrinCategories = (
+        categories?.filter((cat) =>
+          hamiCategories.some(
+            (hamiCategory) => parseInt(hamiCategory) === parseInt(cat.pos_id)
+          )
+        ) || []
+      ).map((cat) => parseInt(cat.id));
+      return {
+        is_active: true,
+        pos_id: deal.GoodsId,
+        pos_code: deal.GoodsCode,
+        title: deal.GoodsName,
+        description: deal.GoodsDescription,
+        discounted_price: parseInt(
+          deal.GoodsPrice *
+            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+        initial_price: parseInt(
+          deal.GoodsPrice *
+            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+        ),
+        packaging_price: parseInt(
           deal.PackingPrice *
             (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
         ),
@@ -297,7 +299,6 @@ export const createOrUpdateDealsAndCategories = async (
   businessId,
   branchId
 ) => {
-
   const categoriesResult = await createOrUpdateHamiDealCategories(
     businessId,
     branchId
@@ -306,7 +307,7 @@ export const createOrUpdateDealsAndCategories = async (
   if (!categoriesResult?.response?.data) return null;
   const dealsResult = await createOrUpdateHamiDeals(
     categoriesResult.response.data,
-    businessId,
+    businessId
   );
 
   // const modifiersResult = await createOrUpdateHamiModifiers(
@@ -393,7 +394,7 @@ export const createOrUpdateHamiOrders = async (
   archived,
   posDeviceId
 ) => {
-  console.log('createOrUpdateHamiOrders')
+  console.log("createOrUpdateHamiOrders");
   const result = await request(
     getHamiOrdersApi(localStorage.getItem("hamiIp")),
     {
@@ -404,10 +405,13 @@ export const createOrUpdateHamiOrders = async (
       InvoiceTimeEnd,
     }
   );
-  console.log({result});
+  console.log({ result });
   if (!result?.response) return null;
 
   if (!result.response.length) return true;
+
+  console.log("from hami", result.response);
+
   const orders = result.response
     .filter(
       (order) =>
@@ -415,34 +419,45 @@ export const createOrUpdateHamiOrders = async (
         parseInt(order.BranchId) === parseInt(BranchId)
     )
     .map((order) => {
-      const matcher =new RegExp(/\[Wallet([0-9]+)],\[Gift([0-9]+)]/)
-      const [undefined, wallet = 0, gift = 0] = order.Description?.match(matcher) || []
-      console.log({
-        SaleInvoiceId: {
-        ...(wallet && {payments: [{
-          amount: wallet,
-          shaparak_track_id: null,
-          payment_type: 5
-        }]}),
-      ...(gift && {gift_credit_used: gift}),
+      const matcher = new RegExp(/\[Wallet([0-9]+)],\[Gift([0-9]+)]/);
+      const [undefined, regExWallet = 0, regExGift = 0] =
+        order.Description?.match(matcher) || [];
+      const wallet = Number(regExWallet) || 0;
+      const gift = Number(regExGift) || 0;
+      const returnValue = {
+        ...(wallet && {
+          payments: [
+            {
+              amount: wallet,
+              shaparak_track_id: null,
+              payment_type: 5,
+            },
+          ],
+        }),
+        ...(gift && { gift_credit_used: gift }),
         business_id: businessId,
         sales_channel_order_id: order.SaleInvoiceId,
-        order_items: order.MApiInvoiceItems.map((orderItem) => ({
-          amount: orderItem.GoodsCount,
-          pos_id: orderItem.GoodsId,
-          product_id: null,
-          initial_price: parseInt(
-            orderItem.GoodsPrice *
-              (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-          ),
-          discounted_price: parseInt(
-            (orderItem.GoodsPrice -
-              (orderItem.SumDiscount- gift - wallet) / orderItem.GoodsCount) *
-              (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-          ),
-          packaging_price: 0,
-        })),
-        archived: archived ?? localStorage.getItem("hamiKeepTracking") !== "true",
+        order_items: order.MApiInvoiceItems.map((orderItem) => {
+          const orderItemWeight =
+            (orderItem.GoodsPrice * orderItem.GoodsCount) / order.SumSell;
+          const walletAndGiftFraction = orderItemWeight * (gift + wallet);
+          return {
+            amount: orderItem.GoodsCount,
+            pos_id: orderItem.GoodsId,
+            product_id: null,
+            initial_price: parseInt(
+              orderItem.GoodsPrice *
+                (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+            ),
+            discounted_price: parseInt(
+              Math.round(orderItem.GoodsPrice - walletAndGiftFraction) *
+                (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+            ),
+            packaging_price: 0,
+          };
+        }),
+        archived:
+          archived ?? localStorage.getItem("hamiKeepTracking") !== "true",
         order_number: order.SaleInvoiceNumber,
         user_address: {
           name: order.PartyName.trim() || "-",
@@ -452,7 +467,7 @@ export const createOrUpdateHamiOrders = async (
             11
           ),
         },
-        user_name: order.PartyName.trim()  || "-",
+        user_name: order.PartyName.trim() || "-",
         user_phone: (order.PartyPhone.trim() || "-").substr(
           order.PartyPhone.indexOf("0"),
           11
@@ -466,14 +481,16 @@ export const createOrUpdateHamiOrders = async (
           order.SaleInvoiceTypeTitle === "مشترکین"
             ? "delivery_on_business_site"
             : "delivery_on_user_site",
-        created_at: moment(
-          `${order.InvoiceDate} ${order.InvoiceTime}`,
-          "jYYYY/jMM/jDD HH:mm:ss"
-        ).unix() * 1000,
-        submitted_at: moment(
-          `${order.InvoiceDate} ${order.InvoiceTime}`,
-          "jYYYY/jMM/jDD HH:mm:ss"
-        ).unix()*1000,
+        created_at:
+          moment(
+            `${order.InvoiceDate} ${order.InvoiceTime}`,
+            "jYYYY/jMM/jDD HH:mm:ss"
+          ).unix() * 1000,
+        submitted_at:
+          moment(
+            `${order.InvoiceDate} ${order.InvoiceTime}`,
+            "jYYYY/jMM/jDD HH:mm:ss"
+          ).unix() * 1000,
         pos_user_id: userId,
         delivery_price: parseInt(
           order.DeliveryPrice *
@@ -488,81 +505,11 @@ export const createOrUpdateHamiOrders = async (
           order.PackingPrice *
             (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
         ),
-     } })
-      return ({
-      ...(wallet && {payments: [{
-        amount: wallet,
-        shaparak_track_id: null,
-        payment_type: 5
-      }]}),
-    ...(gift && {gift_credit_used: gift}),
-      business_id: businessId,
-      sales_channel_order_id: order.SaleInvoiceId,
-      order_items: order.MApiInvoiceItems.map((orderItem) => ({
-        amount: orderItem.GoodsCount,
-        pos_id: orderItem.GoodsId,
-        product_id: null,
-        initial_price: parseInt(
-          orderItem.GoodsPrice *
-            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-        ),
-        discounted_price: parseInt(
-          (orderItem.GoodsPrice -
-            (orderItem.SumDiscount- gift - wallet) / orderItem.GoodsCount) *
-            (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-        ),
-        packaging_price: 0,
-      })),
-      archived: archived ?? localStorage.getItem("hamiKeepTracking") !== "true",
-      order_number: order.SaleInvoiceNumber,
-      user_address: {
-        name: order.PartyName.trim() || "-",
-        address: order.PartyAddress.trim() || "-",
-        phone: (order.PartyPhone.trim() || "-").substr(
-          order.PartyPhone.indexOf("0"),
-          11
-        ),
-      },
-      user_name: order.PartyName.trim()  || "-",
-      user_phone: (order.PartyPhone.trim() || "-").substr(
-        order.PartyPhone.indexOf("0"),
-        11
-      ),
-      user_phone_number: (order.PartyPhone.trim() || "-").substr(
-        order.PartyPhone.indexOf("0"),
-        11
-      ),
-      submitter_device_id: posDeviceId || null,
-      delivery_site_type:
-        order.SaleInvoiceTypeTitle === "مشترکین"
-          ? "delivery_on_business_site"
-          : "delivery_on_user_site",
-      created_at: moment(
-        `${order.InvoiceDate} ${order.InvoiceTime}`,
-        "jYYYY/jMM/jDD HH:mm:ss"
-      ).unix() * 1000,
-      submitted_at: moment(
-        `${order.InvoiceDate} ${order.InvoiceTime}`,
-        "jYYYY/jMM/jDD HH:mm:ss"
-      ).unix()*1000,
-      pos_user_id: userId,
-      delivery_price: parseInt(
-        order.DeliveryPrice *
-          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-      taxing_price: parseInt(
-        order.SumTax * (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-      description: order.description,
-
-      order_packaging_price: parseInt(
-        order.PackingPrice *
-          (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-      ),
-    })});
+      };
+      return returnValue;
+    });
   if (!orders.length) return true;
   const ordersResult = await request(UPSERT_POS_ORDERS_API, orders, "POST");
-  console.log({ordersResult});
   if (ordersResult?.response?.data && localStorage.getItem("hamiSecurityKey"))
     await request(
       UPDATE_DEVICE_API(localStorage.getItem("hamiSecurityKey")),

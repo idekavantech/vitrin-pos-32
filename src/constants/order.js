@@ -1,0 +1,13 @@
+export const FULFILLMENT_ON_BUSINESS_SITE = "DELIVERY_ON_BUSINESS_SITE";
+export const FULFILLMENT_ON_USER_SITE = "DELIVERY_ON_USER_SITE";
+export const FULFILLMENT_CARRY_OUT = "CARRY_OUT";
+export const FULFILLMENT_ON_CAR = "DELIVERY_ON_CAR";
+export const FULFILLMENT_ON_WEBSITE = "DELIVERY_ON_WEB_SITE";
+
+export const deliveryTypes = {
+  [FULFILLMENT_ON_USER_SITE]: "",
+  [FULFILLMENT_CARRY_OUT]: "تحویل حضوری",
+  [FULFILLMENT_ON_BUSINESS_SITE]: "سرو در محل",
+  [FULFILLMENT_ON_CAR]: "تحویل در ماشین",
+  [FULFILLMENT_ON_WEBSITE]: "دریافت مجازی",
+};
