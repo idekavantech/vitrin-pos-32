@@ -55,3 +55,4 @@ ehthumbs.db
 *.lnk
 .idea
 database.sqlite
+yarn.lock
