@@ -201,7 +201,7 @@ export const createOrUpdateHamiDealCategories = async (
   businessId,
   branchId
 ) => {
-  const result = await getHamiDealCategories();
+  const result = await getHamiDealCategories(branchId);
   if (!result || !result.response) return null;
 
   return await request(
@@ -307,7 +307,8 @@ export const createOrUpdateDealsAndCategories = async (
   if (!categoriesResult?.response?.data) return null;
   const dealsResult = await createOrUpdateHamiDeals(
     categoriesResult.response.data,
-    businessId
+    businessId,
+    branchId
   );
 
   // const modifiersResult = await createOrUpdateHamiModifiers(
