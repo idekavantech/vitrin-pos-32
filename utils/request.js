@@ -1,4 +1,5 @@
 import Axios from "axios";
+import qs from "qs";
 const { ipcRenderer } = require("electron");
 
 export default async function request(
@@ -13,6 +14,12 @@ export default async function request(
     method,
     data: method !== "GET" ? data : undefined,
     params: method === "GET" ? data : undefined,
+    paramsSerializer: (params) => {
+      return qs.stringify(Object.fromEntries(Object.entries(params).filter(([k, v]) => v !== "")), {
+        skipNulls: true,
+        encodeValuesOnly: true,
+      });
+    },
     ...config,
   };
   if (headers) {
