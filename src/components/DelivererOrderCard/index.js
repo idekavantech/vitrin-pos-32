@@ -20,7 +20,9 @@ function DelivererOrderCard({ order, link }) {
     payment_status: paymentStatus,
     delivery_on_site: deliveryOnSite,
   } = order;
-  const orderDate = new Date(createdAt);
+  const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+
+  const orderDate = new Date(createdAt+ timeOffset );
   const orderTime = moment(
     `${orderDate.getFullYear()}-${
       orderDate.getMonth() + 1

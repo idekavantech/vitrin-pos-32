@@ -23,9 +23,9 @@ import {
   uploadSuccess,
   uploadProgress,
   uploadRequest,
-  uploadRequestFinished,
+  uploadRequestFinished, setServerTime,
 } from "./actions";
-import { ACCEPT_ORDER, SEND_EMAIL, UPLOAD_FILE } from "./constants";
+import {ACCEPT_ORDER, GET_SERVER_TIME, SEND_EMAIL, UPLOAD_FILE} from "./constants";
 import { getFileExtensionType, getFileExtention } from "../../../utils/helper";
 import { setSnackBarMessage } from "../../../stores/ui/actions";
 import request from "../../../utils/request";
@@ -34,7 +34,7 @@ import {
   FILE_SERVER_URL_API,
   ORDER_DELIVERER_API,
   ORDER_DELIVERY_TIME_API,
-  ORDER_STATUS_PROGRESS_API,
+  ORDER_STATUS_PROGRESS_API, SERVER_TIME_API,
 } from "../../../utils/api";
 import { submitHamiOrder } from "../../../integrations/hami/actions";
 import { submitAriaOrder } from "../../../integrations/aria/actions";
@@ -253,6 +253,25 @@ export function* acceptOrder(action) {
   }
 }
 
+export function* getServerTimeSaga() {
+  try {
+    yield put(startLoading());
+    const {  response: { data },
+        status } = yield call(
+        request,
+        SERVER_TIME_API(),
+        "GET"
+      );
+    if (status === 200) {
+      yield put(setServerTime(data.dateTime));
+    }
+    yield put(stopLoading());
+  } catch (err) {
+    console.log(err);
+    yield put(stopLoading());
+  }
+}
+
 export default function* generalSaga() {
   yield all([
     ...userSaga,
@@ -261,6 +280,7 @@ export default function* generalSaga() {
     ...transactionSaga,
     takeEvery(ACCEPT_ORDER, acceptOrder),
     takeLatest(SEND_EMAIL, sendEmail),
+    takeLatest(GET_SERVER_TIME, getServerTimeSaga),
     takeLatest(UPLOAD_FILE, uploadFiles),
   ]);
 }

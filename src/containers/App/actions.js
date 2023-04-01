@@ -37,7 +37,7 @@ import {
   STOP_PROGRESS_LOADING,
   SET_PRINTER_OPTIONS,
   TOGGLE_HAMI_MODAL,
-  ACCEPT_ORDER, SET_FIREBASE_TOKEN, GLOBAL_LOADING_TYPE
+  ACCEPT_ORDER, SET_FIREBASE_TOKEN, GLOBAL_LOADING_TYPE, GET_SERVER_TIME, SET_SERVER_TIME
 } from "./constants";
 
 export function init() {
@@ -174,6 +174,12 @@ export function acceptOrder(data) {
   };
 }
 
+export function setServerTime(data) {
+  return {
+    type: SET_SERVER_TIME,
+    data,
+  };
+}
 export function setFirebaseToken(data) {
   return {
     type: SET_FIREBASE_TOKEN,

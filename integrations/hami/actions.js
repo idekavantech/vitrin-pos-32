@@ -30,8 +30,9 @@ export const init = () => {};
 
 export const submitHamiOrder = async (order) => {
   try {
-    const orderDateObject = new Date(order.submitted_at);
-    const orderDate = moment(order.submitted_at).format("jYYYY/jMM/jDD");
+    const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+    const orderDateObject = new Date(order.submitted_at + timeOffset);
+    const orderDate = moment(order.submitted_at + timeOffset).format("jYYYY/jMM/jDD");
     const orderTime = `${`0${orderDateObject.getHours()}`.slice(
       -2
     )}:${`0${orderDateObject.getMinutes()}`.slice(

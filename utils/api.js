@@ -103,3 +103,8 @@ export const UPSERT_POS_ORDERS_API = `${BASE_URL_V2}shopping-orders/hami/`;
 export const GET_BUSINESS_DEVICES_API = `${BASE_URL}pos_devices/by_business/`;
 export const UPDATE_DEVICE_API = (licence_code) =>
   `${BASE_URL}pos_devices/${licence_code.toLowerCase()}/update_by_licence_key/`;
+
+
+// Other
+export const SERVER_TIME_API =
+  `https://timeapi.io/api/Time/current/zone?timeZone=Iran`;

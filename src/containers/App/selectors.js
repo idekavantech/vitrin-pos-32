@@ -49,6 +49,9 @@ const makeSelectHamiModal = () =>
 const makeSelectFirebaseToken = () =>
   createSelector(selectGlobal, (globalState) => globalState.firebaseToken);
 
+const makeSelectServerTime = () =>
+  createSelector(selectGlobal, (globalState) => globalState.serverTime);
+
 export {
   makeSelectInitLoading,
   makeSelectUploadedFiles,
@@ -63,4 +66,5 @@ export {
   makeSelectProgressLoading,
   makeSelectHamiModal,
   makeSelectFirebaseToken,
+  makeSelectServerTime
 };

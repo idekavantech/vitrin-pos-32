@@ -25,6 +25,7 @@ import {
 import request from "../../../../utils/request";
 import { UPDATE_DEVICE_API } from "../../../../utils/api";
 import Checkbox from "@material-ui/core/Checkbox";
+import {LOCAL_TIME_OFFSET} from "../../../../utils/constants";
 function HamiModal({
   isOpen,
   _onClose,
@@ -63,7 +64,8 @@ function HamiModal({
                     const lastUpdate = moment.unix(
                       localStorage.getItem("hamiCustomersLastUpdate")
                     );
-                    const now = moment();
+                    const timeOffsetWithServer = localStorage.getItem(LOCAL_TIME_OFFSET);
+                    const now = moment().subtract((Math.abs(Number(timeOffsetWithServer))));
                     if (now.diff(lastUpdate, "hours") < 2) {
                       _setSnackBarMessage(
                         "هر دو ساعت یکبار میتوانید این کار را انجام دهید.",
@@ -74,7 +76,11 @@ function HamiModal({
                   }
                   let result = true;
                   const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
-                  const b = moment();
+                  const timeOffsetWithServer = localStorage.getItem(LOCAL_TIME_OFFSET);
+                  const b = moment().subtract((Math.abs(Number(timeOffsetWithServer))))
+
+
+
                   for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
                     result =
                       result &&
@@ -87,7 +93,7 @@ function HamiModal({
                         undefined
                       ));
                   }
-
+                  const now = moment().subtract((Math.abs(Number(timeOffsetWithServer))))
                   if (result) {
                     if (localStorage.getItem("hamiSecurityKey"))
                       await request(
@@ -96,7 +102,7 @@ function HamiModal({
                         ),
                         {
                           extra_data: {
-                            last_users_update: moment().unix(),
+                            last_users_update: now.unix(),
                           },
                         },
                         "PATCH"
@@ -136,7 +142,8 @@ function HamiModal({
                   }
                   let result = true;
                   const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
-                  const b = moment();
+                  const timeOffsetWithServer = localStorage.getItem(LOCAL_TIME_OFFSET);
+                  const b = moment().subtract((Math.abs(Number(timeOffsetWithServer))))
                   for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {
                     result =
                       result &&

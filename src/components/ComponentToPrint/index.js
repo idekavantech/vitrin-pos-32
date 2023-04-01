@@ -20,7 +20,8 @@ export default class ComponentToPrint extends React.Component {
       get_vitrin_absolute_url: url,
       phone_zero_starts: phone,
     } = business;
-    const date = moment(order.submitted_at).format("jYYYY/jMM/jDD - HH:mm:ss");
+    const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+    const date = moment(order.submitted_at + timeOffset).format("jYYYY/jMM/jDD - HH:mm:ss");
     const sortedItems = [...order.items];
     sortedItems.sort((a, b) => {
       let firstTotal = a.discounted_price;

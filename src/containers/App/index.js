@@ -86,10 +86,12 @@ import pristine from "../../../assets/audio/pristine.mp3";
 import { amplifyMedia } from "../../../utils/helper";
 import ShoppingSettings from "../ShoppingSettings";
 import {
+  LOCAL_TIME_OFFSET,
   SELECTED_SITE_DOMAIN,
   SHOPPING_PLUGIN,
 } from "../../../utils/constants";
 import EditProductiFrame from "../EditProduct/EditProductiFrame";
+import getServerTime from "./getServerTime";
 
 const App = function ({
   history,
@@ -115,8 +117,9 @@ const App = function ({
   useInjectSaga({ key: "app", saga });
   const [dialog, setDialog] = useState(false);
   const orderInterval = useRef(null);
-  const customersInterval = useRef(null);
-  const productsInterval = useRef(null);
+  const isTimeServerFetched = useRef(false);
+  const localTimeOffsetWithTimeServer = localStorage.getItem(LOCAL_TIME_OFFSET);
+
   const getUserInfo = async () => {
     try {
       const {
@@ -339,6 +342,18 @@ const App = function ({
       clearInterval(orderInterval.current);
     };
   }, [businesses, user?.id]);
+  useEffect(() => {
+    const syncTime = async  () => {
+      const dateTime = await getServerTime();
+      const localTime = new Date();
+      const serverTime = new Date(dateTime);
+      const timeOffset = (serverTime.getTime() - localTime.getTime())
+      localStorage.setItem(LOCAL_TIME_OFFSET, timeOffset.toString())
+      isTimeServerFetched.current = true
+    }
+  if(!isTimeServerFetched.current)
+    syncTime()
+  }, [localTimeOffsetWithTimeServer])
   if ((!siteDomain || !businessTitle) && location.pathname !== "/login")
     return (
       <div

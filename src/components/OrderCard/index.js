@@ -12,6 +12,7 @@ import {
 import Icon from "../Icon";
 import { ICONS } from "../../../assets/images/icons";
 import CheckBox from "../CheckBox";
+import {LOCAL_TIME_OFFSET} from "../../../utils/constants";
 
 function OrderCard({
   order,
@@ -29,14 +30,17 @@ function OrderCard({
     order_status: orderStatus,
     delivery_on_site: deliveryOnSite,
   } = order;
-  const orderDate = new Date(createdAt);
+  const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+  const orderDate = new Date(createdAt + timeOffset);
   const orderTime = moment(
     `${orderDate.getFullYear()}-${
       orderDate.getMonth() + 1
     }-${orderDate.getDate()}`,
     "YYYY-MM-DD"
   );
-  const nowDate = new Date();
+
+  const timeOffsetWithServer = localStorage.getItem(LOCAL_TIME_OFFSET);
+  const nowDate = new Date(new Date().getTime() + Number(timeOffsetWithServer));
   const backgroundColor =
     (orderStatus === 40 && "#0050FF") ||
     (orderStatus === 20 && "#ff0038") ||
