@@ -55,7 +55,7 @@ export const submitHamiOrder = async (order) => {
     const HamiFormatedOrderData = {
       Invoice: {
         OrderId: parseInt(order.order_id),
-        BranchId: order.business_pos_id ?? 1,
+        BranchId: order.business_pos_id ? order.business_pos_id : 0,
         OrderDate: orderDate,
         OrderTime: orderTime,
         CustomerCode: `${order.user_id}`,
