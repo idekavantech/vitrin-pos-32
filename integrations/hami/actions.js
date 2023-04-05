@@ -442,7 +442,7 @@ export const createOrUpdateHamiOrders = async (
         order_items: order.MApiInvoiceItems.map((orderItem) => {
           const orderItemWeight =
             (orderItem.GoodsPrice * orderItem.GoodsCount) / order.SumSell;
-          const walletAndGiftFraction = Math.round(orderItemWeight * (gift + wallet));
+          const walletAndGiftFraction = Math.round(orderItemWeight * (gift + wallet)) || 0;
           return {
             amount: orderItem.GoodsCount,
             pos_id: orderItem.GoodsId,
