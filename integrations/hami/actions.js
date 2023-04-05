@@ -442,7 +442,7 @@ export const createOrUpdateHamiOrders = async (
         order_items: order.MApiInvoiceItems.map((orderItem) => {
           const orderItemWeight =
             (orderItem.GoodsPrice * orderItem.GoodsCount) / order.SumSell;
-          const walletAndGiftFraction = orderItemWeight * (gift + wallet);
+          const walletAndGiftFraction = Math.round(orderItemWeight * (gift + wallet));
           return {
             amount: orderItem.GoodsCount,
             pos_id: orderItem.GoodsId,
@@ -452,9 +452,7 @@ export const createOrUpdateHamiOrders = async (
                 (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
             ),
             discounted_price: parseInt(
-              Math.round(orderItem.GoodsPrice - walletAndGiftFraction) *
-                (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
-            ),
+              Math.round(orderItem.GoodsPrice - Math.abs(walletAndGiftFraction - orderItem.SumDiscount)) * (hamiCurrencyConvert ? 0.1 : 1) ),
             packaging_price: 0,
           };
         }),
