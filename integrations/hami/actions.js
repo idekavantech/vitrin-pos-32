@@ -452,7 +452,11 @@ export const createOrUpdateHamiOrders = async (
                 (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
             ),
             discounted_price: parseInt(
-              Math.round(orderItem.GoodsPrice - Math.abs(walletAndGiftFraction - orderItem.SumDiscount)) * (hamiCurrencyConvert ? 0.1 : 1) ),
+              Math.round(
+                orderItem.GoodsPrice -
+                  Math.abs(walletAndGiftFraction - orderItem.SumDiscount)
+              ) * (localStorage.getItem("hamiCurrencyConvert") ? 0.1 : 1)
+            ),
             packaging_price: 0,
           };
         }),
@@ -557,3 +561,4 @@ export const updateHamiDealsInventory = async (businessId) => {
     "POST"
   );
 };
+
