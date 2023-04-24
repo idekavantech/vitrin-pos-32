@@ -126,7 +126,8 @@ export function OnlineOrder({
   const deliverers = pluginData?.data?.couriers || {};
   let lastOrderTime = "ندارد";
   if (customerOrders && customerOrders.length > 1) {
-    const lastOrderDate = new Date(customerOrders[1].submitted_at);
+    const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+    const lastOrderDate = new Date(customerOrders[1].submitted_at + timeOffset);
     lastOrderTime = englishNumberToPersianNumber(
       moment(
         `${lastOrderDate.getFullYear()}-${

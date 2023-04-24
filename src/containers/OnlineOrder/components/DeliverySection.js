@@ -26,7 +26,9 @@ function DeliverySection({ order, business }) {
       margin: 0,
     },
   };
-  const orderDate = new Date(order.submitted_at);
+  const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
+
+  const orderDate = new Date(order.submitted_at + timeOffset);
   const orderTime = moment(
     `${orderDate.getFullYear()}-${
       orderDate.getMonth() + 1

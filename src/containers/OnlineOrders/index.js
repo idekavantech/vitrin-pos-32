@@ -29,7 +29,7 @@ import reducer from "./reducer";
 import saga from "./saga";
 import { useInjectReducer } from "../../../utils/injectReducer";
 import { useInjectSaga } from "../../../utils/injectSaga";
-import { makeSelectProgressLoading } from "../App/selectors";
+import {makeSelectProgressLoading, makeSelectServerTime} from "../App/selectors";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import { PERSONAL_VITRIN_SALE_CHANNEL } from "./constants";
 import qs from "qs";

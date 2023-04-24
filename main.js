@@ -107,6 +107,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
+      webSecurity: false
     },
   });
   if (!dev) {
@@ -176,6 +177,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
+      webSecurity: false
     },
   });
   workerWindow.loadURL("file://" + __dirname + "/assets/printerWindow.html");

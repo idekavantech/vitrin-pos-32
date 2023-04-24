@@ -32,5 +32,7 @@ export const SET_PRINTER_OPTIONS = 'app/AdminPanelApp/SET_PRINTER_OPTIONS';
 export const TOGGLE_HAMI_MODAL = 'app/AdminPanelApp/TOGGLE_HAMI_MODAL';
 export const ACCEPT_ORDER = 'app/AdminPanelApp/ACCEPT_ORDER';
 export const SET_FIREBASE_TOKEN = 'app/AdminPanelApp/SET_FIREBASE_TOKEN';
+export const GET_SERVER_TIME = 'app/AdminPanelApp/GET_SERVER_TIME';
+export const SET_SERVER_TIME = 'app/AdminPanelApp/SET_SERVER_TIME';
 
 export const GLOBAL_LOADING_TYPE = "global";
