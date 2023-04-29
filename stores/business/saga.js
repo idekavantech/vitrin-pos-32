@@ -310,7 +310,7 @@ export function* getDeliveries(action) {
   try {
     yield put(startProgressLoading());
     yield put(startLoading());
-    const domain = yield select(makeSelectSubDomain());
+    const business_id = yield select(makeSelectBusinessId())
     const page = action.data.page || 1;
     const {
       response: { data, pagination },
@@ -318,7 +318,7 @@ export function* getDeliveries(action) {
       request,
       ORDER_DELIVERIES_BY_DELIVERER,
       {
-        domain,
+        business_id,
         courier: action.data.deliverer,
         page,
         page_size: DELIVERIES_PAGE_SIZE,

@@ -57,7 +57,7 @@ export const ORDER_STATUS_PROGRESS_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;
 export const ORDER_STATUS_CANCELLED_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;
-export const ORDER_DELIVERIES_BY_DELIVERER = `${BASE_URL_V2}shopping-orders/by-business-site-domain/`;
+export const ORDER_DELIVERIES_BY_DELIVERER = `${BASE_URL_V2}shopping-orders/by-business-id/`;
 
 export const ORDER_ONLINE_PAYMENT_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/payment-transaction/`;
