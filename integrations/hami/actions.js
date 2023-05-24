@@ -413,7 +413,7 @@ export const createOrUpdateHamiOrders = async (
 
   const orders = result.response
     .filter(
-      (order) =>!order.Description.includes("وب سایت") && (skipBranchIdFilter ||  parseInt(order.BranchId) === parseInt(null))
+      (order) =>!order.Description.includes("وب سایت") && (skipBranchIdFilter ||  parseInt(order.BranchId) === parseInt(BranchId))
     )
     .map((order) => {
       const matcher = new RegExp(/\[Wallet([0-9]+)],\[Gift([0-9]+)]/);
