@@ -28,6 +28,29 @@ import { deliveryTypes } from "../../src/constants/order";
 
 export const init = () => {};
 
+const getPaymentIdHami = (order) => {
+  let maxValue = 0; 
+  let maxKey = '';
+  
+  for (const key in order.paid_price_details) {
+    if (order.paid_price_details.hasOwnProperty(key)) {
+      const value = obj[key];
+      if (value > maxValue) {
+        maxValue = value;
+        maxKey = key;
+      }
+    }
+  }
+  switch (maxKey) {
+    case 'online':
+      return 1;
+    case 'wallet':
+      return 2;   
+    default:
+      return 3;   
+  }
+}
+
 export const submitHamiOrder = async (order) => {
   try {
     const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
@@ -58,7 +81,7 @@ export const submitHamiOrder = async (order) => {
         BranchId: order.business_pos_id ? order.business_pos_id : 0,
         OrderDate: orderDate,
         OrderTime: orderTime,
-        CustomerCode: `${order.user_id}`,
+        CustomerCode: order.user_id,
         FirstName: order.user_address?.name || "-",
         LastName: "-",
         Phone: order.user_address?.phone || "-",
@@ -96,7 +119,7 @@ export const submitHamiOrder = async (order) => {
           (localStorage.getItem("hamiCurrencyConvert") ? 10 : 1),
         Remaining: 0,
         CommissionPrice: 0,
-        PaymentTypeId: parseInt(order.payment_status) === 2 ? 1 : 3,
+        PaymentTypeId: getPaymentIdHami(order),
         DiscountCode: "-",
         Latitude: `${order.user_address?.latitude || "-"}`,
         Longitude: `${order.user_address?.longitude || "-"}`,
@@ -237,7 +260,6 @@ export const createOrUpdateHamiDeals = async (
         ) || []
       ).map((cat) => parseInt(cat.id));
       return {
-        is_active: true,
         pos_id: deal.GoodsId,
         pos_code: deal.GoodsCode,
         title: deal.GoodsName,
@@ -271,7 +293,6 @@ export const createOrUpdateHamiDeals = async (
         ) || []
       ).map((cat) => parseInt(cat.id));
       return {
-        is_active: true,
         pos_id: deal.GoodsId,
         pos_code: deal.GoodsCode,
         title: deal.GoodsName,
