@@ -256,7 +256,10 @@ function Layout({
           <div className="d-flex align-items-center h-100">
             <select
               className="px-3 u-fontWeightBold u-text-primary-blue"
-              onChange={(e) => changeBusiness(e.target.value)}
+              onChange={(e) => {
+                const foundBusiness = businesses?.find(business => business.site_domain === e.target.value)
+                changeBusiness(e.target.value, foundBusiness?.id)
+              }}
             >
               {businesses &&
                 businesses.map((business) => (

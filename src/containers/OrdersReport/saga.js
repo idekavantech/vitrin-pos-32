@@ -9,19 +9,19 @@ import {
   ADMIN_ORDERS_PAGE_SIZE,
   GET_ORDERS_REPORT,
 } from './constants';
-import { makeSelectSubDomain } from '../App/selectors';
+import { makeSelectBusinessId, makeSelectSubDomain } from '../App/selectors';
 import { startProgressLoading, stopProgressLoading } from '../App/actions';
 
 export function* getAdminOrdersFunc(action) {
   try {
     yield put(startProgressLoading());
-    const domain = yield select(makeSelectSubDomain());
+    const businessId = yield select(makeSelectBusinessId());
     const {
       response: { data, pagination },
     } = yield call(
       request,
       BUSINESS_ORDERS_API('shopping'),
-      { ...action.data, page_size: ADMIN_ORDERS_PAGE_SIZE, domain },
+      { ...action.data, page_size: ADMIN_ORDERS_PAGE_SIZE, business_id: businessId },
       'GET',
     );
     const pagesCount = Math.ceil(pagination.count / ADMIN_ORDERS_PAGE_SIZE);

@@ -16,11 +16,11 @@ export function defaultAction() {
   };
 }
 
-export function getAdminOrders(data, domain) {
+export function getAdminOrders(data, businessId) {
   return {
     type: GET_ADMIN_ORDERS,
     data,
-    domain
+    businessId
   };
 }
 

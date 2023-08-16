@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { renderToString } from "react-dom/server";
 import ComponentToPrint from "../../components/ComponentToPrint";
 import {
-  makeSelectBusiness,
+  makeSelectBusiness, makeSelectBusinessId,
   makeSelectBusinessSiteDomain,
   makeSelectBusinessTitle,
   makeSelectPrinterOptions,
@@ -42,6 +42,7 @@ const OnlineOrders = function ({
   _getAdminOrders,
   progressLoading,
   siteDomain,
+                                 businessId,
   pagination,
   location
 }) {
@@ -100,8 +101,8 @@ const OnlineOrders = function ({
 
   const page = getQueryParams("page", location.search) || 1;
   useEffect(() => {
-    _getAdminOrders({ page }, siteDomain);
-  }, [page, siteDomain]);
+    _getAdminOrders({ page }, businessId);
+  }, [page, siteDomain, businessId]);
   return (
     <div className="u-border-radius-8 container px-0 container-shadow overflow-hidden flex-1">
       <div className="d-flex px-5 py-3">
@@ -110,7 +111,7 @@ const OnlineOrders = function ({
         </span> */}
         <HamiOrdersFilter
           siteDomain={siteDomain}
-          updateOrders={(rest) => _getAdminOrders({ page, ...rest }, siteDomain)}
+          updateOrders={(rest) => _getAdminOrders({ page, ...rest }, businessId)}
           salesChannels={salesChannels}
         />
       </div>
@@ -142,6 +143,7 @@ const mapStateToProps = createStructuredSelector({
   pagination: makeSelectAdminOrdersPagination(),
   businessTitle: makeSelectBusinessTitle(),
   siteDomain: makeSelectBusinessSiteDomain(),
+  businessId: makeSelectBusinessId(),
   business:makeSelectBusiness(),
   printOptions: makeSelectPrinterOptions(),
   businesses: makeSelectBusinesses(),
@@ -150,7 +152,7 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    _getAdminOrders: (data, siteDomain) => dispatch(getAdminOrders(data, siteDomain)),
+    _getAdminOrders: (data, businessId) => dispatch(getAdminOrders(data, businessId)),
   };
 }
 

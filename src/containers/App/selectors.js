@@ -41,6 +41,9 @@ const makeSelectError = () =>
 const makeSelectSubDomain = () =>
   createSelector(selectGlobal, (globalState) => globalState.subdomain);
 
+const makeSelectBusinessId = () =>
+  createSelector(selectGlobal, (globalState) => globalState.businessId);
+
 const makeSelectLocation = () =>
   createSelector(selectRouter, (routerState) => routerState.location);
 
@@ -66,5 +69,6 @@ export {
   makeSelectProgressLoading,
   makeSelectHamiModal,
   makeSelectFirebaseToken,
-  makeSelectServerTime
+  makeSelectServerTime,
+  makeSelectBusinessId
 };

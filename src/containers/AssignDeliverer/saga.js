@@ -21,11 +21,13 @@ import {
 } from "../App/actions";
 import { setSnackBarMessage } from "../../../stores/ui/actions";
 import { SHOPPING_PLUGIN } from "../../../utils/constants";
+import {makeSelectBusinessId} from "../../../stores/business/selector";
 
 export function* getOrdersFunc(action) {
   try {
     yield put(startProgressLoading());
     const domain = yield select(makeSelectSubDomain());
+    const businessId = yield select(makeSelectBusinessId());
     const page = action.data.page || 1;
     const body = { domain };
     body.delivery_company = action.data.hasDeliverer;
@@ -36,9 +38,10 @@ export function* getOrdersFunc(action) {
       BUSINESS_ORDERS_SORTED_BY_DELIVERER_API(
         SHOPPING_PLUGIN,
         page,
-        ORDERS_PAGE_SIZE
+        ORDERS_PAGE_SIZE,
+
       ),
-      { ...body },
+      { ...body, business_id: businessId },
       "GET"
     );
     const pagesCount = Math.ceil(pagination.count / ORDERS_PAGE_SIZE);

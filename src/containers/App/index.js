@@ -55,7 +55,7 @@ import EditVariant from "../EditVariant";
 import Analytics from "../Analytics";
 import OrdersReport from "../OrdersReport";
 import {
-  acceptOrder,
+  acceptOrder, setBusinessId,
   setFirebaseToken,
   setSiteDomain,
   toggleHamiModal,
@@ -104,6 +104,7 @@ const App = function ({
   businessTitle,
   progressLoading,
   _setSiteDomain,
+                        _setBusinessId,
   businesses,
   _getBusiness,
   reload,
@@ -229,8 +230,11 @@ const App = function ({
         siteDomain !== siteDomainFromLocalStorage &&
         siteDomainFromLocalStorage &&
         siteDomainFromLocalStorage !== "undefined"
-      )
+      ) {
+        const foundBusiness = businesses.find((business => business.site_domain === siteDomainFromLocalStorage))
         _setSiteDomain(siteDomainFromLocalStorage);
+        _setBusinessId(foundBusiness?.id)
+      }
     }
   }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)]);
 
@@ -363,9 +367,10 @@ const App = function ({
         <LoadingIndicator />
       </div>
     );
-  const onChangeBusiness = (value) => {
-    localStorage.setItem(SELECTED_SITE_DOMAIN, value);
-    _setSiteDomain(value);
+  const onChangeBusiness = (businessSiteDomain, businessId) => {
+    localStorage.setItem(SELECTED_SITE_DOMAIN, businessSiteDomain);
+    _setSiteDomain(businessSiteDomain);
+    _setBusinessId(businessId)
   };
   return (
     <>
@@ -515,6 +520,7 @@ function mapDispatchToProps(dispatch) {
   return {
     _getBusiness: () => dispatch(getBusiness()),
     _setSiteDomain: (domain) => dispatch(setSiteDomain(domain)),
+    _setBusinessId: (businessId) => dispatch(setBusinessId(businessId)),
     _getBusinesses: () => dispatch(getBusinesses()),
     _getAdminOrders: () => dispatch(getAdminOrders({ page: 1 })),
     _setSnackBarMessage: (message, type) =>

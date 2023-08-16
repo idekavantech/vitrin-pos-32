@@ -10,24 +10,22 @@ import {
   startProgressLoading,
   stopProgressLoading,
 } from "../App/actions";
-import { makeSelectBusinessSiteDomain } from "../../../stores/business/selector";
+import {makeSelectBusinessId, makeSelectBusinessSiteDomain} from "../../../stores/business/selector";
 import { SHOPPING_PLUGIN } from "../../../utils/constants";
 
 export function* getAdminOrdersFunc(action) {
   try {
     yield put(startProgressLoading());
     yield put(setAdminOrders(null));
-    const domain = yield select(makeSelectBusinessSiteDomain());
+    const businessId = yield select(makeSelectBusinessId());
+    console.log(businessId,'businessId',action.businessId)
     const {
       response: { data, pagination },
     } = yield call(
       request,
       BUSINESS_ORDERS_API(SHOPPING_PLUGIN,action?.data?.page || 1,
-        action?.data?.page_size || 20, true, domain),
-      {
-        domain: action.domain || domain,
-        site_domain: action.site_domain || domain,
-        sales_channel: null,
+        action?.data?.page_size || 20, true),
+      {  business_id: action.businessId || businessId, sales_channel: null,
         ...action.data,
       },
       "GET"

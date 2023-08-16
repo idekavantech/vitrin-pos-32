@@ -37,7 +37,7 @@ export const USER_ORDERS_ITEMS_API = (id, plugin) =>
 export const BUSINESS_ORDERS_API = (plugin = '',   page = 1,
                                     pageSize = 20,
                                     hasPaginate = true) =>
-  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&has_paginate=${hasPaginate}`;
+  `${BASE_URL_V2}${plugin}-orders/by-business-id/?page=${page}&page_size=${pageSize}&has_paginate=${hasPaginate}`;
 export const CUSTOMER_ORDERS_API = `${BASE_URL_V2}shopping-orders/by-business-by-user-id/`;
 export const BUSINESS_LIGHT_BY_SITE_DOMAIN_API = (subDomain) =>
   `${BASE_URL_V2}businesses/${subDomain}/light-by-site-domain/`;
@@ -51,7 +51,7 @@ export const BUSINESS_ORDERS_SORTED_BY_DELIVERER_API = (
   page,
   pageSize
 ) =>
-  `${BASE_URL_V2}${plugin}-orders/by-business-site-domain/?page=${page}&page_size=${pageSize}&status=50&status=60&status=70&status=80&status=90&status=100`;
+  `${BASE_URL_V2}${plugin}-orders/by-business-id/?page=${page}&page_size=${pageSize}&status=50&status=60&status=70&status=80&status=90&status=100`;
 
 export const ORDER_STATUS_PROGRESS_API = (id, plugin) =>
   `${BASE_URL_V2}${plugin}-orders/${id}/change-status/`;

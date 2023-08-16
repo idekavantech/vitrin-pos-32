@@ -29,9 +29,9 @@ import { deliveryTypes } from "../../src/constants/order";
 export const init = () => {};
 
 const getPaymentIdHami = (order) => {
-  let maxValue = 0; 
+  let maxValue = 0;
   let maxKey = '';
-  
+
   for (const key in order.paid_price_details) {
     if (order.paid_price_details.hasOwnProperty(key)) {
       const value = obj[key];
@@ -45,9 +45,9 @@ const getPaymentIdHami = (order) => {
     case 'online':
       return 1;
     case 'wallet':
-      return 2;   
+      return 2;
     default:
-      return 3;   
+      return 3;
   }
 }
 
@@ -82,8 +82,8 @@ export const submitHamiOrder = async (order) => {
         OrderDate: orderDate,
         OrderTime: orderTime,
         CustomerCode: order.user_id,
-        FirstName: order.user_address?.name || "-",
-        LastName: "-",
+        FirstName: order.user_address?.name?.split(" ")?.[0] || "-",
+        LastName: order.user_address?.name?.split(" ")?.filter((_,i) => i !== 0 )?.join(' ') || "-",
         Phone: order.user_address?.phone || "-",
         CellPhone: order.user_address?.phone || "-",
         LocationId: 0,
