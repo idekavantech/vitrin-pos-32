@@ -34,13 +34,15 @@ const getPaymentIdHami = (order) => {
 
   for (const key in order.paid_price_details) {
     if (order.paid_price_details.hasOwnProperty(key)) {
-      const value = obj[key];
+      const value = order.paid_price_details[key];
+
       if (value > maxValue) {
         maxValue = value;
         maxKey = key;
       }
     }
   }
+  console.log(maxKey,'maxKey')
   switch (maxKey) {
     case 'online':
       return 1;

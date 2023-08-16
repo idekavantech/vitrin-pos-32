@@ -18,7 +18,8 @@ export function* getAdminOrdersFunc(action) {
     yield put(startProgressLoading());
     yield put(setAdminOrders(null));
     const businessId = yield select(makeSelectBusinessId());
-    console.log(businessId,'businessId',action.businessId)
+    const domain = yield select(makeSelectSubDomain());
+
     const {
       response: { data, pagination },
     } = yield call(
