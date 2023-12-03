@@ -168,13 +168,13 @@ function createWindow() {
       event.preventDefault();
       dialog
         .showMessageBox(this, {
-          type: "question",
-          buttons: ["بله", "خیر"],
+          type: "warning",
+          buttons: ["خیر", "بله"],
           title: "خروج از برنامه",
           message: "می‌خواهید از برنامه خارج شوید؟",
         })
         .then((result) => {
-          if (result.response === 0) {
+          if (result.response === 1) {
             isQuiting = true;
             app.quit();
           }
