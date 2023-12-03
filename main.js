@@ -7,7 +7,15 @@ Sentry.init({
   dsn: "https://f10f2a0b0cb94dc6bfb819be6171641a@sentry.hamravesh.com/91",
 });
 
-const { app, BrowserWindow, ipcMain, screen, Tray, Menu } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  screen,
+  Tray,
+  Menu,
+  dialog,
+} = require("electron");
 const path = require("path");
 const url = require("url");
 const axios = require("axios");
@@ -107,7 +115,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
-      webSecurity: false
+      webSecurity: false,
     },
   });
   if (!dev) {
@@ -155,10 +163,22 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+
     if (!isQuiting) {
       event.preventDefault();
-      mainWindow.hide();
-      event.returnValue = false;
+      dialog
+        .showMessageBox(this, {
+          type: "question",
+          buttons: ["بله", "خیر"],
+          title: "خروج از برنامه",
+          message: "می‌خواهید از برنامه خارج شوید؟",
+        })
+        .then((result) => {
+          if (result.response === 0) {
+            isQuiting = true;
+            app.quit();
+          }
+        });
     }
   });
   mainWindow.on("closed", function (event) {
@@ -177,7 +197,7 @@ function createWindow() {
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
-      webSecurity: false
+      webSecurity: false,
     },
   });
   workerWindow.loadURL("file://" + __dirname + "/assets/printerWindow.html");
@@ -240,7 +260,9 @@ ipcMain.on("hideNotification", () => {
 
 ipcMain.on("redirectOrder", async (event, order) => {
   if (order) {
-    await mainWindow.webContents.executeJavaScript(`localStorage.setItem("selectedSiteDomain", "${order.siteDomain}")`);
+    await mainWindow.webContents.executeJavaScript(
+      `localStorage.setItem("selectedSiteDomain", "${order.siteDomain}")`
+    );
     mainWindow.webContents.send("redirectOrder", order);
   }
 });

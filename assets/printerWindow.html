@@ -42,6 +42,11 @@
           },
           (status, message) => {
             if (!status) {
+              console.log("error on print: ",{
+                message,
+                business: url,
+                device:printOptions.device
+              });
               ipcRenderer.send(
                 "sentryError",
                 `message: ${message},\n

@@ -16,6 +16,10 @@ import {
 } from "../../../stores/business/selector";
 import CheckBox from "../../components/CheckBox";
 import { makeSelectBusinesses } from "../../../stores/user/selector";
+import {
+  HAMI_PREVENT_SEND_ORDERS,
+  HAMI_PREVENT_ACCEPT_ORDERS,
+} from "../../constants/hami";
 
 function HamiSettings({
   _setSnackBarMessage,
@@ -33,7 +37,10 @@ function HamiSettings({
     localStorage.getItem("hamiCurrencyConvert") === "true"
   );
   const [sendOrders, setSendOrders] = useState(
-    localStorage.getItem("hamiPreventSendOrders") === "true"
+    localStorage.getItem(HAMI_PREVENT_SEND_ORDERS) === "true"
+  );
+  const [preventAcceptOrders, setPreventAcceptOrders] = useState(
+    localStorage.getItem(HAMI_PREVENT_ACCEPT_ORDERS) === "true"
   );
   const branchId = businesses?.find(
     (business) => business.site_domain === siteDomain
@@ -139,13 +146,31 @@ function HamiSettings({
                 checked={sendOrders}
                 onChange={(checked) => {
                   setSendOrders(checked);
-                  if (checked) localStorage.setItem("hamiPreventSendOrders", "true");
-                  else localStorage.removeItem("hamiPreventSendOrders");
+                  if (checked)
+                    localStorage.setItem(HAMI_PREVENT_SEND_ORDERS, "true");
+                  else localStorage.removeItem(HAMI_PREVENT_SEND_ORDERS);
                 }}
                 text="سفارش‌های دریافتی به سرور حامی ارسال نشود."
               />
             </div>
-
+            <div className="col-6 mt-4">
+              <CheckBox
+                className="u-fontMedium"
+                label="defaultCheck5"
+                checked={preventAcceptOrders}
+                onChange={(checked) => {
+                  setPreventAcceptOrders(checked);
+                  if (checked)
+                    localStorage.setItem(HAMI_PREVENT_ACCEPT_ORDERS, "true");
+                  else localStorage.removeItem(HAMI_PREVENT_ACCEPT_ORDERS);
+                }}
+                text="سفارش‌های دریافتی پیش از ارسال به حامی تایید نشود."
+              />
+              <p className="u-fontSmall mt-2">
+                در صورت فعال کردن این گزینه، نیاز است برای تایید سفارش حتما از
+                هر دو برنامه (حامی و ویترین) اقدام کنید.
+              </p>
+            </div>
           </div>
         </div>
       </div>

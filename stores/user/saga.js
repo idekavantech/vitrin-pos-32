@@ -28,6 +28,7 @@ import { setSnackBarMessage } from "../ui/actions";
 import { setLoginCallBack, setToken, setUser, setBusinesses } from "./actions";
 import { makeSelectBusinesses, makeSelectLoginCallBack } from "./selector";
 import { getBusinessData } from "../business/saga";
+import { TOKEN_STORAGE_KEY } from "../../src/constants/auth";
 
 export function* login(payload) {
   try {
@@ -36,10 +37,19 @@ export function* login(payload) {
     const dto = {
       phone: data,
     };
-    yield call(request, LOGIN_API, dto, "POST");
-    yield put(
-      setSnackBarMessage("کد تایید به موبایل شما پیامک شد.", "default")
-    );
+    const {
+      status,
+      response: {
+        data: { key },
+      },
+    } = yield call(request, LOGIN_API, dto, "POST");
+    if (key && status === 200) {
+      sessionStorage.setItem("JWT_KEY", key);
+      yield put(
+        setSnackBarMessage("کد تایید به موبایل شما پیامک شد.", "default")
+      );
+    }
+
     yield put(stopLoading());
   } catch (err) {
     yield put(stopLoading());
@@ -52,19 +62,23 @@ export function* verify(action) {
     const {
       data: { username, password },
     } = action;
+
     const dto = {
       username,
       password,
+      business_id: 953261,
+      key: sessionStorage.getItem("JWT_KEY"),
     };
+
     const {
-      response: { meta, data: userToken },
+      response: { meta, data: tokensData },
     } = yield call(request, VERIFY_API, dto, "POST");
     if (meta.status_code >= 200 && meta.status_code <= 300) {
-      const { token, user } = userToken;
-      yield put(setToken(token));
-      yield put(setUser(user));
-      localStorage.setItem("token", token);
-      Axios.defaults.headers.common.Authorization = `Token ${token}`;
+      const { access } = tokensData;
+      yield put(setToken(access));
+      localStorage.setItem(TOKEN_STORAGE_KEY, access);
+      sessionStorage.removeItem("JWT_KEY");
+      Axios.defaults.headers.common.Authorization = `Bearer ${access}`;
       yield call(getBusinesses);
       action.history.push("/orders");
       yield put(stopLoading());

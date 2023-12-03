@@ -53,23 +53,23 @@ import { CANCEL_ORDER_LOADING } from "../OnlineOrders/constants";
 import { SHOPPING_PLUGIN } from "../../../utils/constants";
 import ButtonLoading from "../../components/Button/Loading";
 export function OnlineOrder({
-                              adminOrder: order,
-                              loading,
-                              loadingCancelOrder,
-                              _getAdminOrder,
-                              match,
-                              _acceptOrder,
-                              _cancelOrder,
-                              history,
-                              business,
-                              pluginData,
-                              printOptions,
-                              ـrequestAlopeyk,
-                              _requestMiare,
-                              _getCustomerOrders,
-                              customerOrders,
-                              businesses,
-                            }) {
+  adminOrder: order,
+  loading,
+  loadingCancelOrder,
+  _getAdminOrder,
+  match,
+  _acceptOrder,
+  _cancelOrder,
+  history,
+  business,
+  pluginData,
+  printOptions,
+  ـrequestAlopeyk,
+  _requestMiare,
+  _getCustomerOrders,
+  customerOrders,
+  businesses,
+}) {
   useInjectReducer({ key: "adminOrder", reducer });
   useInjectSaga({ key: "adminOrder", saga });
   useEffect(() => {
@@ -88,9 +88,10 @@ export function OnlineOrder({
   }, [order]);
 
   const printOrder = useCallback(() => {
-    printOptions.printers.map((p, index) => {
-      if (p.isActive) {
-        ipcRenderer.sendSync(
+    printOptions.printers.forEach((printer, index) => {
+      if (printer.isActive) {
+        console.log({ printer });
+        ipcRenderer.send(
           "print",
           renderToString(
             <ComponentToPrint
@@ -435,7 +436,7 @@ export function OnlineOrder({
                     </div>
                   )}
                   <div className="d-flex flex-wrap mt-4">
-                    {Object.values(deliverers).map((d,index) => (
+                    {Object.values(deliverers).map((d, index) => (
                       <div
                         className={`d-flex col-6 px-0 mt-2 u-cursor-pointer ${
                           order.order_status !== 40 && "u-pointer-events-none"
@@ -488,17 +489,17 @@ export function OnlineOrder({
                   className="d-flex ml-2 u-border-radius-50-percent u-background-primary-blue"
                   style={{ width: 20, height: 20 }}
                 >
-                  {!loadingCancelOrder &&
+                  {!loadingCancelOrder && (
                     <Icon
-                    icon={ICONS.CLOSE}
-                    size={25}
-                    width={20}
-                    height={20}
-                    color="white"
-                  />}
-
+                      icon={ICONS.CLOSE}
+                      size={25}
+                      width={20}
+                      height={20}
+                      color="white"
+                    />
+                  )}
                 </div>
-                {loadingCancelOrder ? 'در حال بارگزاری...' : 'لغو سفارش'}
+                {loadingCancelOrder ? "در حال بارگزاری..." : "لغو سفارش"}
               </button>
             </>
           )}
