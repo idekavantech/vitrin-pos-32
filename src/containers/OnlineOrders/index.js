@@ -67,7 +67,7 @@ const OnlineOrders = function ({
     printOptions.printers.map((p, index) => {
       if (p.isActive) {
         console.log({ p });
-        ipcRenderer.send(
+        ipcRenderer.sendSync(
           "print",
           renderToString(
             <ComponentToPrint

@@ -91,7 +91,7 @@ export function OnlineOrder({
     printOptions.printers.forEach((printer, index) => {
       if (printer.isActive) {
         console.log({ printer });
-        ipcRenderer.send(
+        ipcRenderer.sendSync(
           "print",
           renderToString(
             <ComponentToPrint

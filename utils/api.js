@@ -8,7 +8,7 @@ export const EMAIL_API = `${BASE_URL}send_custom_email/`;
 export const FILE_SERVER_URL_API = `${BASE_URL}get_minio_url/`;
 
 // User API
-export const LOGIN_API = `${BASE_URL_V2}businesses/kvioavomcf/vitrin-verification/`;
+export const LOGIN_API = `${BASE_URL_V2}businesses/kvioavomcf/pos-vitrin-verification/`;
 export const VERIFY_API = `${BASE_URL_V2}jwt/`;
 export const USER_INFO_API = `${BASE_URL}users/self/`;
 export const PUSH_NOTIFICATION_API = `${BASE_URL}push_notification_client/`;
