@@ -44,6 +44,8 @@ function PrinterSettings({ options, _setPrinterOptions, business }) {
           device: "",
           size: "۸ سانتی‌متری",
           isActive: true,
+          isNotSilent: false,
+          dpi: 0,
           copies: 1,
           factor: {},
         },
@@ -185,6 +187,39 @@ function PrinterSettings({ options, _setPrinterOptions, business }) {
                     submitChanges({ printers: newPrinters });
                   }}
                 />
+              </div>
+              <div className="col-6">
+                <div className="u-text-black">انتخاب تنظیمات در زمان چاپ</div>
+                <Switch
+                  isSwitchOn={printers[index].isNotSilent}
+                  toggleSwitch={() => {
+                    let newPrinters = [...printers];
+                    newPrinters[index] = {
+                      ...newPrinters[index],
+                      isNotSilent: !printers[index].isNotSilent,
+                    };
+                    submitChanges({ printers: newPrinters });
+                  }}
+                />
+              </div>
+              <div className="col-6">
+                <Input
+                  className="mt-3"
+                  value={englishNumberToPersianNumber(printers[index].dpi ?? 0)}
+                  onChange={(dpi) => {
+                    let newPrinters = [...printers];
+                    newPrinters[index] = {
+                      ...newPrinters[index],
+                      dpi: +persianToEnglishNumber(dpi),
+                    };
+                    submitChanges({ printers: newPrinters });
+                  }}
+                  label="مقدار dpi"
+                />
+                <p className="u-fontVerySmall">
+                  از 70 تا 4000 انتخاب کنید (با انتخاب مقدار 0، از مقدار پیش فرض
+                  سیستم استفاده کنید) بین
+                </p>
               </div>
               <div
                 className="u-text-primary-blue u-cursor-pointer col-12 mt-2"

@@ -34,12 +34,14 @@
         })();
         getCurrentWebContents().print(
           {
-            silent: true,
-            deviceName: printOptions.device,
-            copies: printOptions.copies,
-            landscape: false,
-            margins: { marginType: "none" },
-          },
+              silent: !printOptions.isNotSilent,
+              deviceName: printOptions.device,
+              copies: printOptions.copies,
+              landscape: false,
+              margins: { marginType: "none" },
+              ...(!!printOptions.dpi ? { dpi: { horizontal: +printOptions.dpi || 72, vertical: +printOptions.dpi || 72 } } : {})
+          }
+          ,
           (status, message) => {
             if (!status) {
               console.log("error on print: ",{
