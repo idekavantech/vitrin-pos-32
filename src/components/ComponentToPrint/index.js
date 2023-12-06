@@ -505,6 +505,12 @@ export default class ComponentToPrint extends React.Component {
         <div className="mt-1 px-3 text-center">
           <span>{url}</span>
         </div>
+        <div
+          className="mt-2 d-flex justify-content-center align-items-center"
+          style={{ fontSize: 11 }}
+        >
+          <span>قدرت گرفته از ویترین</span>
+        </div>
       </div>
     );
   }
