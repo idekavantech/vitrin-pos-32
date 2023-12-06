@@ -21,7 +21,9 @@ export default class ComponentToPrint extends React.Component {
       phone_zero_starts: phone,
     } = business;
     const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
-    const date = moment(order.submitted_at + timeOffset).format("jYYYY/jMM/jDD - HH:mm:ss");
+    const date = moment(order.submitted_at + timeOffset).format(
+      "jYYYY/jMM/jDD - HH:mm:ss"
+    );
     const sortedItems = [...order.items];
     sortedItems.sort((a, b) => {
       let firstTotal = a.discounted_price;
@@ -45,17 +47,39 @@ export default class ComponentToPrint extends React.Component {
       ""
     );
     const finalCost = order.should_pay;
-
+    const getHowOrderIsPaidText = () => {
+      if (finalCost > 0 && order.paid_price === 0) return "نقدی دریافت شود"; // چیزی پرداخت نکرده
+      if (finalCost === 0 && order.paid_price === order.total_price)
+        // کامل پرداخت کرده
+        return "آنلاین پرداخت شد";
+      if (finalCost > 0) return `${priceFormatter(finalCost)} دریافت شود`; // یه مبلغی باقی مانده
+      if (finalCost < 0) return `${priceFormatter(finalCost)} عودت داده شود`; // مبلغی باید عودت داده بشه
+    };
+    const { hasNoBlackBackground } = printOptions;
     return (
       <div
-        className="bg-white u-text-black w-100 printable px-3"
+        className="bg-white u-text-black w-100 printable px-3 py-1"
         style={{
           width: isLarge ? "100%" : "calc(100% - 60px)",
           marginRight: isLarge ? 0 : 30,
           minWidth: 300,
           fontSize: isLarge ? 14 : 12,
+          ...(printOptions.hasNoBorders ? { border: "1px solid #000" } : {}),
         }}
       >
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+         
+                .factor-table td, .factor-table th {
+                  padding: 2px;
+                }
+                .factor-table tfoot td {
+                  border-top: 1px solid #000; 
+                }
+        `,
+          }}
+        />
         <div className="py-1 px-2 u-border-bottom-dark">
           <div className="d-flex justify-content-between align-items-center">
             <span
@@ -97,6 +121,12 @@ export default class ComponentToPrint extends React.Component {
               {englishNumberToPersianNumber(date)}
             </span>
           </div>
+          {!printOptions.hideOrderNumber && (
+            <div className="mt-1">
+              <span>شماره سفارش: </span>
+              <span className="u-fontWeightBold">{order.order_id}</span>
+            </div>
+          )}
 
           {!printOptions.hideCustomerName && (
             <div className="mt-1">
@@ -108,39 +138,9 @@ export default class ComponentToPrint extends React.Component {
               )}
             </div>
           )}
-
-          {!printOptions.hideOrderNumber && (
-            <div className="mt-1">
-              <span>شماره سفارش: </span>
-              <span className="u-fontWeightBold">{order.order_id}</span>
-            </div>
-          )}
-          {!printOptions.hideCustomerAddress && (
-            <div className="mt-1">
-              <span> آدرس سفارش دهنده: </span>
-              {order.delivery_on_site ? (
-                <span
-                  style={{ fontSize: isLarge ? 18 : 16 }}
-                  className="u-fontWeightBold"
-                >
-                  {order.delivery_site_type === "delivery_on_car"
-                    ? "تحویل در ماشین"
-                    : `تحویل در محل ${business.revised_title}`}
-                </span>
-              ) : null}
-              {order.user_address && !order.delivery_on_site ? (
-                <span
-                  style={{ fontSize: isLarge ? 18 : 16 }}
-                  className="u-fontWeightBold"
-                >
-                  {order.user_address.address}
-                </span>
-              ) : null}
-            </div>
-          )}
           {!printOptions.hideCustomerPhone && (
             <div className="mt-1">
-              <span>تلفن: </span>
+              <span>موبایل: </span>
               {order.user_address && (
                 <span className="u-fontWeightBold">
                   {order.user_address.phone}
@@ -149,12 +149,30 @@ export default class ComponentToPrint extends React.Component {
             </div>
           )}
 
+          {!printOptions.hideCustomerAddress && (
+            <div className="mt-1">
+              <span> آدرس سفارش دهنده: </span>
+              {order.delivery_on_site ? (
+                <span className="u-fontWeightBold">
+                  {order.delivery_site_type === "delivery_on_car"
+                    ? "تحویل در ماشین"
+                    : `تحویل در محل ${business.revised_title}`}
+                </span>
+              ) : null}
+              {order.user_address && !order.delivery_on_site ? (
+                <span className="u-fontWeightBold">
+                  {order.user_address.address}
+                </span>
+              ) : null}
+            </div>
+          )}
+
           {!printOptions.hideDetails && (
             <div className="mt-1">
               <span>جزئیات ارسال: </span>
               <span
                 className="u-fontWeightBold"
-                style={{ whiteSpace: "pre-wrap" }}
+                style={{ whiteSpace: "pre-wrap", fontSize: isLarge ? 17 : 15 }}
               >
                 {(order && order.description) || "ندارد"}
               </span>
@@ -188,7 +206,7 @@ export default class ComponentToPrint extends React.Component {
                   )}
                   {order?.user_address?.extra_data?.color && (
                     <div className="mr-4">
-                      رنگ:{order?.user_address?.extra_data?.color}
+                      رنگ: {order?.user_address?.extra_data?.color}
                     </div>
                   )}
                   {order?.user_address?.extra_data?.plate_number && (
@@ -235,49 +253,50 @@ export default class ComponentToPrint extends React.Component {
         </div>
 
         {!printOptions.hideItems && (
-          <div>
-            <div className="pt-1">
-              <div className="d-flex flex-row px-2 mt-1 u-border-bottom-dark py-1 u-background-black u-text-white">
-                <div
-                  style={{
-                    width: !printOptions.hideItemPrices ? 160 : 320,
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  نام
-                </div>
-
-                <div className="text-center" style={{ width: 35 }}>
-                  تعداد
-                </div>
-
-                {!printOptions.hideItemPrices ? (
-                  <>
-                    <div className="text-center" style={{ width: 80 }}>
-                      فی
-                    </div>
-
-                    <div className="text-center" style={{ width: 80 }}>
-                      قیمت کل
-                    </div>
-                  </>
-                ) : null}
+          <div
+            className="factor-table my-1"
+            style={{
+              borderTop: "1px solid #000",
+              borderBottom: "1px solid #000",
+            }}
+          >
+            <div
+              className={`d-flex flex-row ${
+                hasNoBlackBackground ? "u-background-black u-text-white" : ""
+              }`}
+            >
+              <div
+                style={{
+                  width: !printOptions.hideItemPrices ? 160 : 320,
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                نام
               </div>
+              {!printOptions.hideItemPrices && (
+                <div className="text-center" style={{ width: 80 }}>
+                  فی
+                </div>
+              )}
+              <div className="text-center" style={{ width: 35 }}>
+                تعداد
+              </div>
+              {!printOptions.hideItemPrices && (
+                <div className="text-center" style={{ width: 80 }}>
+                  قیمت کل
+                </div>
+              )}
             </div>
+
             {sortedItems.map((item) => (
               <React.Fragment key={item.id}>
                 <div
-                  className={`d-flex flex-row px-2 ${
-                    item.modifiers && item.modifiers.length
-                      ? "pt-1"
-                      : "u-border-bottom-dark py-1"
-                  }`}
-                  key={`order-item-${item.id}`}
+                  className="d-flex flex-row"
+                  style={{ borderTop: "1px solid #000" }}
                 >
                   <div
-                    className="u-fontWeightBold"
                     style={{
-                      fontSize: isLarge ? 18 : 16,
+                      fontSize: isLarge ? 16 : 14,
                       width: !printOptions.hideItemPrices ? 160 : 320,
                       whiteSpace: "pre-wrap",
                     }}
@@ -286,34 +305,31 @@ export default class ComponentToPrint extends React.Component {
                     {item.variation_title !== item.product_title &&
                       `(${item.variation_title})`}
                   </div>
+                  {!printOptions.hideItemPrices && (
+                    <div className="text-center" style={{ width: 80 }}>
+                      {priceFormatter(item.discounted_price)}
+                    </div>
+                  )}
                   <div
-                    className="text-center u-fontWeightBold"
+                    className="text-center"
                     style={{ fontSize: isLarge ? 18 : 16, width: 35 }}
                   >
                     {englishNumberToPersianNumber(item.amount)}
                   </div>
-
-                  {!printOptions.hideItemPrices ? (
-                    <>
-                      <div className="text-center" style={{ width: 80 }}>
-                        {priceFormatter(item.discounted_price)}
-                      </div>
-                      <div className="text-center" style={{ width: 80 }}>
-                        {priceFormatter(
-                          item.discounted_price * item.amount
-                        )}
-                      </div>
-                    </>
-                  ) : null}
+                  {!printOptions.hideItemPrices && (
+                    <div className="text-center" style={{ width: 80 }}>
+                      {priceFormatter(item.discounted_price * item.amount)}
+                    </div>
+                  )}
                 </div>
                 {item.modifiers && item.modifiers.length
                   ? item.modifiers.map((_item) => (
                       <div
-                        className="d-flex flex-row px-2 pb-1 u-border-bottom-dark"
+                        className="d-flex flex-row"
                         key={`order-item-${_item.id}`}
+                        style={{ fontSize: isLarge ? 14 : 12 }}
                       >
                         <div
-                          className=""
                           style={{
                             width: !printOptions.hideItemPrices ? 160 : 320,
                             whiteSpace: "pre-wrap",
@@ -321,29 +337,60 @@ export default class ComponentToPrint extends React.Component {
                         >
                           {_item.modifier_title}
                         </div>
-                        <div className="text-center" style={{ width: 35 }}>
-                          {englishNumberToPersianNumber(item.amount)}
-                        </div>
-                        {!printOptions.hideItemPrices ? (
+                        {!printOptions.hideItemPrices && (
                           <>
                             <div className="text-center" style={{ width: 80 }}>
                               {priceFormatter(_item.discounted_price)}
                             </div>
+                          </>
+                        )}
+                        <div className="text-center" style={{ width: 35 }}>
+                          {englishNumberToPersianNumber(item.amount)}
+                        </div>
+                        {!printOptions.hideItemPrices && (
+                          <>
                             <div className="text-center" style={{ width: 80 }}>
-                              {priceFormatter(_item.discounted_price * item.amount)}
+                              {priceFormatter(
+                                _item.discounted_price * item.amount
+                              )}
                             </div>
                           </>
-                        ) : null}
+                        )}
                       </div>
                     ))
                   : null}
               </React.Fragment>
             ))}
+
+            {!printOptions.hideItemPrices && (
+              <div
+                className="d-flex flex-row"
+                style={{ borderTop: "1px solid #000" }}
+              >
+                <div
+                  className="text-right"
+                  style={{
+                    width: !printOptions.hideItemPrices ? 275 : 435,
+                    whiteSpace: "pre-wrap",
+                    fontSize: isLarge ? 16 : 14,
+                  }}
+                >
+                  جمع
+                </div>
+                <div
+                  className="text-center"
+                  style={{ width: 80, fontSize: isLarge ? 16 : 14 }}
+                >
+                  {priceFormatter(order.total_items_discounted_price)}
+                </div>
+              </div>
+            )}
           </div>
         )}
+
         {!printOptions.hidePrices && (
-          <div className="d-flex flex-column justify-content-between px-3 pb-1 u-border-bottom-dark">
-            <div className="mt-1">
+          <div className="d-flex flex-column justify-content-between pl-3 pb-1 u-border-bottom-dark">
+            <div className="mt-1 d-flex justify-content-between">
               <span>قیمت اولیه: </span>
               <span
                 className="u-fontWeightBold"
@@ -353,8 +400,8 @@ export default class ComponentToPrint extends React.Component {
               </span>
             </div>
             {order.total_discount_amount ? (
-              <div className="mt-1">
-                <span>مجموع تخفیف‌ها و اعتبار هدیه: </span>
+              <div className="mt-1  d-flex justify-content-between">
+                <span>مجموع تخفیف‌ها: </span>
                 <span
                   className="u-fontWeightBold"
                   style={{ whiteSpace: "pre-wrap" }}
@@ -365,8 +412,9 @@ export default class ComponentToPrint extends React.Component {
                 </span>
               </div>
             ) : null}
-            {order.gift_credit_used ? (
-              <div className="mt-1">
+            {order.gift_credit_used &&
+            order.total_discount_amount !== order.gift_credit_used ? (
+              <div className="mt-1 d-flex justify-content-between">
                 <span>اعتبار هدیه: </span>
                 <span
                   className="u-fontWeightBold"
@@ -378,8 +426,9 @@ export default class ComponentToPrint extends React.Component {
                 </span>
               </div>
             ) : null}
-            {order.discount_code_amount  && order.discount_code_amount !== order.total_discount_amount ? (
-              <div className="mt-1">
+            {order.discount_code_amount &&
+            order.discount_code_amount !== order.total_discount_amount ? (
+              <div className="mt-1 d-flex justify-content-between">
                 <span>کد تخفیف: </span>
                 <span
                   className="u-fontWeightBold"
@@ -391,8 +440,24 @@ export default class ComponentToPrint extends React.Component {
                 </span>
               </div>
             ) : null}
+
+            {order.taxing_price ? (
+              <div className="mt-1 d-flex justify-content-between">
+                <span>مالیات بر ارزش افزوده: </span>
+                <span
+                  className="u-fontWeightBold"
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
+                  {priceFormatter(order.taxing_price)} تومان
+                </span>
+              </div>
+            ) : null}
+            <div className="mt-1 d-flex justify-content-between">
+              <span>هزینه ارسال: </span>
+              <span className="u-fontWeightBold">{cost}</span>
+            </div>
             {order.total_packaging_price ? (
-              <div className="mt-1">
+              <div className="mt-1 d-flex justify-content-between">
                 <span>هزینه بسته‌بندی: </span>
                 <span
                   className="u-fontWeightBold"
@@ -403,67 +468,41 @@ export default class ComponentToPrint extends React.Component {
               </div>
             ) : null}
 
-            <div className="mt-1">
-              <span>هزینه ارسال: </span>
-              <span className="u-fontWeightBold">{cost}</span>
-            </div>
-            {order.taxing_price ? (
-              <div className="mt-1">
-                <span>مالیات بر ارزش افزوده: </span>
-                <span
-                  className="u-fontWeightBold"
-                  style={{ whiteSpace: "pre-wrap" }}
-                >
-                  {priceFormatter(order.taxing_price)} تومان
-                </span>
-              </div>
-            ) : null}
-            <div className="mt-1">
-              <span>
-                 {"کل مبلغ فاکتور:"}
-              </span>
+            <div
+              style={{ margin: "10px 0" }}
+              className="d-flex justify-content-center align-items-center"
+            >
+              <span className={"u-fontWeightBold"}>قابل پرداخت</span>
               <span
-                className="u-fontWeightBold px-3 py-1 u-fontLarge"
-                style={{ whiteSpace: "pre-wrap" }}
+                className={`u-fontWeightBold px-3 py-1 ${
+                  hasNoBlackBackground ? "u-background-black u-text-white" : ""
+                }`}
+                style={{
+                  whiteSpace: "pre-wrap",
+                  fontSize: isLarge ? 18 : 16,
+                }}
               >
                 {priceFormatter(order.total_price)} تومان
               </span>
             </div>
-            <div className="mt-1">
-              <span>
-                 {"مقدار مبلغ پرداخت شده:"}
-              </span>
+            <div className="mt-1 d-flex justify-content-center">
               <span
-                className="u-fontWeightBold px-3 py-1 u-fontLarge"
-                style={{ whiteSpace: "pre-wrap" }}
+                className="u-fontWeightBold py-1 u-fontVeryLarge"
+                style={{ whiteSpace: "pre-wrap", fontSize: isLarge ? 18 : 16 }}
               >
-                {priceFormatter(order.paid_price)} تومان
-              </span>
-            </div>
-
-            <div style={{margin: '10px 0'}}>
-              <span className={"u-fontWeightBold"}>
-                 { order?.should_pay >= 0 ?
-                   "باقیمانده جهت پرداخت:"
-                    : "مقدار مبلغ جهت عودت:"}
-              </span>
-              <span
-                className="u-fontWeightBold px-3 py-1 u-background-black u-text-white"
-                style={{ whiteSpace: "pre-wrap", marginRight: '5px', fontSize: isLarge ? 18 : 16  }}
-              >
-                {priceFormatter(finalCost)} تومان
+                {getHowOrderIsPaidText()}
               </span>
             </div>
           </div>
         )}
 
         {!printOptions.hidePhone && (
-          <div className="mt-1 px-3">
+          <div className="mt-1 px-3 text-center">
             <span>{title}: </span>
             <span className="u-fontWeightBold">{phone}</span>
           </div>
         )}
-        <div className="mt-1 px-3">
+        <div className="mt-1 px-3 text-center">
           <span>{url}</span>
         </div>
       </div>

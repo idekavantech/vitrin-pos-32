@@ -35,6 +35,14 @@ const options = [
       { id: 11, text: "مبالغ آیتم‌های سفارش", field: "hideItemPrices" },
     ],
   },
+  {
+    id: 3,
+    title: "سایر",
+    sections: [
+      { id: 12, text: "بدون پیش زمینه مشکی", field: "hasNoBlackBackground" },
+      { id: 13, text: "بدون حاشیه", field: "hasNoBorders" },
+    ],
+  },
 ];
 function FactorModal({ save, _onClose, business, printOptions, index }) {
   const printerOptions =
@@ -53,6 +61,8 @@ function FactorModal({ save, _onClose, business, printOptions, index }) {
             hideItems: false,
             hidePrices: false,
             hideItemPrices: false,
+            hasNoBorders: false,
+            hasNoBlackBackground: false,
           },
         };
   return (
