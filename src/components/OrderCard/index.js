@@ -12,7 +12,7 @@ import {
 import Icon from "../Icon";
 import { ICONS } from "../../../assets/images/icons";
 import CheckBox from "../CheckBox";
-import {LOCAL_TIME_OFFSET} from "../../../utils/constants";
+import { LOCAL_TIME_OFFSET } from "../../../utils/constants";
 
 function OrderCard({
   order,
@@ -105,17 +105,22 @@ function OrderCard({
           <span className="px-2" style={{ width: 75 }}>
             {ellipseText(englishNumberToPersianNumber(order.order_id), 8)}
           </span>
-          <span className="u-text-ellipse px-2" style={{ width: 114 }}>
+          <span className="px-2" style={{ width: 75 }}>
+            {ellipseText(englishNumberToPersianNumber(order.order_number), 8)}
+          </span>
+          <span className="u-text-ellipse px-2" style={{ width: 150 }}>
             {ellipseText(userAddress && userAddress.name, 18)}
           </span>
           <span
             className="u-text-ellipse mx-2 text-right flex-1 position-relative"
-            style={{ width: 500 }}
+            style={{ width: 465 }}
           >
-              {deliveryOnSite
-                ? `تحویل در محل ${businessTitle}`
-                : userAddress ? userAddress.address : ''}
-            </span>
+            {deliveryOnSite
+              ? `تحویل در محل ${businessTitle}`
+              : userAddress
+              ? userAddress.address
+              : ""}
+          </span>
 
           <span
             className="px-2 u-no-wrap u-text-ellipse"
@@ -134,7 +139,6 @@ function OrderCard({
     </>
   );
 }
-
 
 OrderCard.propTypes = {
   order: PropTypes.object.isRequired,

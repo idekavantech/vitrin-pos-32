@@ -17,6 +17,7 @@ import {
   START_INIT_LOADING,
   STOP_INIT_LOADING,
   SET_SITE_DOMAIN,
+  SET_BUSINESS_ID,
   UPLOAD_PROGRESS,
   UPLOAD_REQUEST,
   UPLOAD_REQUEST_FINISHED,
@@ -38,6 +39,7 @@ export const initialState = {
   uploadProgress: null,
   uploadStarted: false,
   subdomain: "",
+  businessId: null,
   multipleUploadedFiles: [],
   hamiModal: false,
   firebaseToken: "",
@@ -100,6 +102,9 @@ const appReducer = (state = initialState, action) =>
         break;
       case SET_SITE_DOMAIN:
         draft.subdomain = action.data;
+        break;
+      case SET_BUSINESS_ID:
+        draft.businessId = action.data;
         break;
       case SET_FIREBASE_TOKEN:
         draft.firebaseToken = action.data;

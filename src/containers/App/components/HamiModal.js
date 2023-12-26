@@ -141,7 +141,7 @@ function HamiModal({
                     }
                   }
                   let result = true;
-                  const a = moment(`1375/01/01`, "jYYYY/jMM/jDD");
+                  const a = moment(`1401/01/01`, "jYYYY/jMM/jDD");
                   const timeOffsetWithServer = localStorage.getItem(LOCAL_TIME_OFFSET);
                   const b = moment().subtract((Math.abs(Number(timeOffsetWithServer))))
                   for (let m = moment(b); m.isAfter(a); m.subtract(1, "day")) {

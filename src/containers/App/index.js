@@ -56,6 +56,7 @@ import Analytics from "../Analytics";
 import OrdersReport from "../OrdersReport";
 import {
   acceptOrder,
+  setBusinessId,
   setFirebaseToken,
   setSiteDomain,
   toggleHamiModal,
@@ -92,6 +93,11 @@ import {
 } from "../../../utils/constants";
 import EditProductiFrame from "../EditProduct/EditProductiFrame";
 import getServerTime from "./getServerTime";
+import { TOKEN_STORAGE_KEY } from "../../constants/auth";
+import {
+  HAMI_PREVENT_SEND_ORDERS,
+  HAMI_PREVENT_ACCEPT_ORDERS,
+} from "../../constants/hami";
 
 const App = function ({
   history,
@@ -104,6 +110,7 @@ const App = function ({
   businessTitle,
   progressLoading,
   _setSiteDomain,
+  _setBusinessId,
   businesses,
   _getBusiness,
   reload,
@@ -139,18 +146,19 @@ const App = function ({
     () => businesses?.map((business) => business.slug) || [],
     [businesses]
   );
+  const token = localStorage.getItem(TOKEN_STORAGE_KEY);
   useEffect(() => {
-    ipcRenderer.send("disable-close");
-    const token = localStorage.getItem("token");
+    // ipcRenderer.send("disable-close");
+
     if (token) {
-      Axios.defaults.headers.common.Authorization = `Token ${token}`;
+      Axios.defaults.headers.common.Authorization = `Bearer ${token}`;
       getUserInfo();
       _getBusinesses();
     } else history.push("/login");
     document.addEventListener("keydown", function (zEvent) {
       if (zEvent.ctrlKey && zEvent.shiftKey && zEvent.key === "X") {
         delete Axios.defaults.headers.common.Authorization;
-        localStorage.removeItem("token");
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
         history.push("/login");
       }
       if (zEvent.ctrlKey && zEvent.shiftKey && zEvent.key === "I") {
@@ -163,7 +171,7 @@ const App = function ({
     ipcRenderer.on("closePrompt", () => {
       setDialog(true);
     });
-  }, []);
+  }, [token]);
   useEffect(() => {
     if (businessSlugs.length)
       initPushNotification(
@@ -188,7 +196,8 @@ const App = function ({
       ).includes(order.business_site_domain);
     if (
       isBusinessHamiIntegrated &&
-      !localStorage.getItem("hamiPreventSendOrders")
+      !localStorage.getItem(HAMI_PREVENT_SEND_ORDERS) &&
+      !localStorage.getItem(HAMI_PREVENT_ACCEPT_ORDERS)
     ) {
       _acceptOrder({
         order,
@@ -229,11 +238,15 @@ const App = function ({
         siteDomain !== siteDomainFromLocalStorage &&
         siteDomainFromLocalStorage &&
         siteDomainFromLocalStorage !== "undefined"
-      )
+      ) {
+        const foundBusiness = businesses.find(
+          (business) => business.site_domain === siteDomainFromLocalStorage
+        );
         _setSiteDomain(siteDomainFromLocalStorage);
+        _setBusinessId(foundBusiness?.id);
+      }
     }
   }, [siteDomain, localStorage.getItem(SELECTED_SITE_DOMAIN)]);
-
 
   const syncOrders = async () => {
     try {
@@ -254,12 +267,23 @@ const App = function ({
           if (_businessId) {
             let result = true;
             const devices = business?.devices;
-            const device = devices.filter((dvc) => dvc?.extra_data?.last_orders_update !== undefined)
-            const orderUpdates = device.map((dvc) => dvc?.extra_data?.last_orders_update)
-            const lastOrdersUpdateByPosDevice =  orderUpdates.reduce((acc , dvc) => Math.max(acc , dvc ?? 0))
-            const lastOrdersUpdateByLocalstorage = Number(localStorage.getItem("hamiOrdersLastUpdate"))
-            const lastOrdersUpdate = lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage
-            const hamiOrdersLastUpdateByInterval = lastOrdersUpdate ? Number(lastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
+            const device = devices.filter(
+              (dvc) => dvc?.extra_data?.last_orders_update !== undefined
+            );
+            const orderUpdates = device.map(
+              (dvc) => dvc?.extra_data?.last_orders_update
+            );
+            const lastOrdersUpdateByPosDevice = orderUpdates.reduce(
+              (acc, dvc) => Math.max(acc, dvc ?? 0)
+            );
+            const lastOrdersUpdateByLocalstorage = Number(
+              localStorage.getItem("hamiOrdersLastUpdate")
+            );
+            const lastOrdersUpdate =
+              lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage;
+            const hamiOrdersLastUpdateByInterval = lastOrdersUpdate
+              ? Number(lastOrdersUpdate) * 1000
+              : new Date("1 jun 2020").getTime();
             const a = hamiOrdersLastUpdateByInterval
               ? moment(+hamiOrdersLastUpdateByInterval)
               : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -278,10 +302,7 @@ const App = function ({
                   true
                 ));
             }
-            localStorage.setItem(
-              "hamiOrdersLastUpdate",
-              moment().unix()
-            );
+            localStorage.setItem("hamiOrdersLastUpdate", moment().unix());
           }
         });
       } else {
@@ -291,15 +312,26 @@ const App = function ({
           ).includes(business.site_domain)
         );
         const devices = business?.devices;
-        const device = devices.filter((dvc) => dvc?.extra_data?.last_orders_update !== undefined)
-        const orderUpdates = device.map((dvc) => dvc?.extra_data?.last_orders_update)
-        const lastOrdersUpdateByPosDevice =  orderUpdates.reduce((acc , dvc) => Math.max(acc , dvc ?? 0))
-        const lastOrdersUpdateByLocalstorage = Number(localStorage.getItem("hamiOrdersLastUpdate"))
-        const lastOrdersUpdate = lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage
+        const device = devices.filter(
+          (dvc) => dvc?.extra_data?.last_orders_update !== undefined
+        );
+        const orderUpdates = device.map(
+          (dvc) => dvc?.extra_data?.last_orders_update
+        );
+        const lastOrdersUpdateByPosDevice = orderUpdates.reduce((acc, dvc) =>
+          Math.max(acc, dvc ?? 0)
+        );
+        const lastOrdersUpdateByLocalstorage = Number(
+          localStorage.getItem("hamiOrdersLastUpdate")
+        );
+        const lastOrdersUpdate =
+          lastOrdersUpdateByPosDevice ?? lastOrdersUpdateByLocalstorage;
         const _businessId = business?.id;
         if (_businessId) {
           let result = true;
-          const hamiOrdersLastUpdateByInterval = lastOrdersUpdate ? Number(lastOrdersUpdate)* 1000 : new Date("1 jun 2020").getTime()
+          const hamiOrdersLastUpdateByInterval = lastOrdersUpdate
+            ? Number(lastOrdersUpdate) * 1000
+            : new Date("1 jun 2020").getTime();
           const a = hamiOrdersLastUpdateByInterval
             ? moment(+hamiOrdersLastUpdateByInterval)
             : moment(`1400/01/01`, "jYYYY/jMM/jDD");
@@ -318,10 +350,7 @@ const App = function ({
                 true
               ));
           }
-          localStorage.setItem(
-            "hamiOrdersLastUpdate",
-            moment().unix()
-          );
+          localStorage.setItem("hamiOrdersLastUpdate", moment().unix());
         }
       }
     } catch (e) {
@@ -332,7 +361,7 @@ const App = function ({
     clearInterval(orderInterval.current);
     if (
       localStorage.getItem("integrated") === "hami" &&
-      !localStorage.getItem("hamiPreventSendOrders")
+      !localStorage.getItem(HAMI_PREVENT_SEND_ORDERS)
     ) {
       orderInterval.current = setInterval(() => {
         syncOrders();
@@ -343,17 +372,16 @@ const App = function ({
     };
   }, [businesses, user?.id]);
   useEffect(() => {
-    const syncTime = async  () => {
+    const syncTime = async () => {
       const dateTime = await getServerTime();
       const localTime = new Date();
       const serverTime = new Date(dateTime);
-      const timeOffset = (serverTime.getTime() - localTime.getTime())
-      localStorage.setItem(LOCAL_TIME_OFFSET, timeOffset.toString())
-      isTimeServerFetched.current = true
-    }
-  if(!isTimeServerFetched.current)
-    syncTime()
-  }, [localTimeOffsetWithTimeServer])
+      const timeOffset = serverTime.getTime() - localTime.getTime();
+      localStorage.setItem(LOCAL_TIME_OFFSET, timeOffset.toString());
+      isTimeServerFetched.current = true;
+    };
+    if (!isTimeServerFetched.current) syncTime();
+  }, [localTimeOffsetWithTimeServer]);
   if ((!siteDomain || !businessTitle) && location.pathname !== "/login")
     return (
       <div
@@ -363,9 +391,10 @@ const App = function ({
         <LoadingIndicator />
       </div>
     );
-  const onChangeBusiness = (value) => {
-    localStorage.setItem(SELECTED_SITE_DOMAIN, value);
-    _setSiteDomain(value);
+  const onChangeBusiness = (businessSiteDomain, businessId) => {
+    localStorage.setItem(SELECTED_SITE_DOMAIN, businessSiteDomain);
+    _setSiteDomain(businessSiteDomain);
+    _setBusinessId(businessId);
   };
   return (
     <>
@@ -515,6 +544,7 @@ function mapDispatchToProps(dispatch) {
   return {
     _getBusiness: () => dispatch(getBusiness()),
     _setSiteDomain: (domain) => dispatch(setSiteDomain(domain)),
+    _setBusinessId: (businessId) => dispatch(setBusinessId(businessId)),
     _getBusinesses: () => dispatch(getBusinesses()),
     _getAdminOrders: () => dispatch(getAdminOrders({ page: 1 })),
     _setSnackBarMessage: (message, type) =>

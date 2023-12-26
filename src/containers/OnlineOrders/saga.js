@@ -10,23 +10,29 @@ import {
   startProgressLoading,
   stopProgressLoading,
 } from "../App/actions";
-import { makeSelectBusinessSiteDomain } from "../../../stores/business/selector";
+import { makeSelectBusinessId } from "../../../stores/business/selector";
 import { SHOPPING_PLUGIN } from "../../../utils/constants";
+import { HAMI_PREVENT_SEND_ORDERS } from "../../constants/hami";
 
 export function* getAdminOrdersFunc(action) {
   try {
     yield put(startProgressLoading());
     yield put(setAdminOrders(null));
-    const domain = yield select(makeSelectBusinessSiteDomain());
+    const businessId = yield select(makeSelectBusinessId());
+    const domain = yield select(makeSelectSubDomain());
+
     const {
       response: { data, pagination },
     } = yield call(
       request,
-      BUSINESS_ORDERS_API(SHOPPING_PLUGIN,action?.data?.page || 1,
-        action?.data?.page_size || 20, true, domain),
+      BUSINESS_ORDERS_API(
+        SHOPPING_PLUGIN,
+        action?.data?.page || 1,
+        action?.data?.page_size || 20,
+        true
+      ),
       {
-        domain: action.domain || domain,
-        site_domain: action.site_domain || domain,
+        business_id: action.businessId || businessId,
         sales_channel: null,
         ...action.data,
       },
@@ -41,7 +47,7 @@ export function* getAdminOrdersFunc(action) {
         (
           JSON.parse(localStorage.getItem("hamiIntegratedBusinesses")) || []
         ).includes(domain) &&
-        !localStorage.getItem("hamiPreventSendOrders")
+        !localStorage.getItem(HAMI_PREVENT_SEND_ORDERS)
       )
         yield all(
           data

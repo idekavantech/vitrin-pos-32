@@ -1,5 +1,6 @@
 import Axios from "axios";
 import qs from "qs";
+import { TOKEN_STORAGE_KEY } from "../src/constants/auth";
 const { ipcRenderer } = require("electron");
 
 export default async function request(
@@ -15,10 +16,13 @@ export default async function request(
     data: method !== "GET" ? data : undefined,
     params: method === "GET" ? data : undefined,
     paramsSerializer: (params) => {
-      return qs.stringify(Object.fromEntries(Object.entries(params).filter(([k, v]) => v !== "")), {
-        skipNulls: true,
-        encodeValuesOnly: true,
-      });
+      return qs.stringify(
+        Object.fromEntries(Object.entries(params).filter(([k, v]) => v !== "")),
+        {
+          skipNulls: true,
+          encodeValuesOnly: true,
+        }
+      );
     },
     ...config,
   };
@@ -34,7 +38,7 @@ export default async function request(
   // await ipcRenderer
   //   .invoke("request", params, Axios.defaults.headers)
   //   .then((res) => {
-  //     console.log(url,'url');
+  //     console.log(url, "url");
   //     console.log(params);
   //     console.log(res, "res");
   //     response = res.data;
@@ -42,19 +46,33 @@ export default async function request(
   //     pureRes = res;
   //     return true;
   //   })
-  //   .catch((e) => {
-  //     status = e;
-  //     return e;
+  //   .catch((error) => {
+  //     console.log(error, "error");
+  //     if (error.response && error.response.status === 401) {
+  //       // Handle 401 status code here
+  //       // Remove 'token' key from localStorage
+  //       localStorage.removeItem(TOKEN_STORAGE_KEY);
+  //       // You can also redirect the user to a login page or take any other appropriate action.
+  //     } else {
+  //       status = error;
+  //       return error;
+  //     }
   //   });
-  await Axios(params)
-    .then((res) => {
+  try {
+    await Axios(params).then((res) => {
       pureRes = res;
       response = res.data;
       status = res.status;
-    })
-    .catch((e) => {
-      status = e;
-      return e;
     });
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      // Handle 401 status code here
+      // Remove 'token' key from localStorage
+      localStorage.removeItem(TOKEN_STORAGE_KEY);
+    } else {
+      status = error;
+      return error;
+    }
+  }
   return { response, status, pureRes };
 }

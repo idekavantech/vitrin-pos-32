@@ -26,6 +26,7 @@ import {
   START_INIT_LOADING,
   STOP_INIT_LOADING,
   SET_SITE_DOMAIN,
+  SET_BUSINESS_ID,
   MANY_ACTIONS,
   SEND_EMAIL,
   UPLOAD_REQUEST,
@@ -131,6 +132,13 @@ export function setSiteDomain(siteDomain) {
   return {
     type: SET_SITE_DOMAIN,
     data: siteDomain,
+  };
+}
+
+export function setBusinessId(businessId) {
+  return {
+    type: SET_BUSINESS_ID,
+    data: businessId,
   };
 }
 export function sendEmail(data) {

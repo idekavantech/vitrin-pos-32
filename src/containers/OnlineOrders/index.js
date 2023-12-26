@@ -1,7 +1,7 @@
 import "../../../styles/_main.scss";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
-import React, { memo, useCallback, useEffect,  } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { createStructuredSelector } from "reselect";
 import {
   makeSelectAdminOrders,
@@ -12,6 +12,7 @@ import { renderToString } from "react-dom/server";
 import ComponentToPrint from "../../components/ComponentToPrint";
 import {
   makeSelectBusiness,
+  makeSelectBusinessId,
   makeSelectBusinessSiteDomain,
   makeSelectBusinessTitle,
   makeSelectPrinterOptions,
@@ -29,7 +30,10 @@ import reducer from "./reducer";
 import saga from "./saga";
 import { useInjectReducer } from "../../../utils/injectReducer";
 import { useInjectSaga } from "../../../utils/injectSaga";
-import {makeSelectProgressLoading, makeSelectServerTime} from "../App/selectors";
+import {
+  makeSelectProgressLoading,
+  makeSelectServerTime,
+} from "../App/selectors";
 import LoadingIndicator from "../../components/LoadingIndicator";
 import { PERSONAL_VITRIN_SALE_CHANNEL } from "./constants";
 import qs from "qs";
@@ -42,8 +46,9 @@ const OnlineOrders = function ({
   _getAdminOrders,
   progressLoading,
   siteDomain,
+  businessId,
   pagination,
-  location
+  location,
 }) {
   useInjectReducer({ key: "adminOrders", reducer });
   useInjectSaga({ key: "adminOrders", saga });
@@ -55,13 +60,13 @@ const OnlineOrders = function ({
       ...order,
       business_pos_id: _business.extra_data?.pos_id,
     });
-  }
+  };
   const salesChannels = business.plugins_config.base.sales_channels;
 
   const printOrder = (order) => {
     printOptions.printers.map((p, index) => {
       if (p.isActive) {
-        console.log({p});
+        console.log({ p });
         ipcRenderer.sendSync(
           "print",
           renderToString(
@@ -79,29 +84,31 @@ const OnlineOrders = function ({
     });
   };
   useEffect(() => {
-    if(!window.eventListenerAssigned && printOptions?.printers?.some(p => p.isActive)){
-      window.eventListenerAssigned = true
-    window.addEventListener("message", receiveMessage, false);
+    if (
+      !window.eventListenerAssigned &&
+      printOptions?.printers?.some((p) => p.isActive)
+    ) {
+      window.eventListenerAssigned = true;
+      window.addEventListener("message", receiveMessage, false);
 
-    function receiveMessage(event) {
-        if(typeof event.data === "string"){
-          const data = JSON.parse(event.data)
-          if(data.type === "order"){
+      function receiveMessage(event) {
+        if (typeof event.data === "string") {
+          const data = JSON.parse(event.data);
+          if (data.type === "order") {
             printOrder(data.order);
           }
-          if(data.type === "addToHami"){
+          if (data.type === "addToHami") {
             moveToHami(data.order);
           }
         }
+      }
     }
-  }
-
-  }, [printOptions, business])
+  }, [printOptions, business]);
 
   const page = getQueryParams("page", location.search) || 1;
   useEffect(() => {
-    _getAdminOrders({ page }, siteDomain);
-  }, [page, siteDomain]);
+    _getAdminOrders({ page }, businessId);
+  }, [page, siteDomain, businessId]);
   return (
     <div className="u-border-radius-8 container px-0 container-shadow overflow-hidden flex-1">
       <div className="d-flex px-5 py-3">
@@ -110,7 +117,9 @@ const OnlineOrders = function ({
         </span> */}
         <HamiOrdersFilter
           siteDomain={siteDomain}
-          updateOrders={(rest) => _getAdminOrders({ page, ...rest }, siteDomain)}
+          updateOrders={(rest) =>
+            _getAdminOrders({ page, ...rest }, businessId)
+          }
           salesChannels={salesChannels}
         />
       </div>
@@ -119,21 +128,24 @@ const OnlineOrders = function ({
         style={{ height: "calc(100% - 99px)" }}
       >
         <div>
-          {progressLoading || !orders ? <LoadingIndicator /> :
+          {progressLoading || !orders ? (
+            <LoadingIndicator />
+          ) : (
             orders.map((order) => (
-            <OrderCard
-              businessTitle={businessTitle}
-              isBold={order.order_status === 40}
-              key={`order-${order.id}`}
-              link={`/orders/${order.id}`}
-              order={order}
-            />
-          )) }
+              <OrderCard
+                businessTitle={businessTitle}
+                isBold={order.order_status === 40}
+                key={`order-${order.id}`}
+                link={`/orders/${order.id}`}
+                order={order}
+              />
+            ))
+          )}
         </div>
       </div>
-      <Pagination pagination={pagination} location={location}/>
+      <Pagination pagination={pagination} location={location} />
     </div>
-  )
+  );
   //<iframe id="mainframe"  src={`${business.get_vitrin_absolute_admin_url}/s/orders/?token=${getToken()}&no_layout=true&no_new_tab_on_order_click=true&iframe_from_pos=true&hami_integrated=${localStorage?.getItem("integrated") === "hami"}`} className="w-100 h-100"></iframe>
 };
 
@@ -142,7 +154,8 @@ const mapStateToProps = createStructuredSelector({
   pagination: makeSelectAdminOrdersPagination(),
   businessTitle: makeSelectBusinessTitle(),
   siteDomain: makeSelectBusinessSiteDomain(),
-  business:makeSelectBusiness(),
+  businessId: makeSelectBusinessId(),
+  business: makeSelectBusiness(),
   printOptions: makeSelectPrinterOptions(),
   businesses: makeSelectBusinesses(),
   progressLoading: makeSelectProgressLoading(),
@@ -150,7 +163,8 @@ const mapStateToProps = createStructuredSelector({
 
 function mapDispatchToProps(dispatch) {
   return {
-    _getAdminOrders: (data, siteDomain) => dispatch(getAdminOrders(data, siteDomain)),
+    _getAdminOrders: (data, businessId) =>
+      dispatch(getAdminOrders(data, businessId)),
   };
 }
 

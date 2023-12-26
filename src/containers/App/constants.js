@@ -21,6 +21,7 @@ export const UPLOAD_FILE = "vitrin/App/UPLOAD_FILE";
 export const FILE_UPLOADED = "vitrin/App/FILE_UPLOADED";
 export const REMOVE_FILE = "vitrin/App/REMOVE_FILE";
 export const SET_SITE_DOMAIN = "vitrin/App/SET_SITE_DOMAIN";
+export const SET_BUSINESS_ID = "vitrin/App/SET_BUSINESS_ID";
 export const MANY_ACTIONS = "vitrin/App/MANY_ACTIONS";
 export const SEND_EMAIL = "vitrin/App/SEND_EMAIL";
 export const UPLOAD_REQUEST = "vitrin/App/UPLOAD_REQUEST";
