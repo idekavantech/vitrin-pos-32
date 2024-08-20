@@ -9,9 +9,12 @@ export default function initPushNotification(
   const { ipcRenderer } = require("electron");
   const { getCurrentWindow } = require("@electron/remote");
 
-  const manager = new Manager("https://socket.vitrin.me", {
-    reconnectionDelayMax: 10000,
-  });
+  const manager = new Manager(
+    "dbcdc8ac-6ce2-4834-bb3f-3339a463f180.hsvc.ir:31171",
+    {
+      reconnectionDelayMax: 10000,
+    }
+  );
 
   const socket = manager.socket("/", {});
 
