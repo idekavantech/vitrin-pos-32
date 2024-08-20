@@ -12,3 +12,4 @@ vitrin-pos is a proprietary software developed for Vitrin site-builder (https://
 - set the tag version to the same version of your package.json
 - upload exe and pubg files
 - publish new release 
+- git pull https://github.com/idekavantech/vitrin-pos-64.git main --allow-unrelated-histories
