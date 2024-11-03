@@ -10,7 +10,7 @@ export default function initPushNotification(
   const { getCurrentWindow } = require("@electron/remote");
 
   const manager = new Manager(
-    "dbcdc8ac-6ce2-4834-bb3f-3339a463f180.hsvc.ir:31171",
+    "https://socket.vitrin.me",
     {
       reconnectionDelayMax: 10000,
     }
