@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
   englishNumberToPersianNumber,
   priceFormatter,
+  deliveryTimeFormatter,
 } from "../../../utils/helper";
 import moment from "moment-jalaali";
 import QRCode from "qrcode.react";
@@ -175,6 +176,14 @@ export default class ComponentToPrint extends React.Component {
                 style={{ whiteSpace: "pre-wrap", fontSize: isLarge ? 17 : 15 }}
               >
                 {(order && order.description) || "ندارد"}
+              </span>
+            </div>
+          )}
+          {order.delivery_timing_type === "scheduled" && order.delivery_interval && (
+            <div className="mt-1">
+              <span>زمان ارسال: </span>
+              <span className="u-fontWeightBold">
+              {deliveryTimeFormatter(order.delivery_interval)}
               </span>
             </div>
           )}

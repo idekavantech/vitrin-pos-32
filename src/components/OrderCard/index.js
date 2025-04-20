@@ -30,10 +30,7 @@ function OrderCard({
     order_status: orderStatus,
     delivery_on_site: deliveryOnSite,
   } = order;
-  // console.log("submitted at", submitted_at);
-  console.log("order", order);
-  const timeOffset = new Date().getTimezoneOffset() === -270 ? -3600000 : 0;
-  // const orderDate = new Date(createdAt + timeOffset);
+  const timeOffset = new Date().getTimezoneOffset() === -210 ? -3600000 : 0;
   const parsedDate = new Date(createdAt);
   const orderDate = new Date(parsedDate.getTime() + timeOffset);
   const orderTime = moment(
@@ -87,7 +84,6 @@ function OrderCard({
             className="d-flex px-2 align-items-center justify-content-center"
             style={{ width: 90 }}
           >
-            {console.log("order date", orderDate)}
             {orderDate.getMonth() === nowDate.getMonth() &&
             orderDate.getFullYear() === nowDate.getFullYear() &&
             orderDate.getDate() === nowDate.getDate() ? (
