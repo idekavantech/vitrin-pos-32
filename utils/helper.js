@@ -457,17 +457,22 @@ function amplifyMedia(mediaElem, multiplier) {
   return result;
 }
 function deliveryTimeFormatter(deliveryTime) {
-  const fromTime = deliveryTime.from_time ? moment.unix(deliveryTime.from_time) : null;
+  const fromTime = deliveryTime.from_time
+    ? moment.unix(deliveryTime.from_time).utcOffset(210)
+    : null;
   let fromDateDay, fromDateMonth, fromDateWeekDay;
-  if(fromTime){
+
+  if (fromTime) {
     fromDateDay = englishNumberToPersianNumber(fromTime.jDate());
     fromDateMonth = getMonthName(fromTime.jMonth() + 1);
     fromDateWeekDay = getWeekDay(fromTime.isoWeekday());
   }
-  const toTime = deliveryTime.to_time ? moment.unix(deliveryTime.to_time) :null;
+  const toTime = deliveryTime.to_time
+    ? moment.unix(deliveryTime.to_time).utcOffset(210)
+    : null;
   let toDateDay, toDateMonth, toDateWeekDay;
 
-  if(toTime){
+  if (toTime) {
     toDateDay = englishNumberToPersianNumber(toTime.jDate());
     toDateMonth = getMonthName(toTime.jMonth() + 1);
     toDateWeekDay = getWeekDay(toTime.isoWeekday());
@@ -483,11 +488,10 @@ function deliveryTimeFormatter(deliveryTime) {
     }
   } else if (fromTime) {
     return `${fromDateWeekDay} ${fromDateDay} ${fromDateMonth}`;
-  }
-  else if (toTime) {
+  } else if (toTime) {
     return ` تا ${toDateWeekDay} ${toDateDay} ${toDateMonth}`;
   }
-  return ` `
+  return ` `;
 }
 function persianToArabicCharacters(input) {
   const persianCharacters = [/ی/g, /ک/g];
@@ -628,8 +632,8 @@ const reversePriceFormatter = (price) => {
   return 0;
 };
 const getToken = () => {
-  return axios.defaults.headers.common.Authorization.replace("Token ", "")
-}
+  return axios.defaults.headers.common.Authorization.replace("Token ", "");
+};
 export {
   getCountDown,
   noOp,
@@ -674,5 +678,5 @@ export {
   uniqueid,
   convertVariantToTable,
   reversePriceFormatter,
-  getToken
+  getToken,
 };
